@@ -1,0 +1,10 @@
+﻿namespace PhotoForum.Exceptions
+{
+    public class EntityNotFoundException : ApplicationException
+    {
+        public EntityNotFoundException(string message)
+            : base(message)
+        {
+        }
+    }
+}
