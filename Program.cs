@@ -1,3 +1,10 @@
+using Microsoft.EntityFrameworkCore;
+using PhotoForum.Data;
+using PhotoForum.Repositories.Contracts;
+using PhotoForum.Repositories;
+using PhotoForum.Services.Contracts;
+using PhotoForum.Services;
+
 namespace PhotoForum
 {
     public class Program
@@ -12,6 +19,16 @@ namespace PhotoForum
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddDbContext<PhotoForumContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.EnableSensitiveDataLogging();
+            });
+
+            builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+
+            builder.Services.AddScoped<IUsersService, UsersService>();
 
             var app = builder.Build();
 

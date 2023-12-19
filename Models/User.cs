@@ -2,7 +2,7 @@
 
 namespace PhotoForum.Models
 {
-    public class User
+    public class User : BaseUser
     {
         public int Id { get; set; }
         [Required]
@@ -15,9 +15,11 @@ namespace PhotoForum.Models
         [EmailAddress]
         public string Email { get; set; }
         [Required]
-        public string Username { get; set; }
+        public bool IsBlocked { get; set; }
         [Required]
-        public string Password { get; set; }
-        public string? PhoneNumber { get; set; }
+        public bool IsDeleted { get; set; }
+        public IList<Post> Posts { get; set; }
+        public IList<Comment> Comments { get; set; }
+        
     }
 }
