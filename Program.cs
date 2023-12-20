@@ -22,13 +22,15 @@ namespace PhotoForum
 
             builder.Services.AddDbContext<PhotoForumContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                string connectionString = @"Data Source=127.0.0.1;Initial Catalog=PhotoForum;User Id=sqlserver;Password=D?3F&>#(}HAmCOi%;";
+
+                options.UseSqlServer(connectionString, b => b.MigrationsAssembly(typeof(PhotoForum.Data.PhotoForumContext).Assembly.FullName));
                 options.EnableSensitiveDataLogging();
             });
 
             builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 
-            builder.Services.AddScoped<IUsersService, UsersService>();
+            //builder.Services.AddScoped<IUsersService, UsersService>();
 
             var app = builder.Build();
 
