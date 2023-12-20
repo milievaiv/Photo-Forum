@@ -23,7 +23,7 @@ namespace PhotoForum.Models
         public bool IsDeleted { get; set; }
 
         public IList<Post> Posts { get; set; }
-        //public IList<Comment> Comments { get; set; }
+        public IList<Comment> Comments { get; set; }
         
     }
 }

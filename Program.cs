@@ -30,7 +30,7 @@ namespace PhotoForum
 
             builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 
-            //builder.Services.AddScoped<IUsersService, UsersService>();
+            builder.Services.AddScoped<IUsersService, UsersService>();
 
             var app = builder.Build();
 
