@@ -6,13 +6,23 @@ using PhotoForum.Repositories.Contracts;
 public class PostRepository : IPostRepository
 {
     private readonly PhotoForumContext context;
+    private readonly Queue<Post> recentlyCreated;
+    private readonly List<Post> topCommented;
 
     public PostRepository(PhotoForumContext context)
     {
         this.context = context;
+        recentlyCreated = new Queue<Post>();
+        topCommented = new List<Post>();
     }
     public Post Create(Post post)
     {
+        recentlyCreated.Enqueue(post);
+        if(recentlyCreated.Count > 10)
+        {
+            recentlyCreated.Dequeue();
+        }
+        
         context.Posts.Add(post);
         context.SaveChanges();
 
@@ -46,7 +56,8 @@ public class PostRepository : IPostRepository
     {
         var postToDelete = context.Users.FirstOrDefault(p => p.Id == id)
                 ?? throw new EntityNotFoundException($"Post with id {id} not found.");
-
+        RemoveFromQueue(postToDelete);
+        topCommented.Remove(postToDelete);
         context.Posts.Remove(postToDelete);
 
         return context.SaveChanges() > 0;
@@ -74,7 +85,7 @@ public class PostRepository : IPostRepository
     {
         var post = FindPostFromUser(user, postId);
         post.Comments.Add(comment);
-
+        RankingCheck(post);
         return post;
     }
     public Post Like(User user, int postId)
@@ -94,5 +105,41 @@ public class PostRepository : IPostRepository
 
         return userPosts.FirstOrDefault(p => p.Id == postId)
                 ?? throw new EntityNotFoundException($"Post with id {postId} not found.");
+    }
+    private void RemoveFromQueue(Post elementToRemove)
+    {
+        Queue<Post> temporaryQueue = new Queue<Post>;
+
+        while (recentlyCreated.Count > 0)
+        {
+            if(recentlyCreated.Peek() == elementToRemove)
+            {
+                recentlyCreated.Dequeue();
+                break;
+            }
+            temporaryQueue.Enqueue(recentlyCreated.Dequeue());
+        }
+
+        while(recentlyCreated.Count > 0)
+        {
+            temporaryQueue.Enqueue(recentlyCreated.Dequeue());
+        }
+    }
+    private void RankingCheck(Post postToCheck)
+    {
+        if (topCommented.Count == 10)
+        {
+            Post post = topCommented[10];
+            if(postToCheck.Comments > post.Comments)
+            {
+                topCommented.Remove(post);
+                topCommented.Add(postToCheck);
+            }
+        }
+        else
+        {
+            topCommented.Add(postToCheck);
+        }
+        topCommented = topCommented.SortBy(c => c.Comments.Count.ToList());
     }
 }
