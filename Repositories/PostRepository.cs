@@ -52,9 +52,9 @@ public class PostRepository : IPostRepository
 
         return postToUpdate;
     }
-    public Post Delete(int id)
+    public bool Delete(int id)
     {
-        var postToDelete = context.Users.FirstOrDefault(p => p.Id == id)
+        var postToDelete = context.Posts.FirstOrDefault(p => p.Id == id)
                 ?? throw new EntityNotFoundException($"Post with id {id} not found.");
         RemoveFromQueue(postToDelete);
         topCommented.Remove(postToDelete);

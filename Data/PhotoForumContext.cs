@@ -11,22 +11,16 @@ namespace PhotoForum.Data
         }
 
         public DbSet<BaseUser> BaseUsers { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<User> RegularUsers { get; set; }
         public DbSet<Admin> Admins { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<BaseUser>()
-                .ToTable("BaseUsers")
-                .HasKey(u => u.Id);
-
-            modelBuilder.Entity<User>()
-                .ToTable("Users");
-
-            modelBuilder.Entity<Admin>()
-                .ToTable("Admins");
+            modelBuilder.Entity<BaseUser>().ToTable("BaseUsers");
+            modelBuilder.Entity<User>().ToTable("RegularUsers");
+            modelBuilder.Entity<Admin>().ToTable("Admins");
         }
     }
 }
