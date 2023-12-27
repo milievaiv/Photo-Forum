@@ -18,9 +18,15 @@ namespace PhotoForum.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<BaseUser>().ToTable("BaseUsers");
-            modelBuilder.Entity<User>().ToTable("Users");
-            modelBuilder.Entity<Admin>().ToTable("Admins");
+            modelBuilder.Entity<BaseUser>()
+                .ToTable("BaseUsers")
+                .HasKey(u => u.Id);
+
+            modelBuilder.Entity<User>()
+                .ToTable("Users");
+
+            modelBuilder.Entity<Admin>()
+                .ToTable("Admins");
         }
     }
 }

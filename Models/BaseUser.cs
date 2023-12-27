@@ -3,9 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PhotoForum.Models
 {
-    public class BaseUser
+    public abstract class BaseUser
     {
-        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
@@ -16,6 +15,11 @@ namespace PhotoForum.Models
         public string Password { get; set; }
 
         [Required]
-        public Role Role { get; set; }
+        [StringLength(32, MinimumLength = 4)]
+        public string FirstName { get; set; }
+
+        [Required]
+        [StringLength(32, MinimumLength = 4)]
+        public string LastName { get; set; }
     }
 }
