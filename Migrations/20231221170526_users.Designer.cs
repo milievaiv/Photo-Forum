@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PhotoForum.Data;
 
@@ -11,9 +12,10 @@ using PhotoForum.Data;
 namespace PhotoForum.Migrations
 {
     [DbContext(typeof(PhotoForumContext))]
-    partial class PhotoForumContextModelSnapshot : ModelSnapshot
+    [Migration("20231221170526_users")]
+    partial class users
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,8 +36,9 @@ namespace PhotoForum.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -108,6 +111,16 @@ namespace PhotoForum.Migrations
                 {
                     b.HasBaseType("PhotoForum.Models.BaseUser");
 
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
@@ -122,6 +135,11 @@ namespace PhotoForum.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
                     b.Property<bool>("IsBlocked")
                         .HasColumnType("bit");
 
@@ -133,7 +151,7 @@ namespace PhotoForum.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("RegularUsers", (string)null);
                 });
 
             modelBuilder.Entity("PhotoForum.Models.Comment", b =>
