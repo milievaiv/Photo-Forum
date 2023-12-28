@@ -6,31 +6,32 @@ using PhotoForum.Repositories.Contracts;
 public class PostRepository : IPostRepository
 {
     private readonly PhotoForumContext context;
-    private readonly Queue<Post> recentlyCreated;
-    private readonly List<Post> topCommented;
 
     public PostRepository(PhotoForumContext context)
     {
         this.context = context;
-        recentlyCreated = new Queue<Post>();
-        topCommented = new List<Post>();
+    }
+    public IQueryable<Post> GetMostRecentRecords(int count)
+    {
+        return context.Posts
+            .OrderByDescending(x => x.Id)
+            .Take(count);
     }
     public Post Create(Post post)
-    {
-        recentlyCreated.Enqueue(post);
-        if(recentlyCreated.Count > 10)
-        {
-            recentlyCreated.Dequeue();
-        }
-        
+    {   
         context.Posts.Add(post);
-        context.SaveChanges();
 
+        context.SaveChanges();
+        
         return post;
     }
     public IList<Post> GetAll()
     {
         return GetPosts().ToList();
+    }
+    private IQueryable<Post> GetPosts()
+    {
+        return context.Posts;
     }
     Post GetById(int id)
     {
@@ -38,26 +39,25 @@ public class PostRepository : IPostRepository
 
         return post ?? throw new EntityNotFoundException($"Post with id {id} not found.");
     }
-    public Post Update(Post post, int id)
+
+    //public Post Update(Post post, int id)
+    //{
+    //    var postToUpdate = GetById(id);
+
+    //    postToUpdate.Title = post.Title;
+    //    postToUpdate.Content = post.Content;
+
+    //    context.Update(postToUpdate);
+    //    context.SaveChanges();
+
+    //    return postToUpdate;
+    //}
+
+    public bool Delete(int id)
     {
-        var postToUpdate = GetById(id);
-
-        postToUpdate.User = post.User;
-        postToUpdate.Title = post.Title;
-        postToUpdate.Content = post.Content;
-        postToUpdate.Likes = post.Likes;
-
-        context.Update(postToUpdate);
-        context.SaveChanges();
-
-        return postToUpdate;
-    }
-    public Post Delete(int id)
-    {
-        var postToDelete = context.Users.FirstOrDefault(p => p.Id == id)
+        var postToDelete = context.Posts.FirstOrDefault(p => p.Id == id)
                 ?? throw new EntityNotFoundException($"Post with id {id} not found.");
-        RemoveFromQueue(postToDelete);
-        topCommented.Remove(postToDelete);
+
         context.Posts.Remove(postToDelete);
 
         return context.SaveChanges() > 0;
@@ -74,7 +74,6 @@ public class PostRepository : IPostRepository
 
         postToEdit.Title = editedPost.Title;
         postToEdit.Content = editedPost.Content;
-        postToEdit.Likes = editedPost.Likes;
 
         context.Update(postToEdit);
         context.SaveChanges();
@@ -85,7 +84,6 @@ public class PostRepository : IPostRepository
     {
         var post = FindPostFromUser(user, postId);
         post.Comments.Add(comment);
-        RankingCheck(post);
         return post;
     }
     public Post Like(User user, int postId)
@@ -94,10 +92,13 @@ public class PostRepository : IPostRepository
         ++post.Likes;
 
         return post;
-    }
-    private IQueryable<Post> GetPosts()
+    }    
+    public Post Dislike(User user, int postId)
     {
-        return context.Posts;
+        var post = FindPostFromUser(user, postId);
+        --post.Likes;
+
+        return post;
     }
     private Post FindPostFromUser(User user, int postId)
     {
@@ -106,40 +107,12 @@ public class PostRepository : IPostRepository
         return userPosts.FirstOrDefault(p => p.Id == postId)
                 ?? throw new EntityNotFoundException($"Post with id {postId} not found.");
     }
-    private void RemoveFromQueue(Post elementToRemove)
+    public IEnumerable<Post> GetTopPosts()
     {
-        Queue<Post> temporaryQueue = new Queue<Post>;
-
-        while (recentlyCreated.Count > 0)
-        {
-            if(recentlyCreated.Peek() == elementToRemove)
-            {
-                recentlyCreated.Dequeue();
-                break;
-            }
-            temporaryQueue.Enqueue(recentlyCreated.Dequeue());
-        }
-
-        while(recentlyCreated.Count > 0)
-        {
-            temporaryQueue.Enqueue(recentlyCreated.Dequeue());
-        }
-    }
-    private void RankingCheck(Post postToCheck)
-    {
-        if (topCommented.Count == 10)
-        {
-            Post post = topCommented[10];
-            if(postToCheck.Comments > post.Comments)
-            {
-                topCommented.Remove(post);
-                topCommented.Add(postToCheck);
-            }
-        }
-        else
-        {
-            topCommented.Add(postToCheck);
-        }
-        topCommented = topCommented.SortBy(c => c.Comments.Count.ToList());
+        return context.Posts
+            .OrderByDescending(p => p.Comments)
+            .Take(10)
+            .Select(p => new Post { Id = p.Id, Title = p.Title, Comments = p.Comments })
+            .ToList();
     }
 }
