@@ -33,7 +33,7 @@ public class PostRepository : IPostRepository
     {
         return context.Posts;
     }
-    Post GetById(int id)
+    public Post GetById(int id)
     {
         var post = GetPosts().FirstOrDefault(p => p.Id == id);
 

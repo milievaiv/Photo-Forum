@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PhotoForum.Models
 {
-    public abstract class BaseUser : IdentityUser
+    public abstract class BaseUser 
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -12,9 +11,6 @@ namespace PhotoForum.Models
 
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
-
-        [Required]
-        public string Password { get; set; }
 
         [Required]
         [StringLength(32, MinimumLength = 4)]

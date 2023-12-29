@@ -56,27 +56,12 @@ namespace PhotoForum
                 options.EnableSensitiveDataLogging();
             });
 
-            builder.Services.AddIdentity<BaseUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
-
             builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 
             builder.Services.AddScoped<IUsersService, UsersService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
 
             var app = builder.Build();
-
-            var roleManager = app.Services.GetRequiredService<RoleManager<IdentityRole>>();
-            var userManager = app.Services.GetRequiredService<UserManager<BaseUser>>();
-
-            string roleName = "Admin";
-            var roleExists = roleManager.RoleExistsAsync(roleName).Result;
-
-            if (!roleExists)
-            {
-                roleManager.CreateAsync(new IdentityRole(roleName)).Wait();
-            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -96,21 +81,5 @@ namespace PhotoForum
             app.Run();
         }
 
-        //public async Task CreateAdminUser(UserManager<BaseUser> userManager)
-        //{
-        //    var adminUser = new ApplicationUser
-        //    {
-        //        UserName = "admin@example.com",
-        //        Email = "admin@example.com",
-        //        // other properties...
-        //    };
-
-        //    var result = await userManager.CreateAsync(adminUser, "AdminPassword123!");
-
-        //    if (result.Succeeded)
-        //    {
-        //        await userManager.AddToRoleAsync(adminUser, "Admin");
-        //    }
-        //}
     }
 }

@@ -5,6 +5,8 @@ using PhotoForum.Models;
 using PhotoForum.Repositories;
 using PhotoForum.Data;
 using PhotoForum.Repositories.Contracts;
+using Microsoft.AspNetCore.Authorization;
+using PhotoForum.Services;
 
 namespace PhotoForum.Controllers
 {
@@ -32,6 +34,5 @@ namespace PhotoForum.Controllers
 
             return Ok(user);
         }
-
     }
 }
