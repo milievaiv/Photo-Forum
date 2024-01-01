@@ -28,10 +28,6 @@ namespace PhotoForum.Controllers
         [HttpPost("register")]
         public IActionResult Register([FromBody] RegisterModel registerModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             try
             {
                 var user = usersService.RegisterUser(registerModel);

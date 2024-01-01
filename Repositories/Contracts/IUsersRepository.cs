@@ -12,7 +12,7 @@ namespace PhotoForum.Repositories.Contracts
         IList<User> GetAll();
         User Update(int id, User user);
         bool Delete(int id);
-        IList<User> SearchBy(UserQueryParameters searchParameters);
+        IList<User> FilterBy(UserQueryParameters searchParameters);
         bool UserExists(string username);
     }
 }

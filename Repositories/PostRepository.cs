@@ -20,7 +20,6 @@ public class PostRepository : IPostRepository
     public Post Create(Post post)
     {   
         context.Posts.Add(post);
-
         context.SaveChanges();
         
         return post;
@@ -28,10 +27,6 @@ public class PostRepository : IPostRepository
     public IList<Post> GetAll()
     {
         return GetPosts().ToList();
-    }
-    private IQueryable<Post> GetPosts()
-    {
-        return context.Posts;
     }
     public Post GetById(int id)
     {
@@ -80,19 +75,22 @@ public class PostRepository : IPostRepository
 
         return postToEdit;
     }
+
     public Post Comment(User user, int postId, Comment comment)
     {
         var post = FindPostFromUser(user, postId);
         post.Comments.Add(comment);
         return post;
     }
+
     public Post Like(User user, int postId)
     {
         var post = FindPostFromUser(user, postId);
         ++post.Likes;
 
         return post;
-    }    
+    }   
+    
     public Post Dislike(User user, int postId)
     {
         var post = FindPostFromUser(user, postId);
@@ -100,6 +98,12 @@ public class PostRepository : IPostRepository
 
         return post;
     }
+
+    private IQueryable<Post> GetPosts()
+    {
+        return context.Posts;
+    }
+
     private Post FindPostFromUser(User user, int postId)
     {
         var userPosts = user.Posts.ToList();
@@ -107,6 +111,7 @@ public class PostRepository : IPostRepository
         return userPosts.FirstOrDefault(p => p.Id == postId)
                 ?? throw new EntityNotFoundException($"Post with id {postId} not found.");
     }
+
     public IEnumerable<Post> GetTopPosts()
     {
         return context.Posts

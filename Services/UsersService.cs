@@ -85,10 +85,14 @@ namespace PhotoForum.Services
         {
             return this.usersRepository.GetById(id);
         }
-
-        public IList<User> FilterBy()
+        public User GetUserByUsername(string username)
         {
-            throw new NotImplementedException();
+            return this.usersRepository.GetUserByUsername(username);
+        }
+
+        public IList<User> FilterBy(UserQueryParameters filterParameters)
+        {
+            return this.usersRepository.FilterBy(filterParameters);
         }       
 
         public User Create(User user)
@@ -115,5 +119,7 @@ namespace PhotoForum.Services
                 throw new DuplicateEntityException("This email is already taken.");
             }
         }
+
+        
     }
 }

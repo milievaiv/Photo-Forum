@@ -43,12 +43,12 @@ namespace PhotoForum.Repositories
             return user ?? throw new EntityNotFoundException($"User with id={id} doesn't exist.");
         }
 
-        public IList<User> SearchBy(UserQueryParameters searchParameters)
+        public IList<User> FilterBy(UserQueryParameters filterParameters)
         {
             IQueryable<User> result = GetUsers();
-            result = SearchByUsername(result, searchParameters.Username);
-            result = SearchByEmail(result, searchParameters.Email);
-            result = SearchByFirstName(result, searchParameters.FirstName);
+            result = FilterByUsername(result, filterParameters.Username);
+            result = FilterByEmail(result, filterParameters.Email);
+            result = FilterByFirstName(result, filterParameters.FirstName);
 
             return result.ToList();
         }
@@ -90,7 +90,7 @@ namespace PhotoForum.Repositories
             return context.RegularUsers;
         }
 
-        private static IQueryable<User> SearchByUsername(IQueryable<User> users, string username)
+        private static IQueryable<User> FilterByUsername(IQueryable<User> users, string username)
         {
             if (!string.IsNullOrEmpty(username))
             {
@@ -102,7 +102,7 @@ namespace PhotoForum.Repositories
             }
         }
 
-        private static IQueryable<User> SearchByEmail(IQueryable<User> users, string email)
+        private static IQueryable<User> FilterByEmail(IQueryable<User> users, string email)
         {
             if (!string.IsNullOrEmpty(email))
             {
@@ -114,7 +114,7 @@ namespace PhotoForum.Repositories
             }
         }
 
-        private static IQueryable<User> SearchByFirstName(IQueryable<User> users, string firstName)
+        private static IQueryable<User> FilterByFirstName(IQueryable<User> users, string firstName)
         {
             if (!string.IsNullOrEmpty(firstName))
             {
