@@ -15,11 +15,12 @@ namespace PhotoForum.Services
             this.configuration = configuration;
         }
 
-        public string CreateToken(User user)
+        public string CreateToken(BaseUser user, string role)
         {
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Username)
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, role), // Include the role claim
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(

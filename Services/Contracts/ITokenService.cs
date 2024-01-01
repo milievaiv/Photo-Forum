@@ -4,6 +4,6 @@ namespace PhotoForum.Services.Contracts
 {
     public interface ITokenService
     {
-        string CreateToken(User user);
+        string CreateToken(BaseUser user, string role);
     }
 }

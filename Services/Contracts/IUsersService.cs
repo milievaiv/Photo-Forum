@@ -13,6 +13,6 @@ namespace PhotoForum.Services.Contracts
         User Update(int id, User user);
         bool Delete(int id);
         User RegisterUser(RegisterModel registerModel);
-        User AuthenticateUser(LoginModel loginModel);
+        //User AuthenticateUser(LoginModel loginModel);
     }
 }

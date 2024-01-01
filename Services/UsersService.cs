@@ -20,6 +20,7 @@ namespace PhotoForum.Services
         public User RegisterUser(RegisterModel registerModel)
         {
             var existingUser = usersRepository.UserExists(registerModel.Username);
+
             if (existingUser)
             {
                 throw new DuplicateEntityException("User already exists!");
@@ -42,30 +43,6 @@ namespace PhotoForum.Services
             usersRepository.Create(user);
 
             return user;
-        }
-
-        public User AuthenticateUser(LoginModel loginModel)
-        {
-            var user = usersRepository.GetUserByUsername(loginModel.Username);
-            if (user == null)
-            {
-                throw new UnauthorizedOperationException("Invalid username!");
-            }
-            if (!VerifyPasswordHash(loginModel.Password, user.PasswordHash, user.PasswordSalt))
-            {
-                throw new UnauthorizedOperationException("Invalid password!");
-            }
-
-            return user; // Authentication successful
-        }
-
-        private bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
-        {
-            using (var hmac = new HMACSHA512(storedSalt))
-            {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return computedHash.SequenceEqual(storedHash);
-            }
         }
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)

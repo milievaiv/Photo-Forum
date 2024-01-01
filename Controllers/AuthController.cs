@@ -18,11 +18,13 @@ namespace PhotoForum.Controllers
     {
         private readonly IUsersService usersService;
         private readonly ITokenService tokenService;
+        private readonly IVerificationService verificationService;
 
-        public AuthController(ITokenService tokenService, IUsersService usersService)
+        public AuthController(ITokenService tokenService, IUsersService usersService, IVerificationService verificationService)
         {
             this.tokenService = tokenService;
             this.usersService = usersService;
+            this.verificationService = verificationService;
         }
 
         [HttpPost("register")]
@@ -45,8 +47,9 @@ namespace PhotoForum.Controllers
         {
             try
             {
-                var user = usersService.AuthenticateUser(loginModel);
-                string token = tokenService.CreateToken(user);
+                var user = verificationService.AuthenticateUser(loginModel);
+                string role = DetermineUserRole(user); // Implement this method to determine the role
+                string token = tokenService.CreateToken(user, role);
                 return Ok(token);
             }
             catch (UnauthorizedOperationException)
@@ -60,26 +63,19 @@ namespace PhotoForum.Controllers
             
         }
 
-    //    private string CreateToken(User user)
-    //    {
-    //        List<Claim> claims = new List<Claim>
-    //        {
-    //            new Claim(ClaimTypes.Name, user.Username)
-    //        };
-
-    //        var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-    //            configuration.GetSection("JwtConfig:Secret").Value));
-
-    //        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-    //        var token = new JwtSecurityToken(
-    //            claims: claims,
-    //            expires: DateTime.Now.AddHours(1),
-    //            signingCredentials: credentials);
-
-    //        var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
-    //        return jwt;
-    //    }
+        private string DetermineUserRole(BaseUser user)
+        {
+            // Implement logic to determine the role of the user (e.g., "user" or "admin")
+            // You might use user.GetType() or any other criteria depending on your application
+            if (user is Admin)
+            {
+                return "admin";
+            }
+            else
+            {
+                return "user";
+            }
+        }
+       
     }
 }
