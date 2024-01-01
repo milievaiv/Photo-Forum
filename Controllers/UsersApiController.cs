@@ -19,7 +19,7 @@ namespace PhotoForum.Controllers
         //GET: api/users
         [HttpGet("")]
         [Authorize]
-        public IActionResult GetBeers()
+        public IActionResult GetUsers()
         {
             var users = usersService
                 .GetAll()

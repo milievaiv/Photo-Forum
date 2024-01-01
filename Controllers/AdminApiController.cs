@@ -7,25 +7,26 @@ using PhotoForum.Data;
 using PhotoForum.Repositories.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using PhotoForum.Services;
+using PhotoForum.Services.Contracts;
 
 namespace PhotoForum.Controllers
 {
-    [Route("api/admin/users")]
+    [Route("api/admins")]
+    [Authorize(Roles = "admin")]
     [ApiController]
     public class AdminApiController : ControllerBase
     {
+        private readonly IUsersService _usersService;
 
-        private readonly UsersRepository usersRepository;
-
-        public AdminApiController(UsersRepository _usersRepository)
+        public AdminApiController(IUsersService usersService)
         {
-            usersRepository = _usersRepository;
+            _usersService = usersService;
         }
 
         [HttpGet("{id}")]
         public ActionResult<UserDto> GetUserById(int id)
         {
-            var user = usersRepository.GetById(id);
+            var user = _usersService.GetById(id);
 
             if (user == null)
             {

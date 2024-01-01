@@ -6,7 +6,7 @@ namespace PhotoForum.Repositories.Contracts
     {
         User Create(User user);
         User GetById(int id);
-        User GetUserByUsername(string username);
+        BaseUser GetUserByUsername(string username);
         User GetUserByEmail(string email);
         User GetUserByFirstName(string firstName);
         IList<User> GetAll();

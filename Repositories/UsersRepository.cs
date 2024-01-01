@@ -52,8 +52,12 @@ namespace PhotoForum.Repositories
 
             return result.ToList();
         }
-        public User GetUserByUsername(string username)
+        public BaseUser GetUserByUsername(string username)
         {
+            var admin = GetAdmins().FirstOrDefault(u => u.Username == username);
+
+            if (admin != null) return admin;
+
             var user = GetUsers().FirstOrDefault(u => u.Username == username);
 
             return user ?? throw new EntityNotFoundException($"User with username: {username} doesn't exist.");
@@ -88,6 +92,11 @@ namespace PhotoForum.Repositories
         private IQueryable<User> GetUsers()
         {
             return context.RegularUsers;
+        }
+
+        private IQueryable<Admin> GetAdmins()
+        {
+            return context.Admins;
         }
 
         private static IQueryable<User> SearchByUsername(IQueryable<User> users, string username)
