@@ -1,6 +1,7 @@
 ﻿using PhotoForum.Data;
 using PhotoForum.Exceptions;
 using PhotoForum.Models;
+using PhotoForum.Models.Contracts;
 using PhotoForum.Repositories.Contracts;
 
 namespace PhotoForum.Repositories
@@ -52,12 +53,13 @@ namespace PhotoForum.Repositories
 
             return result.ToList();
         }
-        public BaseUser GetUserByUsername(string username)
+        public Admin GetAdminByUsername(string username)
         {
             var admin = GetAdmins().FirstOrDefault(u => u.Username == username);
-
-            if (admin != null) return admin;
-
+            return admin;
+        }
+        public User GetUserByUsername(string username)
+        {
             var user = GetUsers().FirstOrDefault(u => u.Username == username);
 
             return user ?? throw new EntityNotFoundException($"User with username: {username} doesn't exist.");
@@ -98,8 +100,7 @@ namespace PhotoForum.Repositories
         {
             return context.Admins;
         }
-
-        private static IQueryable<User> SearchByUsername(IQueryable<User> users, string username)
+        
         private static IQueryable<User> FilterByUsername(IQueryable<User> users, string username)
         {
             if (!string.IsNullOrEmpty(username))

@@ -10,6 +10,8 @@ using PhotoForum.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using PhotoForum.Helpers.Contracts;
+using PhotoForum.Helpers;
 
 namespace PhotoForum
 {
@@ -50,17 +52,22 @@ namespace PhotoForum
              
             builder.Services.AddDbContext<PhotoForumContext>(options =>
             {
-                string connectionString = @"Data Source=127.0.0.1,1433;Initial Catalog=PhotoForum;User Id=sqlserver;Password=D?3F&>#(}HAmCOi%;";
+                string connectionString = @"Data Source=127.0.0.1,1435;Initial Catalog=PhotoForum;User Id=sqlserver;Password=D?3F&>#(}HAmCOi%;";
                 //string connectionString = "Server=localhost;Database=Demo;Trusted_Connection=True;";
                 options.UseSqlServer(connectionString, b => b.MigrationsAssembly(typeof(PhotoForum.Data.PhotoForumContext).Assembly.FullName));
                 options.EnableSensitiveDataLogging();
             });
 
             builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+            builder.Services.AddScoped<IPostRepository, PostRepository>();
 
             builder.Services.AddScoped<IUsersService, UsersService>();
+            builder.Services.AddScoped<IPostService, PostService>();
+
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IVerificationService, VerificationService>();
+
+            builder.Services.AddScoped<IModelMapper, ModelMapper>();
 
             var app = builder.Build();
 

@@ -18,6 +18,8 @@ namespace PhotoForum.Services
         }
         public BaseUser AuthenticateUser(LoginModel loginModel)
         {
+            var admin = _usersRepository.GetAdminByUsername(loginModel.Username);
+            if (admin != null) return admin;
             var user = _usersRepository.GetUserByUsername(loginModel.Username);
             if (user == null)
             {

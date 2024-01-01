@@ -1,5 +1,6 @@
 ﻿using PhotoForum.Exceptions;
 using PhotoForum.Models;
+using PhotoForum.Models.Contracts;
 using PhotoForum.Models.DTOs;
 using PhotoForum.Repositories;
 using PhotoForum.Repositories.Contracts;
@@ -62,6 +63,11 @@ namespace PhotoForum.Services
         {
             return this.usersRepository.GetById(id);
         }
+        public Admin GetAdminByUsername(string username)
+        {
+            return this.usersRepository.GetAdminByUsername(username);
+        }
+
         public User GetUserByUsername(string username)
         {
             return this.usersRepository.GetUserByUsername(username);

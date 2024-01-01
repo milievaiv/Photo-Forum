@@ -1,4 +1,5 @@
 ﻿using PhotoForum.Models;
+using PhotoForum.Models.Contracts;
 
 namespace PhotoForum.Repositories.Contracts
 {
@@ -6,7 +7,8 @@ namespace PhotoForum.Repositories.Contracts
     {
         User Create(User user);
         User GetById(int id);
-        BaseUser GetUserByUsername(string username);
+        Admin GetAdminByUsername(string username);
+        User GetUserByUsername(string username);
         User GetUserByEmail(string email);
         User GetUserByFirstName(string firstName);
         IList<User> GetAll();

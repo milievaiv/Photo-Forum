@@ -1,4 +1,5 @@
 ﻿using PhotoForum.Models;
+using PhotoForum.Models.Contracts;
 using PhotoForum.Models.DTOs;
 
 namespace PhotoForum.Services.Contracts
@@ -8,6 +9,7 @@ namespace PhotoForum.Services.Contracts
         IList<User> GetAll();
         IList<User> FilterBy(UserQueryParameters filterParameters);
         User GetById(int id);
+        Admin GetAdminByUsername(string username);
         User GetUserByUsername(string username);
         User Create(User user);
         User Update(int id, User user);

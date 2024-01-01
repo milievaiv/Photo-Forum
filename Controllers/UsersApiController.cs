@@ -7,6 +7,7 @@ using PhotoForum.Models;
 using PhotoForum.Models.DTOs;
 using PhotoForum.Services;
 using PhotoForum.Services.Contracts;
+using System.Security.Claims;
 
 namespace PhotoForum.Controllers
 {
@@ -46,10 +47,13 @@ namespace PhotoForum.Controllers
         [HttpPost("posts")]
         public IActionResult CreatePost([FromBody] PostDTO dto)
         {
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            
             Post post = modelMapper.Map(dto);
 
             Post createdPost = postService.Create(post);
             PostResponseDto createdPostDto = modelMapper.Map(createdPost);
+           
 
             return StatusCode(StatusCodes.Status201Created, createdPostDto);
         }
