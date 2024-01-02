@@ -1,4 +1,6 @@
-﻿using PhotoForum.Exceptions;
+﻿using Microsoft.AspNetCore.Identity;
+using PhotoForum.Exceptions;
+using PhotoForum.Helpers;
 using PhotoForum.Models;
 using PhotoForum.Models.Contracts;
 using PhotoForum.Models.DTOs;
@@ -12,49 +14,24 @@ namespace PhotoForum.Services
     public class UsersService : IUsersService
     {
         private readonly IUsersRepository usersRepository;
+        private readonly IRegistrationService registrationService;
 
-        public UsersService(IUsersRepository usersRepository)
+        public UsersService(IUsersRepository usersRepository, IRegistrationService registrationService)
         {
             this.usersRepository = usersRepository;
+            this.registrationService = registrationService;
         }
-
-        public User RegisterUser(RegisterModel registerModel)
+        public User Register(RegisterModel registerModel)
         {
-            var existingUser = usersRepository.UserExists(registerModel.Username);
+            var dto = registrationService.Register(registerModel);
 
-            if (existingUser)
-            {
-                throw new DuplicateEntityException("User already exists!");
-            }
+            var user = new User();
+            user.MapFrom(registerModel, dto);
 
-            CreatePasswordHash(registerModel.Password, out byte[] passwordHash, out byte[] passwordSalt);
-
-            var user = new User
-            {
-                Username = registerModel.Username,
-                PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt,
-                Email = registerModel.Email,
-                FirstName = registerModel.FirstName,
-                LastName = registerModel.LastName,
-                IsBlocked = false,
-                IsDeleted = false
-            };
-
-            usersRepository.Create(user);
+            usersRepository.CreateUser(user);
 
             return user;
         }
-
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using (var hmac = new HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
-        }
-
         public bool Block(string username)
         {
             return this.usersRepository.Block(username);
@@ -100,11 +77,6 @@ namespace PhotoForum.Services
         {
             return this.usersRepository.FilterBy(filterParameters);
         }       
-
-        public User Create(User user)
-        {
-            return this.usersRepository.Create(user);
-        }
 
         public User Update(int id, User user)
         {

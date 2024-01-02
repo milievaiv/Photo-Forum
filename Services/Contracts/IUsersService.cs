@@ -13,10 +13,10 @@ namespace PhotoForum.Services.Contracts
         User GetUserByUsername(string username);
         User GetUserByFirstName(string firstName);
         User GetUserByEmail(string email);
-        User Create(User user);
+        //User Create(User user);
         User Update(int id, User user);
         bool Delete(int id);
-        User RegisterUser(RegisterModel registerModel);
+        User Register(RegisterModel registerModel);
         bool Block(string username);
         bool Unblock(string username);
         bool UpgradeToAdmin(string username, string phoneNumber);

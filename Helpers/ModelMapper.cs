@@ -1,5 +1,6 @@
 ﻿using PhotoForum.Helpers.Contracts;
 using PhotoForum.Models;
+using PhotoForum.Models.Contracts;
 using PhotoForum.Models.DTOs;
 
 namespace PhotoForum.Helpers

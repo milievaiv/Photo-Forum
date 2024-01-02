@@ -5,7 +5,8 @@ namespace PhotoForum.Repositories.Contracts
 {
     public interface IUsersRepository
     {
-        User Create(User user);
+        Admin CreateAdmin(Admin user);
+        User CreateUser(User user);
         User GetById(int id);
         Admin GetAdminByUsername(string username);
         User GetUserByUsername(string username);

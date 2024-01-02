@@ -31,8 +31,8 @@ namespace PhotoForum.Controllers
         {
             try
             {
-                var user = usersService.RegisterUser(registerModel);
-                return StatusCode(StatusCodes.Status201Created);
+                var user = usersService.Register(registerModel);
+                return Ok(user);
             }
             catch (DuplicateEntityException)
             {
