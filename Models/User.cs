@@ -5,10 +5,6 @@ namespace PhotoForum.Models
     public class User : BaseUser
     {
         [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [Required]
         public bool IsBlocked { get; set; }
 
         [Required]

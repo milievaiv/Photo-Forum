@@ -7,5 +7,7 @@ namespace PhotoForum.Helpers.Contracts
     {
         Post Map(PostDTO dto);
         PostResponseDto Map(Post postModel);
+
+        //PostCreationDto MapPCD(Post postModel);
     }
 }

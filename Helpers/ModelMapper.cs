@@ -22,8 +22,17 @@ namespace PhotoForum.Helpers
                 Content = postModel.Content,
                 Creator = postModel.User.Username,
                 Likes = postModel.Likes,
-                Comments = postModel.Comments.ToDictionary(r => r.User.Username, r => r.Content)
+                Comments = postModel.Comments?.ToDictionary(r => r.User.Username, r => r.Content) ?? new Dictionary<string, string>()
             };
         }
+
+        //public Admin Map(AdminDTO dto)
+        //{
+        //    return new Admin()
+        //    {
+        //        Id = dto.User.Id,
+
+        //    };
+        //}
     }
 }

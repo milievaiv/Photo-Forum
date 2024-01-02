@@ -55,9 +55,22 @@ namespace PhotoForum.Services
             }
         }
 
-        public IList<User> GetAll()
+        public bool Block(string username)
         {
-           return this.usersRepository.GetAll();
+            return this.usersRepository.Block(username);
+        }        
+        public bool Unblock(string username)
+        {
+            return this.usersRepository.Unblock(username);
+        }
+
+        public bool UpgradeToAdmin(string username, string phoneNumber)
+        {
+            return this.usersRepository.UpgradeToAdmin(username, phoneNumber);
+        }
+        public IList<User> GetUsersL()
+        {
+           return this.usersRepository.GetUsersL();
         }
         public User GetById(int id)
         {
@@ -71,6 +84,16 @@ namespace PhotoForum.Services
         public User GetUserByUsername(string username)
         {
             return this.usersRepository.GetUserByUsername(username);
+        }        
+        
+        public User GetUserByFirstName(string firstName)
+        {
+            return this.usersRepository.GetUserByFirstName(firstName);
+        }   
+        
+        public User GetUserByEmail(string firstName)
+        {
+            return this.usersRepository.GetUserByEmail(firstName);
         }
 
         public IList<User> FilterBy(UserQueryParameters filterParameters)

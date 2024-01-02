@@ -6,15 +6,21 @@ namespace PhotoForum.Services.Contracts
 {
     public interface IUsersService
     {
-        IList<User> GetAll();
+        IList<User> GetUsersL();
         IList<User> FilterBy(UserQueryParameters filterParameters);
         User GetById(int id);
         Admin GetAdminByUsername(string username);
         User GetUserByUsername(string username);
+        User GetUserByFirstName(string firstName);
+        User GetUserByEmail(string email);
         User Create(User user);
         User Update(int id, User user);
         bool Delete(int id);
         User RegisterUser(RegisterModel registerModel);
+        bool Block(string username);
+        bool Unblock(string username);
+        bool UpgradeToAdmin(string username, string phoneNumber);
+
         //User AuthenticateUser(LoginModel loginModel);
     }
 }

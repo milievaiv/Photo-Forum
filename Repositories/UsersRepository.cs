@@ -3,6 +3,8 @@ using PhotoForum.Exceptions;
 using PhotoForum.Models;
 using PhotoForum.Models.Contracts;
 using PhotoForum.Repositories.Contracts;
+using Microsoft.EntityFrameworkCore;
+using System.Data.Entity;
 
 namespace PhotoForum.Repositories
 {
@@ -32,9 +34,39 @@ namespace PhotoForum.Repositories
             return context.SaveChanges() > 0;
         }
 
-        public IList<User> GetAll()
+        public bool Block(string username)
         {
-            return GetUsers().ToList();
+            var userToBlock = context.RegularUsers.FirstOrDefault(user => user.Username == username)
+                ?? throw new EntityNotFoundException($"User with username {username} not found.");
+            userToBlock.IsBlocked = true;
+
+            return context.SaveChanges() > 0;
+        }
+
+        public bool Unblock(string username)
+        {
+            var userToUnblock = context.RegularUsers.FirstOrDefault(user => user.Username == username)
+                ?? throw new EntityNotFoundException($"User with username {username} not found.");
+            userToUnblock.IsBlocked = false;
+
+            return context.SaveChanges() > 0;
+        }
+
+        public bool UpgradeToAdmin(string username, string phoneNumber)
+        {
+            var userToUpgrade = GetBaseUserByUsername(username);
+
+            Delete(userToUpgrade.Id);
+
+            var admin = new Admin
+            {
+                Id = userToUpgrade.Id,
+                PhoneNumber = phoneNumber,
+            };
+
+            context.Admins.Add(admin);
+
+            return context.SaveChanges() > 0;
         }
 
         public User GetById(int id)
@@ -52,6 +84,11 @@ namespace PhotoForum.Repositories
             result = FilterByFirstName(result, filterParameters.FirstName);
 
             return result.ToList();
+        }
+        public BaseUser GetBaseUserByUsername(string username)
+        {
+            var baseuser = GetAll().FirstOrDefault(u => u.Username == username);
+            return baseuser;
         }
         public Admin GetAdminByUsername(string username)
         {
@@ -95,7 +132,14 @@ namespace PhotoForum.Repositories
         {
             return context.RegularUsers;
         }
-
+        public IList<User> GetUsersL()
+        {
+            return GetUsers().ToList();
+        }
+        private IQueryable<BaseUser> GetAll()
+        {
+            return context.BaseUsers;
+        }
         private IQueryable<Admin> GetAdmins()
         {
             return context.Admins;

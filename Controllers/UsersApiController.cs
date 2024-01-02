@@ -27,7 +27,7 @@ namespace PhotoForum.Controllers
         }
 
         // GET: api/user/posts/id
-        [HttpGet("posts/{id}")]
+        [HttpGet("posts/{id}")] 
         public IActionResult GetPost(int id)
         {
             try
@@ -47,13 +47,18 @@ namespace PhotoForum.Controllers
         [HttpPost("posts")]
         public IActionResult CreatePost([FromBody] PostDTO dto)
         {
-            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            User user = usersService.GetUserByUsername(User.FindFirst(ClaimTypes.Name)?.Value);
+
+            if (user.IsBlocked == true) return Forbid();
             
             Post post = modelMapper.Map(dto);
 
+            post.User = user;
+
             Post createdPost = postService.Create(post);
+
             PostResponseDto createdPostDto = modelMapper.Map(createdPost);
-           
+            //PostCreationDto createdPostDto = modelMapper.MapPCD(createdPost);
 
             return StatusCode(StatusCodes.Status201Created, createdPostDto);
         }

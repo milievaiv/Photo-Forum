@@ -52,7 +52,7 @@ namespace PhotoForum
              
             builder.Services.AddDbContext<PhotoForumContext>(options =>
             {
-                string connectionString = @"Data Source=127.0.0.1,1435;Initial Catalog=PhotoForum;User Id=sqlserver;Password=D?3F&>#(}HAmCOi%;";
+                string connectionString = @"Data Source=127.0.0.1,1433;Initial Catalog=PhotoForum;User Id=sqlserver;Password=D?3F&>#(}HAmCOi%;";
                 //string connectionString = "Server=localhost;Database=Demo;Trusted_Connection=True;";
                 options.UseSqlServer(connectionString, b => b.MigrationsAssembly(typeof(PhotoForum.Data.PhotoForumContext).Assembly.FullName));
                 options.EnableSensitiveDataLogging();
@@ -68,6 +68,14 @@ namespace PhotoForum
             builder.Services.AddScoped<IVerificationService, VerificationService>();
 
             builder.Services.AddScoped<IModelMapper, ModelMapper>();
+
+            builder.Services.AddSwaggerGen(c =>
+            {
+                // Register ConflictingActionsResolver to handle conflicts
+                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+
+                // Your other Swagger configurations...
+            });
 
             var app = builder.Build();
 

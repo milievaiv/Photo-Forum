@@ -11,10 +11,14 @@ namespace PhotoForum.Repositories.Contracts
         User GetUserByUsername(string username);
         User GetUserByEmail(string email);
         User GetUserByFirstName(string firstName);
-        IList<User> GetAll();
+        IList<User> GetUsersL();
         User Update(int id, User user);
         bool Delete(int id);
         IList<User> FilterBy(UserQueryParameters searchParameters);
         bool UserExists(string username);
+        bool Block(string username);
+        bool Unblock(string username);
+        bool UpgradeToAdmin(string username, string phoneNumber);
+
     }
 }
