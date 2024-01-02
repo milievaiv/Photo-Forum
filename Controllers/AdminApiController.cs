@@ -8,6 +8,7 @@ using PhotoForum.Repositories.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using PhotoForum.Services;
 using PhotoForum.Services.Contracts;
+using PhotoForum.Exceptions;
 
 namespace PhotoForum.Controllers
 {
@@ -17,10 +18,27 @@ namespace PhotoForum.Controllers
     public class AdminApiController : ControllerBase
     {
         private readonly IUsersService _usersService;
+        private readonly IAdminsService _adminService;
 
-        public AdminApiController(IUsersService usersService)
+        public AdminApiController(IUsersService usersService, IAdminsService adminService)
         {
             _usersService = usersService;
+            _adminService = adminService;
+        }
+
+        [HttpPost("register")]
+        public IActionResult RegisterAdmin([FromBody] RegisterAdminModel registerModel)
+        {
+            try
+            {
+                var user = _adminService.Register(registerModel);
+                return Ok(user);
+            }
+            catch (DuplicateEntityException)
+            {
+
+                return Conflict("That username is taken.Try another.");
+            }
         }
 
         [HttpGet("user/username")]

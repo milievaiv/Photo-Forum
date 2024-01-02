@@ -17,12 +17,20 @@ namespace PhotoForum.Repositories
             this.context = context;
         }
 
-        public User Create(User user)
+        public User CreateUser(User user)
         {
             context.RegularUsers.Add(user);
             context.SaveChanges();
 
             return user;
+        }
+
+        public Admin CreateAdmin(Admin admin)
+        {
+            context.Admins.Add(admin);
+            context.SaveChanges();
+
+            return admin;
         }
 
         public bool Delete(int id)
@@ -182,7 +190,7 @@ namespace PhotoForum.Repositories
         }
         public bool UserExists(string username)
         {
-            return context.RegularUsers.Any(user => user.Username == username);
+            return context.BaseUsers.Any(user => user.Username == username);
         }
     }
 }

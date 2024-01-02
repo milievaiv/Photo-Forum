@@ -32,7 +32,7 @@ namespace PhotoForum.Controllers
         {
             try
             {
-                var user = usersService.RegisterUser(registerModel);
+                var user = usersService.Register(registerModel);
                 return Ok(user);
             }
             catch (DuplicateEntityException)

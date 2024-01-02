@@ -62,8 +62,10 @@ namespace PhotoForum
             builder.Services.AddScoped<IPostRepository, PostRepository>();
 
             builder.Services.AddScoped<IUsersService, UsersService>();
+            builder.Services.AddScoped<IAdminsService, AdminsService>();
             builder.Services.AddScoped<IPostService, PostService>();
 
+            builder.Services.AddScoped<IRegistrationService, RegistrationService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IVerificationService, VerificationService>();
 
