@@ -7,7 +7,7 @@ namespace PhotoForum.Models.DTOs
         public string Title { get; set; }
         public string Content { get; set; }
         public string Creator { get; set; }
-        public Dictionary<string, string> Comments { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, List<string>> Comments { get; set; } = new Dictionary<string, List<string>>();
         public int Likes { get; set; } 
     }
 }

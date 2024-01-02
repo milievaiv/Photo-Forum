@@ -2,6 +2,7 @@
 using PhotoForum.Exceptions;
 using PhotoForum.Models;
 using PhotoForum.Repositories.Contracts;
+using Microsoft.EntityFrameworkCore;
 
 public class PostRepository : IPostRepository
 {
@@ -20,6 +21,7 @@ public class PostRepository : IPostRepository
     public Post Create(Post post)
     {   
         context.Posts.Add(post);
+        post.User.Posts.Add(post);
         context.SaveChanges();
         
         return post;
@@ -76,11 +78,14 @@ public class PostRepository : IPostRepository
         return postToEdit;
     }
 
-    public Post Comment(User user, int postId, Comment comment)
+    public Comment Comment(User user, int postId, Comment comment)
     {
-        var post = FindPostFromUser(user, postId);
+        var post = GetById(postId);
+        comment.User = user;
         post.Comments.Add(comment);
-        return post;
+        context.SaveChanges();
+
+        return comment;
     }
 
     public Post Like(User user, int postId)
@@ -101,14 +106,12 @@ public class PostRepository : IPostRepository
 
     private IQueryable<Post> GetPosts()
     {
-        return context.Posts;
+        return context.Posts.Include(p => p.Comments);   
     }
 
     private Post FindPostFromUser(User user, int postId)
     {
-        var userPosts = user.Posts.ToList();
-
-        return userPosts.FirstOrDefault(p => p.Id == postId)
+        return user.Posts.FirstOrDefault(p => p.Id == postId)
                 ?? throw new EntityNotFoundException($"Post with id {postId} not found.");
     }
 

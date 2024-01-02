@@ -12,6 +12,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using PhotoForum.Helpers.Contracts;
 using PhotoForum.Helpers;
+using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace PhotoForum
 {
@@ -24,7 +26,11 @@ namespace PhotoForum
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                });
 
             builder.Services.AddAuthentication(options =>
             {
@@ -52,7 +58,7 @@ namespace PhotoForum
              
             builder.Services.AddDbContext<PhotoForumContext>(options =>
             {
-                string connectionString = @"Data Source=127.0.0.1,1433;Initial Catalog=PhotoForum;User Id=sqlserver;Password=D?3F&>#(}HAmCOi%;";
+                string connectionString = @"Data Source=127.0.0.1,1435;Initial Catalog=PhotoForum;User Id=sqlserver;Password=D?3F&>#(}HAmCOi%;";
                 //string connectionString = "Server=localhost;Database=Demo;Trusted_Connection=True;";
                 options.UseSqlServer(connectionString, b => b.MigrationsAssembly(typeof(PhotoForum.Data.PhotoForumContext).Assembly.FullName));
                 options.EnableSensitiveDataLogging();

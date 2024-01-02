@@ -5,7 +5,6 @@ using PhotoForum.Models;
 using PhotoForum.Models.DTOs;
 using PhotoForum.Services;
 using PhotoForum.Services.Contracts;
-using System.Data.Entity.Validation;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -33,7 +32,7 @@ namespace PhotoForum.Controllers
             try
             {
                 var user = usersService.RegisterUser(registerModel);
-                return Ok(user);
+                return StatusCode(StatusCodes.Status201Created);
             }
             catch (DuplicateEntityException)
             {

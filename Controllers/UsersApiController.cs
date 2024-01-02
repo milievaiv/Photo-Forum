@@ -13,7 +13,7 @@ namespace PhotoForum.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/user")]
+    [Route("api/users")]
     public class UsersApiController : ControllerBase
     {
         private readonly IUsersService usersService;
@@ -26,14 +26,16 @@ namespace PhotoForum.Controllers
             this.modelMapper = modelMapper;
         }
 
-        // GET: api/user/posts/id
-        [HttpGet("posts/{id}")] 
+        // GET: api/users/posts/id
+        [HttpGet("posts/{id}")]
         public IActionResult GetPost(int id)
         {
             try
             {
+                var username = User.FindFirst(ClaimTypes.Name)?.Value;
+                var user = usersService.GetUserByUsername(username);
                 var post = postService.GetById(id);
-                PostResponseDto postResponseDto = modelMapper.Map(post);
+                PostResponseDto postResponseDto = modelMapper.Map(user,post);
 
                 return Ok(postResponseDto);
             }
@@ -43,50 +45,74 @@ namespace PhotoForum.Controllers
             }            
         }
 
-        // POST: api/user/posts
+        // POST: api/users/posts
         [HttpPost("posts")]
         public IActionResult CreatePost([FromBody] PostDTO dto)
         {
-            User user = usersService.GetUserByUsername(User.FindFirst(ClaimTypes.Name)?.Value);
-
-            if (user.IsBlocked == true) return Forbid();
+            var username = User.FindFirst(ClaimTypes.Name)?.Value;
+            var user = usersService.GetUserByUsername(username);
             
-            Post post = modelMapper.Map(dto);
-
-            post.User = user;
+            Post post = modelMapper.Map(user,dto);
 
             Post createdPost = postService.Create(post);
-
-            PostResponseDto createdPostDto = modelMapper.Map(createdPost);
-            //PostCreationDto createdPostDto = modelMapper.MapPCD(createdPost);
+            PostResponseDto createdPostDto = modelMapper.Map(user,createdPost);
+           
 
             return StatusCode(StatusCodes.Status201Created, createdPostDto);
         }
 
-        // PUT: api/user/posts/id
+        // PUT: api/users/posts/id
         [HttpPut("posts/{id}")]
-        public IActionResult UpdatePost(int id, [FromHeader] string username, [FromBody] PostDTO dto)
+        public IActionResult UpdatePost(int id, [FromBody] PostDTO dto)
         {
 
             try
             {
-                Post post = modelMapper.Map(dto);
-                if (username == post.User.Username)
+                var username = User.FindFirst(ClaimTypes.Name)?.Value; // Get the username from the JWT token
+                var user = usersService.GetUserByUsername(username);
+                Post post = modelMapper.Map(user, dto);
+
+                if (user.Id == post.User.Id)
                 {
-                    var user = usersService.GetUserByUsername(username);
                     Post updatedPost = postService.EditPost(user, id, post);
-                    PostResponseDto postResponseDto = modelMapper.Map(updatedPost);
+                    PostResponseDto postResponseDto = modelMapper.Map(user,updatedPost);
                     return Ok(postResponseDto);
                 }
                 else
                 {
-                    return NotFound();
+                    return NotFound("Invalid operation! You are not the creator of the post!");
                 }
-                
+
             }
             catch (EntityNotFoundException)
             {
-                return NotFound();
+                return NotFound($"Post with id: {id} not found.");
+            }
+        }
+
+        // POST: api/users/posts/id/comments
+        [HttpPost("posts/{id}/comments")]
+        public IActionResult CommentOnPost(int id, [FromBody] CommentCreationDTO dto)
+        {
+            try
+            {
+                if (postService.GetById(id) == null)
+                {
+                    return NotFound($"Post with id: {id} not found.");
+                }
+
+                var username = User.FindFirst(ClaimTypes.Name)?.Value; // Get the username from the JWT token
+                var user = usersService.GetUserByUsername(username);
+                
+                Comment comment = modelMapper.Map(dto);
+                Comment createdComment = postService.Comment(user, id, comment);
+                CommentResponseDTO createdCommentDto = modelMapper.Map(createdComment, user);
+
+                return StatusCode(StatusCodes.Status201Created, createdCommentDto);
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound($"Post with id: {id} not found.");
             }
         }
     }

@@ -6,23 +6,46 @@ namespace PhotoForum.Helpers
 {
     public class ModelMapper : IModelMapper
     {
-        public Post Map(PostDTO dto)
+        public Post Map(User user, PostDTO dto)
         {
             return new Post
             {
                 Title = dto.Title,
-                Content = dto.Content
+                Content = dto.Content,
+                User = user                
             };
         }
-        public PostResponseDto Map(Post postModel)
+        public PostResponseDto Map(User user, Post postModel)
         {
             return new PostResponseDto()
             {
                 Title = postModel.Title,
                 Content = postModel.Content,
-                Creator = postModel.User.Username,
+                Creator = user.Username,
                 Likes = postModel.Likes,
-                Comments = postModel.Comments?.ToDictionary(r => r.User.Username, r => r.Content) ?? new Dictionary<string, string>()
+                Comments = postModel.Comments?
+                    .GroupBy(comment => comment.User.Username)
+                    .ToDictionary(
+                        group => group.Key,
+                        group => group.Select(comment => comment.Content).ToList()
+                    ) ?? new Dictionary<string, List<string>>()
+            };
+        }
+
+        public Comment Map(CommentCreationDTO dto)
+        {
+            return new Comment
+            {
+                Content = dto.Content
+            };
+        }
+
+        public CommentResponseDTO Map(Comment commentModel, User user)
+        {
+            return new CommentResponseDTO()
+            {
+                Creator = user.Username,
+                Content = commentModel.Content
             };
         }
 

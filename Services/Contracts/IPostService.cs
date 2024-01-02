@@ -11,7 +11,7 @@ namespace PhotoForum.Services.Contracts
         bool Delete(int id);
         IList<Post> GetUsersPost(User user);
         Post EditPost(User user, int postId, Post editedPost);
-        Post Comment(User user, int postId, Comment comment);
+        Comment Comment(User user, int postId, Comment comment);
         Post Like(User user, int postId);
     }
 }

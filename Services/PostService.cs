@@ -13,7 +13,7 @@ public class PostService : IPostService
         this.postRepository = postRepository;
 	}
 
-    public Post Comment(User user, int postId, Comment comment)
+    public Comment Comment(User user, int postId, Comment comment)
     {
         return postRepository.Comment(user, postId, comment);
     }

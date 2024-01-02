@@ -10,8 +10,7 @@ namespace PhotoForum.Models
         [Required]
         public bool IsDeleted { get; set; }
 
-        public IList<Post> Posts { get; set; }
-        public IList<Comment> Comments { get; set; }
-        
+        public IList<Post> Posts { get; set; } = new List<Post>();
+        public IList<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

@@ -4,7 +4,6 @@ using PhotoForum.Models;
 using PhotoForum.Models.Contracts;
 using PhotoForum.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
-using System.Data.Entity;
 
 namespace PhotoForum.Repositories
 {
@@ -130,7 +129,8 @@ namespace PhotoForum.Repositories
 
         private IQueryable<User> GetUsers()
         {
-            return context.RegularUsers;
+            return context.RegularUsers;                
+               
         }
         public IList<User> GetUsersL()
         {
