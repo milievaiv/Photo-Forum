@@ -15,7 +15,7 @@ namespace PhotoForum.Models
         public int UserId { get; set; }
 
         //Nav prop
-        public User User { get; set; }
+        public User? User { get; set; }
         public IList<Comment> Comments { get; set; } = new List<Comment>();
         public int Likes { get; set; }
     }

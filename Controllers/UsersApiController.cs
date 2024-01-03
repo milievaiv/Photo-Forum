@@ -107,5 +107,31 @@ namespace PhotoForum.Controllers
                 return NotFound($"Post with id: {id} not found.");
             }
         }
+
+        // DELETE: api/users/posts/id
+        [HttpDelete("posts/{postId}")]
+        public IActionResult DeletePost(int postId)
+        {
+            try
+            {
+                var username = User.FindFirst(ClaimTypes.Name)?.Value; // Get the username from the JWT token
+                var user = usersService.GetUserByUsername(username);
+                var post = postService.GetById(postId);
+                
+                if (post.UserId != user.Id)
+                {
+                    return Conflict("You can only delete your own posts.");
+                }
+                else
+                {
+                    postService.Delete(postId);
+                    return NoContent();
+                }
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound($"Post with id: {postId} not found.");
+            }
+        }
     }
 }
