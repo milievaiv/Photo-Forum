@@ -56,7 +56,7 @@ namespace PhotoForum.Controllers
 
             Post post = modelMapper.Map(user,dto);
 
-            Post createdPost = postService.Create(post);
+            Post createdPost = postService.Create(user,post);
             PostResponseDto createdPostDto = modelMapper.Map(user,createdPost);
            
 
@@ -67,26 +67,18 @@ namespace PhotoForum.Controllers
         [HttpPut("posts/{id}")]
         public IActionResult UpdatePost(int id, [FromBody] PostDTO dto)
         {
-            var username = User.FindFirst(ClaimTypes.Name)?.Value; // Get the username from the JWT token
-            var user = usersService.GetUserByUsername(username);
-
-            ValidationHelper.Blocked(user);
-
             try
             {
                 Post post = modelMapper.Map(user, dto);
-
-                ValidationHelper.Compare(user, post.Creator);
-
+                
                 Post updatedPost = postService.EditPost(user, id, post);
                 PostResponseDto postResponseDto = modelMapper.Map(user, updatedPost);
-
                 return Ok(postResponseDto);
 
             }
             catch (EntityNotFoundException)
             {
-                return NotFound($"Post with id: {id} not found.");
+                return NotFound("Operation failed: The post does not exist, or you are not the creator of the post.");
             }
         }
 

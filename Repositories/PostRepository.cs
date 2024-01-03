@@ -19,9 +19,9 @@ public class PostRepository : IPostRepository
             .OrderByDescending(x => x.Id)
             .Take(count);
     }
-
-    public Post Create(Post post)
+    public Post Create(User user, Post post)
     {
+        post.Creator = user;
         post.Date = DateTime.Now;
         context.Posts.Add(post);
         post.Creator.Posts.Add(post);
@@ -34,31 +34,12 @@ public class PostRepository : IPostRepository
     {
         return GetPosts().ToList();
     }
-
-    private IQueryable<Post> GetPosts()
-    {
-        return context.Posts.Include(p => p.Comments);
-    }
-
     public Post GetById(int id)
     {
         var post = GetPosts().FirstOrDefault(p => p.Id == id);
 
         return post ?? throw new EntityNotFoundException($"Post with id {id} not found.");
     }
-
-    //public Post Update(Post post, int id)
-    //{
-    //    var postToUpdate = GetById(id);
-
-    //    postToUpdate.Title = post.Title;
-    //    postToUpdate.Content = post.Content;
-
-    //    context.Update(postToUpdate);
-    //    context.SaveChanges();
-
-    //    return postToUpdate;
-    //}
 
     public bool Delete(int id)
     {
@@ -95,6 +76,7 @@ public class PostRepository : IPostRepository
         var post = GetById(postId);
         comment.User = user;
         post.Comments.Add(comment);
+        user.Comments.Add(comment);
         context.SaveChanges();
 
         return comment;
@@ -116,18 +98,33 @@ public class PostRepository : IPostRepository
         return post;
     }
 
+    private IQueryable<Post> GetPosts()
+    {
+        return context.Posts
+            .Include(p => p.Comments)
+            .ThenInclude(c => c.User);   
+    }
+
     private Post FindPostFromUser(User user, int postId)
     {
         return user.Posts.FirstOrDefault(p => p.Id == postId)
                 ?? throw new EntityNotFoundException($"Post with id {postId} not found.");
     }
 
-    public IEnumerable<Post> GetTopPosts()
+    public IList<Post> GetTopPosts()
     {
         return context.Posts
-            .OrderByDescending(p => p.Comments)
+            .OrderByDescending(p => p.Comments.Count)
             .Take(10)
             .Select(p => new Post { Id = p.Id, Title = p.Title, Comments = p.Comments })
+            .ToList();
+    }
+    public IList<Post> RecentlyCreated()
+    {
+        return context.Posts
+            .OrderByDescending(p => p.Date)
+            .Take(10)
+            .Select(p => new Post { Id = p.Id, Title = p.Title, Comments = p.Comments, Date = p.Date})
             .ToList();
     }
 }

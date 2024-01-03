@@ -18,9 +18,9 @@ public class PostService : IPostService
         return postRepository.Comment(user, postId, comment);
     }
 
-    public Post Create(Post post)
+    public Post Create(User user, Post post)
     {
-        return postRepository.Create(post);
+        return postRepository.Create(user,post);
     }
 
     public bool Delete(int id)
@@ -51,5 +51,14 @@ public class PostService : IPostService
     public Post Like(User user, int postId)
     {
         return postRepository.Like(user, postId);
+    }
+    public IList<Post> GetTopPosts()
+    {
+        return postRepository.GetTopPosts();
+    }
+
+    public IList<Post> RecentlyCreated()
+    {
+        return postRepository.RecentlyCreated();
     }
 }

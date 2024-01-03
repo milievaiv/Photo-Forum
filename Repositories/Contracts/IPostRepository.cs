@@ -5,7 +5,7 @@ namespace PhotoForum.Repositories.Contracts
 {
     public interface IPostRepository
     {
-        Post Create(Post post);
+        Post Create(User user, Post post);
         IList<Post> GetAll();
         Post GetById(int id);
         bool Delete(int id);
@@ -13,5 +13,7 @@ namespace PhotoForum.Repositories.Contracts
         Post EditPost(User user, int postId, Post editedPost);
         Comment Comment(User user, int postId, Comment comment);
         Post Like(User user, int postId);
+        IList<Post> GetTopPosts();
+        IList<Post> RecentlyCreated();
     }
 }
