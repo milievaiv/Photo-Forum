@@ -20,7 +20,7 @@ namespace PhotoForum.Controllers
         [HttpGet("home")]
         public IActionResult HomePage()
         {
-            int users = usersService.GetUsersL().Count();
+            int users = usersService.GetUsers().Count();
             int posts = postService.GetAll().Count();
             return Ok($"Core features of the platform: ..., \nNumber of users: {users}, \nNumber of posts: {posts}");
         }
@@ -31,10 +31,10 @@ namespace PhotoForum.Controllers
             return Ok(postService.GetTopPosts());
         }
 
-        //[HttpGet("recently-created")]
-        //public IActionResult RecentlyCreated()
-        //{
-
-        //}
+        [HttpGet("recently-created")]
+        public IActionResult RecentlyCreated()
+        {
+            return Ok(postService.RecentlyCreated());
+        }
     }
 }

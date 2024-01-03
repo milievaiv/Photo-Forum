@@ -12,7 +12,10 @@ namespace PhotoForum.Repositories.Contracts
         User GetUserByUsername(string username);
         User GetUserByEmail(string email);
         User GetUserByFirstName(string firstName);
-        IList<User> GetUsersL();
+        IList<User> GetUsers();
+        IList<BaseUser> GetBaseUsers();
+        IList<Admin> GetAdmins();
+        //IList<Post> GetPosts();
         User Update(int id, User user);
         bool Delete(int id);
         IList<User> FilterBy(UserQueryParameters searchParameters);

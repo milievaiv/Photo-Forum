@@ -4,6 +4,7 @@ using PhotoForum.Models;
 using PhotoForum.Models.Contracts;
 using PhotoForum.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
+using PhotoForum.Helpers;
 
 namespace PhotoForum.Repositories
 {
@@ -34,17 +35,21 @@ namespace PhotoForum.Repositories
 
         public bool Delete(int id)
         {
-            var userToDelete = context.RegularUsers.FirstOrDefault(user => user.Id == id)
-                ?? throw new EntityNotFoundException($"User with id {id} not found.");
-            context.RegularUsers.Remove(userToDelete);
+            var userToDelete = context.RegularUsers.FirstOrDefault(user => user.Id == id);
+            ValidationHelper.Exists(userToDelete);
+
+            userToDelete.IsDeleted = true;
 
             return context.SaveChanges() > 0;
         }
 
         public bool Block(string username)
         {
-            var userToBlock = context.RegularUsers.FirstOrDefault(user => user.Username == username)
-                ?? throw new EntityNotFoundException($"User with username {username} not found.");
+            var userToBlock = context.RegularUsers.FirstOrDefault(user => user.Username == username);
+            ValidationHelper.Exists(userToBlock);
+
+            if (userToBlock.IsBlocked == true) throw new InvalidOperationException("User is already blocked.");
+
             userToBlock.IsBlocked = true;
 
             return context.SaveChanges() > 0;
@@ -52,8 +57,11 @@ namespace PhotoForum.Repositories
 
         public bool Unblock(string username)
         {
-            var userToUnblock = context.RegularUsers.FirstOrDefault(user => user.Username == username)
-                ?? throw new EntityNotFoundException($"User with username {username} not found.");
+            var userToUnblock = context.RegularUsers.FirstOrDefault(user => user.Username == username);
+            ValidationHelper.Exists(userToUnblock);
+
+            if (userToUnblock.IsBlocked == false) throw new InvalidOperationException("User is not blocked.");
+
             userToUnblock.IsBlocked = false;
 
             return context.SaveChanges() > 0;
@@ -62,22 +70,24 @@ namespace PhotoForum.Repositories
         public User GetById(int id)
         {
             var user = GetUsers().FirstOrDefault(u => u.Id == id);
+            ValidationHelper.Exists(user);
 
-            return user ?? throw new EntityNotFoundException($"User with id={id} doesn't exist.");
+            return user;
         }
 
         public IList<User> FilterBy(UserQueryParameters filterParameters)
         {
-            IQueryable<User> result = GetUsers();
+            IQueryable<User> result = IQ_GetUsers();
             result = FilterByUsername(result, filterParameters.Username);
             result = FilterByEmail(result, filterParameters.Email);
             result = FilterByFirstName(result, filterParameters.FirstName);
+            result = FilterByLastName(result, filterParameters.LastName);
 
             return result.ToList();
         }
         public BaseUser GetBaseUserByUsername(string username)
         {
-            var baseuser = GetAll().FirstOrDefault(u => u.Username == username);
+            var baseuser = GetBaseUsers().FirstOrDefault(u => u.Username == username);
             return baseuser;
         }
         public Admin GetAdminByUsername(string username)
@@ -88,20 +98,23 @@ namespace PhotoForum.Repositories
         public User GetUserByUsername(string username)
         {
             var user = GetUsers().FirstOrDefault(u => u.Username == username);
+            ValidationHelper.Exists(user);
 
-            return user ?? throw new EntityNotFoundException($"User with username: {username} doesn't exist.");
+            return user;
         }
         public User GetUserByEmail(string email)
         {
             var user = GetUsers().FirstOrDefault(u => u.Email == email);
+            ValidationHelper.Exists(user);
 
-            return user ?? throw new EntityNotFoundException($"User with email: {email} doesn't exist.");
+            return user;
         }
         public User GetUserByFirstName(string firstName)
         {
             var user = GetUsers().FirstOrDefault(u => u.FirstName == firstName);
+            ValidationHelper.Exists(user);
 
-            return user ?? throw new EntityNotFoundException($"User with first name: {firstName} doesn't exist.");
+            return user;
         }
 
         public User Update(int id, User user)
@@ -118,26 +131,46 @@ namespace PhotoForum.Repositories
             return userToUpdate;
         }
 
-        private IQueryable<User> GetUsers()
+        private IQueryable<User> IQ_GetUsers()
         {
             return context.RegularUsers
                 .Include(x => x.Posts)
                 .Include(x => x.Comments);                
                
         }
-        public IList<User> GetUsersL()
+        public IList<User> GetUsers()
         {
-            return GetUsers().ToList();
+            return IQ_GetUsers().ToList();
         }
-        private IQueryable<BaseUser> GetAll()
+
+        //private IQueryable<Post> IQ_GetPosts()
+        //{
+        //    return context.Posts;
+
+        //}
+        //public IList<Post> GetPosts()
+        //{
+        //    return IQ_GetPosts().ToList();
+        //}
+
+        private IQueryable<BaseUser> IQ_GetBaseUsers()
         {
             return context.BaseUsers;
         }
-        private IQueryable<Admin> GetAdmins()
+        public IList<BaseUser> GetBaseUsers()
+        {
+            return IQ_GetBaseUsers().ToList();
+        }
+
+        private IQueryable<Admin> IQ_GetAdmins()
         {
             return context.Admins;
         }
-        
+        public IList<Admin> GetAdmins()
+        {
+            return IQ_GetAdmins().ToList();
+        }
+
         private static IQueryable<User> FilterByUsername(IQueryable<User> users, string username)
         {
             if (!string.IsNullOrEmpty(username))
@@ -173,6 +206,19 @@ namespace PhotoForum.Repositories
                 return users;
             }
         }
+
+        private static IQueryable<User> FilterByLastName(IQueryable<User> users, string lastName)
+        {
+            if (!string.IsNullOrEmpty(lastName))
+            {
+                return users.Where(user => user.FirstName.Contains(lastName));
+            }
+            else
+            {
+                return users;
+            }
+        }
+
         public bool UserExists(string username)
         {
             return context.BaseUsers.Any(user => user.Username == username);

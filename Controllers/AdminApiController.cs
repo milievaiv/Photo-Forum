@@ -112,7 +112,7 @@ namespace PhotoForum.Controllers
 
             try
             {
-                _usersService.Block(username);
+                _adminService.Block(username);
                 return Ok($"User {username} successfully suspended.");
             }
             catch
@@ -132,7 +132,7 @@ namespace PhotoForum.Controllers
 
             try
             {
-                _usersService.Unblock(username);
+                _adminService.Unblock(username);
                 return Ok($"User {username} successfully unsuspended.");
             }
             catch
@@ -141,13 +141,49 @@ namespace PhotoForum.Controllers
             }
         }
 
-        //public IActionResult SearchUsers()
-        //{
-        //    // Implement logic to search users based on the provided parameters
-        //    // ...
+        [HttpGet("users")]
+        public ActionResult<IEnumerable<User>> GetUsers(
+            [FromQuery(Name = "username")] string username,
+            [FromQuery(Name = "email")] string email,
+            [FromQuery(Name = "firstname")] string firstname,
+            [FromQuery(Name = "lastname")] string lastname)
+        {
+            // You can add more parameters as needed for other filters
 
-        //    return Ok("Search results");
-        //}
+            // Perform validation if necessary
+            if (string.IsNullOrEmpty(username) && string.IsNullOrEmpty(email) && string.IsNullOrEmpty(firstname) && string.IsNullOrEmpty(lastname))
+            {
+                return BadRequest("At least one filter parameter is required");
+            }
+
+            try
+            {
+                // Call your service method with the provided filters
+                var user_params = new UserQueryParameters
+                {
+                    Username = username,
+                    FirstName = firstname,
+                    Email = email,
+                    LastName = lastname
+                };
+
+                IEnumerable<User> users = _usersService.FilterBy(user_params);
+
+                // Check if any users match the criteria
+                if (users.Any())
+                {
+                    return Ok(users);
+                }
+                else
+                {
+                    return NotFound("No users found with the specified criteria");
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occurred while processing the request");
+            }
+        }
 
     }
 }
