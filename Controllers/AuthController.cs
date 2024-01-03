@@ -32,7 +32,7 @@ namespace PhotoForum.Controllers
             try
             {
                 var user = usersService.Register(registerModel);
-                return Ok(user);
+                return StatusCode(StatusCodes.Status201Created);
             }
             catch (DuplicateEntityException)
             {
