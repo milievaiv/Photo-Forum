@@ -13,6 +13,7 @@ namespace PhotoForum.Services
     {
         private readonly IRegistrationService registrationService;
         private readonly IUsersRepository usersRepository;
+
         public AdminsService(IUsersRepository usersRepository, IRegistrationService registrationService)
         {
             this.usersRepository = usersRepository;
@@ -29,6 +30,26 @@ namespace PhotoForum.Services
             usersRepository.CreateAdmin(admin);
 
             return admin;
+        }
+
+        public bool Block(string username)
+        {
+            return this.usersRepository.Block(username);
+        }
+
+        public bool Unblock(string username)
+        {
+            return this.usersRepository.Unblock(username);
+        }
+
+        public bool Delete(int id)
+        {
+            return this.usersRepository.Delete(id);
+        }
+
+        public Admin GetAdminByUsername(string username)
+        {
+            return this.usersRepository.GetAdminByUsername(username);
         }
     }
 

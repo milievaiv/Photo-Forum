@@ -12,24 +12,34 @@ public class PostRepository : IPostRepository
     {
         this.context = context;
     }
+
     public IQueryable<Post> GetMostRecentRecords(int count)
     {
         return context.Posts
             .OrderByDescending(x => x.Id)
             .Take(count);
     }
+
     public Post Create(Post post)
-    {   
+    {
+        post.Date = DateTime.Now;
         context.Posts.Add(post);
-        post.User.Posts.Add(post);
+        post.Creator.Posts.Add(post);
         context.SaveChanges();
         
         return post;
     }
+
     public IList<Post> GetAll()
     {
         return GetPosts().ToList();
     }
+
+    private IQueryable<Post> GetPosts()
+    {
+        return context.Posts.Include(p => p.Comments);
+    }
+
     public Post GetById(int id)
     {
         var post = GetPosts().FirstOrDefault(p => p.Id == id);
@@ -59,12 +69,14 @@ public class PostRepository : IPostRepository
 
         return context.SaveChanges() > 0;
     }
+
     public IList<Post> GetUsersPost(User user)
     {
         var userPosts = user.Posts.ToList();
 
         return userPosts;
     }
+
     public Post EditPost(User user, int postId, Post editedPost)
     {
         var postToEdit = FindPostFromUser(user, postId);
@@ -102,11 +114,6 @@ public class PostRepository : IPostRepository
         --post.Likes;
 
         return post;
-    }
-
-    private IQueryable<Post> GetPosts()
-    {
-        return context.Posts.Include(p => p.Comments);   
     }
 
     private Post FindPostFromUser(User user, int postId)

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PhotoForum.Data;
 
@@ -11,9 +12,10 @@ using PhotoForum.Data;
 namespace PhotoForum.Migrations
 {
     [DbContext(typeof(PhotoForumContext))]
-    partial class PhotoForumContextModelSnapshot : ModelSnapshot
+    [Migration("20240103143433_AddDateProperty")]
+    partial class AddDateProperty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,9 +105,6 @@ namespace PhotoForum.Migrations
                         .IsRequired()
                         .HasMaxLength(8192)
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("Likes")
                         .HasColumnType("int");

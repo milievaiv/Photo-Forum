@@ -28,31 +28,19 @@ namespace PhotoForum.Services
             var user = new User();
             user.MapFrom(registerModel, dto);
 
+            EnsureUserUniqueEmail(user);
             usersRepository.CreateUser(user);
 
             return user;
-        }
-        public bool Block(string username)
+        }      
+        public IList<User> GetUsers()
         {
-            return this.usersRepository.Block(username);
-        }        
-        public bool Unblock(string username)
-        {
-            return this.usersRepository.Unblock(username);
-        }
-        public IList<User> GetUsersL()
-        {
-           return this.usersRepository.GetUsersL();
+           return this.usersRepository.GetUsers();
         }
         public User GetById(int id)
         {
             return this.usersRepository.GetById(id);
         }
-        public Admin GetAdminByUsername(string username)
-        {
-            return this.usersRepository.GetAdminByUsername(username);
-        }
-
         public User GetUserByUsername(string username)
         {
             return this.usersRepository.GetUserByUsername(username);
@@ -78,11 +66,6 @@ namespace PhotoForum.Services
             EnsureUserUniqueEmail(user);
             var userToUpdate = usersRepository.Update(id,user);
             return userToUpdate;
-        }
-
-        public bool Delete(int id)
-        {
-            return usersRepository.Delete(id);
         }
 
         private void EnsureUserUniqueEmail(User user)

@@ -13,7 +13,7 @@ namespace PhotoForum.Helpers
             {
                 Title = dto.Title,
                 Content = dto.Content,
-                User = user                
+                Creator = user                
             };
         }
         public PostResponseDto Map(User user, Post postModel)

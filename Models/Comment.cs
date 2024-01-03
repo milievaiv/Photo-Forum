@@ -11,6 +11,7 @@ namespace PhotoForum.Models
         [Required]
         public string Content { get; set; }
         public User? User { get; set; }
+        public DateTime Date { get; set; }
         //public int PostId { get; set; }
     }
 }
