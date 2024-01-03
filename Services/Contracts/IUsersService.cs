@@ -19,8 +19,6 @@ namespace PhotoForum.Services.Contracts
         User Register(RegisterModel registerModel);
         bool Block(string username);
         bool Unblock(string username);
-        bool UpgradeToAdmin(string username, string phoneNumber);
-
         //User AuthenticateUser(LoginModel loginModel);
     }
 }
