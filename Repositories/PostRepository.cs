@@ -21,6 +21,7 @@ public class PostRepository : IPostRepository
     public Post Create(User user, Post post)
     {
         post.User = user;
+        post.Date = DateTime.Now;
         context.Posts.Add(post);
         //post.User.Posts.Add(post);
         //user.Posts.Add(post);
@@ -107,12 +108,20 @@ public class PostRepository : IPostRepository
                 ?? throw new EntityNotFoundException($"Post with id {postId} not found.");
     }
 
-    public IEnumerable<Post> GetTopPosts()
+    public IList<Post> GetTopPosts()
     {
         return context.Posts
-            .OrderByDescending(p => p.Comments)
+            .OrderByDescending(p => p.Comments.Count)
             .Take(10)
             .Select(p => new Post { Id = p.Id, Title = p.Title, Comments = p.Comments })
+            .ToList();
+    }
+    public IList<Post> RecentlyCreated()
+    {
+        return context.Posts
+            .OrderByDescending(p => p.Date)
+            .Take(10)
+            .Select(p => new Post { Id = p.Id, Title = p.Title, Comments = p.Comments, Date = p.Date})
             .ToList();
     }
 }

@@ -31,10 +31,10 @@ namespace PhotoForum.Controllers
             return Ok(postService.GetTopPosts());
         }
 
-        //[HttpGet("recently-created")]
-        //public IActionResult RecentlyCreated()
-        //{
-
-        //}
+        [HttpGet("recently-created")]
+        public IActionResult RecentlyCreated()
+        {
+            return Ok(postService.RecentlyCreated());
+        }
     }
 }

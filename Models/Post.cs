@@ -18,5 +18,6 @@ namespace PhotoForum.Models
         public User User { get; set; }
         public IList<Comment> Comments { get; set; } = new List<Comment>();
         public int Likes { get; set; }
+        public DateTime Date { get; set; }
     }
 }
