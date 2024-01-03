@@ -19,7 +19,5 @@ namespace PhotoForum.Repositories.Contracts
         bool UserExists(string username);
         bool Block(string username);
         bool Unblock(string username);
-        bool UpgradeToAdmin(string username, string phoneNumber);
-
     }
 }

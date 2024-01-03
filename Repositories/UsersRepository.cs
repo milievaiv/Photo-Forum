@@ -59,23 +59,6 @@ namespace PhotoForum.Repositories
             return context.SaveChanges() > 0;
         }
 
-        public bool UpgradeToAdmin(string username, string phoneNumber)
-        {
-            var userToUpgrade = GetBaseUserByUsername(username);
-
-            Delete(userToUpgrade.Id);
-
-            var admin = new Admin
-            {
-                Id = userToUpgrade.Id,
-                PhoneNumber = phoneNumber,
-            };
-
-            context.Admins.Add(admin);
-
-            return context.SaveChanges() > 0;
-        }
-
         public User GetById(int id)
         {
             var user = GetUsers().FirstOrDefault(u => u.Id == id);

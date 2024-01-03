@@ -141,24 +141,6 @@ namespace PhotoForum.Controllers
             }
         }
 
-        [HttpPut("upgrade")]
-        public ActionResult<User> UpgradeUserToAdmin([FromBody] AdminDTO dto)
-        {
-            if (string.IsNullOrEmpty(dto.Username))
-            {
-                return BadRequest("Username cannot be empty");
-            }
-
-            try
-            {
-                _usersService.UpgradeToAdmin(dto.Username, dto.PhoneNumber);
-                return Ok($"User {dto.Username} successfully upgraded to admin.");
-            }
-            catch
-            {
-                return NotFound();
-            }
-        }
         //public IActionResult SearchUsers()
         //{
         //    // Implement logic to search users based on the provided parameters

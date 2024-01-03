@@ -40,11 +40,6 @@ namespace PhotoForum.Services
         {
             return this.usersRepository.Unblock(username);
         }
-
-        public bool UpgradeToAdmin(string username, string phoneNumber)
-        {
-            return this.usersRepository.UpgradeToAdmin(username, phoneNumber);
-        }
         public IList<User> GetUsersL()
         {
            return this.usersRepository.GetUsersL();
