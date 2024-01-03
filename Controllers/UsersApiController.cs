@@ -69,12 +69,14 @@ namespace PhotoForum.Controllers
         {
             try
             {
+                var username = User.FindFirst(ClaimTypes.Name)?.Value;
+                var user = usersService.GetUserByUsername(username);
+
                 Post post = modelMapper.Map(user, dto);
                 
                 Post updatedPost = postService.EditPost(user, id, post);
                 PostResponseDto postResponseDto = modelMapper.Map(user, updatedPost);
                 return Ok(postResponseDto);
-
             }
             catch (EntityNotFoundException)
             {
