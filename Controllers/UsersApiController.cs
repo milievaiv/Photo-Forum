@@ -49,18 +49,26 @@ namespace PhotoForum.Controllers
         [HttpPost("posts")]
         public IActionResult CreatePost([FromBody] PostDTO dto)
         {
-            var username = User.FindFirst(ClaimTypes.Name)?.Value;
-            var user = usersService.GetUserByUsername(username);
+            try
+            {
+                var username = User.FindFirst(ClaimTypes.Name)?.Value;
+                var user = usersService.GetUserByUsername(username);
 
-            ValidationHelper.Blocked(user);
+                ValidationHelper.Blocked(user);
 
-            Post post = modelMapper.Map(user,dto);
+                Post post = modelMapper.Map(user, dto);
 
-            Post createdPost = postService.Create(user,post);
-            PostResponseDto createdPostDto = modelMapper.Map(user,createdPost);
-           
+                Post createdPost = postService.Create(user, post);
+                PostResponseDto createdPostDto = modelMapper.Map(user, createdPost);
 
-            return StatusCode(StatusCodes.Status201Created, createdPostDto);
+
+                return StatusCode(StatusCodes.Status201Created, createdPostDto);
+            }
+            catch (InvalidOperationException)
+            {
+
+                return Conflict("This operation is forbidden");
+            }
         }
 
         // PUT: api/users/posts/id
@@ -108,6 +116,10 @@ namespace PhotoForum.Controllers
             catch (EntityNotFoundException)
             {
                 return NotFound($"Post with id: {id} not found.");
+            }
+            catch (InvalidOperationException)
+            {
+                return Conflict("This operation is forbidden");
             }
         }
 
