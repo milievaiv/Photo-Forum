@@ -18,10 +18,12 @@ public class PostRepository : IPostRepository
             .OrderByDescending(x => x.Id)
             .Take(count);
     }
-    public Post Create(Post post)
-    {   
+    public Post Create(User user, Post post)
+    {
+        post.User = user;
         context.Posts.Add(post);
-        post.User.Posts.Add(post);
+        //post.User.Posts.Add(post);
+        //user.Posts.Add(post);
         context.SaveChanges();
         
         return post;
@@ -36,19 +38,6 @@ public class PostRepository : IPostRepository
 
         return post ?? throw new EntityNotFoundException($"Post with id {id} not found.");
     }
-
-    //public Post Update(Post post, int id)
-    //{
-    //    var postToUpdate = GetById(id);
-
-    //    postToUpdate.Title = post.Title;
-    //    postToUpdate.Content = post.Content;
-
-    //    context.Update(postToUpdate);
-    //    context.SaveChanges();
-
-    //    return postToUpdate;
-    //}
 
     public bool Delete(int id)
     {
@@ -83,6 +72,7 @@ public class PostRepository : IPostRepository
         var post = GetById(postId);
         comment.User = user;
         post.Comments.Add(comment);
+        user.Comments.Add(comment);
         context.SaveChanges();
 
         return comment;
@@ -106,7 +96,9 @@ public class PostRepository : IPostRepository
 
     private IQueryable<Post> GetPosts()
     {
-        return context.Posts.Include(p => p.Comments);   
+        return context.Posts
+            .Include(p => p.Comments)
+            .ThenInclude(c => c.User);   
     }
 
     private Post FindPostFromUser(User user, int postId)

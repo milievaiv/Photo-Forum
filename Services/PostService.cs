@@ -18,9 +18,9 @@ public class PostService : IPostService
         return postRepository.Comment(user, postId, comment);
     }
 
-    public Post Create(Post post)
+    public Post Create(User user, Post post)
     {
-        return postRepository.Create(post);
+        return postRepository.Create(user,post);
     }
 
     public bool Delete(int id)

@@ -137,7 +137,9 @@ namespace PhotoForum.Repositories
 
         private IQueryable<User> GetUsers()
         {
-            return context.RegularUsers;                
+            return context.RegularUsers
+                .Include(x => x.Posts)
+                .Include(x => x.Comments);                
                
         }
         public IList<User> GetUsersL()

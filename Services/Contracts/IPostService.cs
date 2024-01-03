@@ -5,7 +5,7 @@ namespace PhotoForum.Services.Contracts
 {
     public interface IPostService
     {
-        Post Create(Post post);
+        Post Create(User user, Post post);
         IList<Post> GetAll();
         Post GetById(int id);
         bool Delete(int id);
