@@ -52,4 +52,8 @@ public class PostService : IPostService
     {
         return postRepository.Like(user, postId);
     }
+    public IEnumerable<Post> GetTopPosts()
+    {
+        return postRepository.GetTopPosts();
+    }
 }
