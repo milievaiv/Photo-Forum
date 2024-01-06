@@ -18,7 +18,8 @@ namespace PhotoForum.Repositories.Contracts
         //IList<Post> GetPosts();
         User Update(int id, User user);
         bool Delete(int id);
-        IList<User> FilterBy(UserQueryParameters searchParameters);
+        IQueryable<User> FilterBy(UserQueryParameters searchParameters);
+        IList<User> SortBy(IQueryable<User> users, string sortBy);
         bool UserExists(string username);
         bool Block(string username);
         bool Unblock(string username);

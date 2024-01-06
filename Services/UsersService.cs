@@ -56,10 +56,15 @@ namespace PhotoForum.Services
             return this.usersRepository.GetUserByEmail(firstName);
         }
 
-        public IList<User> FilterBy(UserQueryParameters filterParameters)
+        public IQueryable<User> FilterBy(UserQueryParameters filterParameters)
         {
             return this.usersRepository.FilterBy(filterParameters);
-        }       
+        }
+
+        public IList<User> SortBy(IQueryable<User> users, string sortBy)
+        {
+            return this.usersRepository.SortBy(users, sortBy);
+        }
 
         public User Update(int id, User user)
         {

@@ -75,16 +75,6 @@ namespace PhotoForum.Repositories
             return user;
         }
 
-        public IList<User> FilterBy(UserQueryParameters filterParameters)
-        {
-            IQueryable<User> result = IQ_GetUsers();
-            result = FilterByUsername(result, filterParameters.Username);
-            result = FilterByEmail(result, filterParameters.Email);
-            result = FilterByFirstName(result, filterParameters.FirstName);
-            result = FilterByLastName(result, filterParameters.LastName);
-
-            return result.ToList();
-        }
         public BaseUser GetBaseUserByUsername(string username)
         {
             var baseuser = GetBaseUsers().FirstOrDefault(u => u.Username == username);
@@ -116,7 +106,6 @@ namespace PhotoForum.Repositories
 
             return user;
         }
-
         public User Update(int id, User user)
         {
             var userToUpdate = GetById(id);
@@ -171,6 +160,18 @@ namespace PhotoForum.Repositories
             return IQ_GetAdmins().ToList();
         }
 
+        public IQueryable<User> FilterBy(UserQueryParameters filterParameters)
+        {
+            IQueryable<User> result = IQ_GetUsers();
+
+            result = FilterByUsername(result, filterParameters.Username);
+            result = FilterByEmail(result, filterParameters.Email);
+            result = FilterByFirstName(result, filterParameters.FirstName);
+            result = FilterByLastName(result, filterParameters.LastName);
+
+            return result;
+        }
+
         private static IQueryable<User> FilterByUsername(IQueryable<User> users, string username)
         {
             if (!string.IsNullOrEmpty(username))
@@ -217,6 +218,50 @@ namespace PhotoForum.Repositories
             {
                 return users;
             }
+        }
+
+        public IList<User> SortBy(IQueryable<User> users, string sortBy)
+        {
+            IQueryable<User> result = users;
+
+            switch (sortBy)
+            {
+                case "username":
+                    result = SortByUsername(result);
+                    break;
+                case "firstName":
+                    result = SortByFirstName(result);
+                    break;
+                case "lastName":
+                    result = SortByLastName(result);
+                    break;
+                case "email":
+                    result = SortByEmail(result);
+                    break;
+            }
+
+            return result.ToList();
+        }
+
+        private static IQueryable<User> SortByUsername(IQueryable<User> users)
+        {
+            return users.OrderBy(user => user.Username);
+        }
+
+        private static IQueryable<User> SortByEmail(IQueryable<User> users)
+        {
+            return users.OrderBy(user => user.Email);
+
+        }
+
+        private static IQueryable<User> SortByFirstName(IQueryable<User> users)
+        {
+            return users.OrderBy(user => user.FirstName);
+        }
+
+        private static IQueryable<User> SortByLastName(IQueryable<User> users)
+        {
+            return users.OrderBy(user => user.LastName);
         }
 
         public bool UserExists(string username)

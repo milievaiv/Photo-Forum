@@ -103,6 +103,26 @@ namespace PhotoForum.Controllers
         }
 
         [HttpPut("block")]
+        public ActionResult<User> DeleteUser([FromQuery(Name = "value")] string username)
+        {
+            if (string.IsNullOrEmpty(username))
+            {
+                return BadRequest("Username cannot be empty");
+            }
+
+            try
+            {
+                User user = _usersService.GetUserByUsername(username);
+                _adminService.Delete(user.Id);
+                return Ok($"User {username} successfully deleted.");
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPut("block")]
         public ActionResult<User> BlockUser([FromQuery(Name = "value")] string username)
         {
             if (string.IsNullOrEmpty(username))
@@ -142,48 +162,70 @@ namespace PhotoForum.Controllers
         }
 
         [HttpGet("users")]
-        public ActionResult<IEnumerable<User>> GetUsers(
-            [FromQuery(Name = "username")] string username,
-            [FromQuery(Name = "email")] string email,
-            [FromQuery(Name = "firstname")] string firstname,
-            [FromQuery(Name = "lastname")] string lastname)
+        public ActionResult<IEnumerable<User>> FilterUsers([FromQuery] UserQueryParameters filterParameters,
+            [FromQuery(Name = "sortBy")] string sortBy)
         {
-            // You can add more parameters as needed for other filters
-
-            // Perform validation if necessary
-            if (string.IsNullOrEmpty(username) && string.IsNullOrEmpty(email) && string.IsNullOrEmpty(firstname) && string.IsNullOrEmpty(lastname))
-            {
-                return BadRequest("At least one filter parameter is required");
-            }
-
             try
             {
                 // Call your service method with the provided filters
-                var user_params = new UserQueryParameters
-                {
-                    Username = username,
-                    FirstName = firstname,
-                    Email = email,
-                    LastName = lastname
-                };
 
-                IEnumerable<User> users = _usersService.FilterBy(user_params);
+                IQueryable<User> users = _usersService.FilterBy(filterParameters);
+
+                IList<User> result = new List<User>();
+
+                if (!string.IsNullOrEmpty(sortBy))
+                {
+                    result = _usersService.SortBy(users, sortBy);
+                }
 
                 // Check if any users match the criteria
-                if (users.Any())
+                if (result.Any())
                 {
-                    return Ok(users);
+                    return Ok(result);
                 }
                 else
                 {
                     return NotFound("No users found with the specified criteria");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while processing the request");
+                // Log the exception for debugging purposes
+                Console.WriteLine(ex);
+
+                // Return a meaningful error response to the client
+                return BadRequest("Invalid query parameters. Please provide at least one valid filter parameter.");
             }
         }
+
+        //[HttpGet("users/sort")]
+        //public ActionResult<IEnumerable<User>> SortUsers([FromQuery] UserQueryParameters filterParameters)
+        //{
+        //    try
+        //    {
+        //        // Call your service method with the provided filters
+
+        //        IEnumerable<User> users = _usersService.SortBy(filterParameters);
+
+        //        // Check if any users match the criteria
+        //        if (users.Any())
+        //        {
+        //            return Ok(users);
+        //        }
+        //        else
+        //        {
+        //            return NotFound("No users found with the specified criteria");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log the exception for debugging purposes
+        //        Console.WriteLine(ex);
+
+        //        // Return a meaningful error response to the client
+        //        return BadRequest("Invalid query parameters. Please provide at least one valid filter parameter.");
+        //    }
+        //}
 
     }
 }
