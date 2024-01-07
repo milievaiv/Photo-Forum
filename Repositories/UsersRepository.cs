@@ -25,18 +25,11 @@ namespace PhotoForum.Repositories
             return user;
         }
 
-        public Admin CreateAdmin(Admin admin)
-        {
-            context.Admins.Add(admin);
-            context.SaveChanges();
-
-            return admin;
-        }
-
         public bool Delete(int id)
         {
-            var userToDelete = context.RegularUsers.FirstOrDefault(user => user.Id == id);
-            ValidationHelper.Exists(userToDelete);
+            User userToDelete = GetUserById(id);
+
+            if (userToDelete.IsDeleted == true) throw new InvalidOperationException("User is already deleted.");
 
             userToDelete.IsDeleted = true;
 
@@ -45,8 +38,7 @@ namespace PhotoForum.Repositories
 
         public bool Block(string username)
         {
-            var userToBlock = context.RegularUsers.FirstOrDefault(user => user.Username == username);
-            ValidationHelper.Exists(userToBlock);
+            User userToBlock = GetUserByUsername(username);
 
             if (userToBlock.IsBlocked == true) throw new InvalidOperationException("User is already blocked.");
 
@@ -57,8 +49,7 @@ namespace PhotoForum.Repositories
 
         public bool Unblock(string username)
         {
-            var userToUnblock = context.RegularUsers.FirstOrDefault(user => user.Username == username);
-            ValidationHelper.Exists(userToUnblock);
+            User userToUnblock = GetUserByUsername(username);
 
             if (userToUnblock.IsBlocked == false) throw new InvalidOperationException("User is not blocked.");
 
@@ -67,48 +58,53 @@ namespace PhotoForum.Repositories
             return context.SaveChanges() > 0;
         }
 
-        public User GetById(int id)
-        {
-            var user = GetUsers().FirstOrDefault(u => u.Id == id);
-            ValidationHelper.Exists(user);
-
-            return user;
-        }
-
         public BaseUser GetBaseUserByUsername(string username)
         {
             var baseuser = GetBaseUsers().FirstOrDefault(u => u.Username == username);
+            if (baseuser == null) throw new EntityNotFoundException($"Base user with username {username} could not be found.");
+            
             return baseuser;
         }
-        public Admin GetAdminByUsername(string username)
+
+        public User GetUserById(int id)
         {
-            var admin = GetAdmins().FirstOrDefault(u => u.Username == username);
-            return admin;
+            var user = GetUsers().FirstOrDefault(u => u.Id == id);
+            if (user == null) throw new EntityNotFoundException($"User with id {id} could not be found.");
+
+            return user;
         }
         public User GetUserByUsername(string username)
         {
             var user = GetUsers().FirstOrDefault(u => u.Username == username);
-            ValidationHelper.Exists(user);
-
+            if (user == null) throw new EntityNotFoundException($"User with username {username} could not be found.");
+            
             return user;
         }
         public User GetUserByEmail(string email)
         {
             var user = GetUsers().FirstOrDefault(u => u.Email == email);
-            ValidationHelper.Exists(user);
+            if (user == null) throw new EntityNotFoundException($"User with email {email} could not be found.");
 
             return user;
         }
         public User GetUserByFirstName(string firstName)
         {
             var user = GetUsers().FirstOrDefault(u => u.FirstName == firstName);
-            ValidationHelper.Exists(user);
+            if (user == null) throw new EntityNotFoundException($"User with first name {firstName} could not be found.");
 
             return user;
         }
+        public User GetUserByLastName(string lastName)
+        {
+            var user = GetUsers().FirstOrDefault(u => u.LastName == lastName);
+            if (user == null) throw new EntityNotFoundException($"User with last name {lastName} could not be found.");
+
+            return user;
+        }
+
         public User Update(int id, User user)
         {
-            var userToUpdate = GetById(id);
+            var userToUpdate = GetUserById(id);
 
             userToUpdate.FirstName = user.FirstName;
             userToUpdate.LastName = user.LastName;
@@ -122,25 +118,12 @@ namespace PhotoForum.Repositories
 
         private IQueryable<User> IQ_GetUsers()
         {
-            return context.RegularUsers
-                .Include(x => x.Posts)
-                .Include(x => x.Comments);                
-               
+            return context.RegularUsers;
         }
         public IList<User> GetUsers()
         {
             return IQ_GetUsers().ToList();
         }
-
-        //private IQueryable<Post> IQ_GetPosts()
-        //{
-        //    return context.Posts;
-
-        //}
-        //public IList<Post> GetPosts()
-        //{
-        //    return IQ_GetPosts().ToList();
-        //}
 
         private IQueryable<BaseUser> IQ_GetBaseUsers()
         {
@@ -151,16 +134,7 @@ namespace PhotoForum.Repositories
             return IQ_GetBaseUsers().ToList();
         }
 
-        private IQueryable<Admin> IQ_GetAdmins()
-        {
-            return context.Admins;
-        }
-        public IList<Admin> GetAdmins()
-        {
-            return IQ_GetAdmins().ToList();
-        }
-
-        public IQueryable<User> FilterBy(UserQueryParameters filterParameters)
+        public IList<User> FilterBy(UserQueryParameters filterParameters)
         {
             IQueryable<User> result = IQ_GetUsers();
 
@@ -168,10 +142,10 @@ namespace PhotoForum.Repositories
             result = FilterByEmail(result, filterParameters.Email);
             result = FilterByFirstName(result, filterParameters.FirstName);
             result = FilterByLastName(result, filterParameters.LastName);
+            result = SortBy(result, filterParameters.SortBy);
 
-            return result;
+            return result.ToList();
         }
-
         private static IQueryable<User> FilterByUsername(IQueryable<User> users, string username)
         {
             if (!string.IsNullOrEmpty(username))
@@ -183,7 +157,6 @@ namespace PhotoForum.Repositories
                 return users;
             }
         }
-
         private static IQueryable<User> FilterByEmail(IQueryable<User> users, string email)
         {
             if (!string.IsNullOrEmpty(email))
@@ -195,7 +168,6 @@ namespace PhotoForum.Repositories
                 return users;
             }
         }
-
         private static IQueryable<User> FilterByFirstName(IQueryable<User> users, string firstName)
         {
             if (!string.IsNullOrEmpty(firstName))
@@ -207,7 +179,6 @@ namespace PhotoForum.Repositories
                 return users;
             }
         }
-
         private static IQueryable<User> FilterByLastName(IQueryable<User> users, string lastName)
         {
             if (!string.IsNullOrEmpty(lastName))
@@ -220,45 +191,39 @@ namespace PhotoForum.Repositories
             }
         }
 
-        public IList<User> SortBy(IQueryable<User> users, string sortBy)
+        public static IQueryable<User> SortBy(IQueryable<User> users, string sortBy)
         {
-            IQueryable<User> result = users;
-
             switch (sortBy)
             {
                 case "username":
-                    result = SortByUsername(result);
+                    users = SortByUsername(users);
                     break;
                 case "firstName":
-                    result = SortByFirstName(result);
+                    users = SortByFirstName(users);
                     break;
                 case "lastName":
-                    result = SortByLastName(result);
+                    users = SortByLastName(users);
                     break;
                 case "email":
-                    result = SortByEmail(result);
+                    users = SortByEmail(users);
                     break;
             }
 
-            return result.ToList();
+            return users;
         }
-
         private static IQueryable<User> SortByUsername(IQueryable<User> users)
         {
             return users.OrderBy(user => user.Username);
         }
-
         private static IQueryable<User> SortByEmail(IQueryable<User> users)
         {
             return users.OrderBy(user => user.Email);
 
         }
-
         private static IQueryable<User> SortByFirstName(IQueryable<User> users)
         {
             return users.OrderBy(user => user.FirstName);
         }
-
         private static IQueryable<User> SortByLastName(IQueryable<User> users)
         {
             return users.OrderBy(user => user.LastName);

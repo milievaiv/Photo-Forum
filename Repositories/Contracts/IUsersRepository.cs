@@ -5,23 +5,19 @@ namespace PhotoForum.Repositories.Contracts
 {
     public interface IUsersRepository
     {
-        Admin CreateAdmin(Admin user);
         User CreateUser(User user);
-        User GetById(int id);
-        Admin GetAdminByUsername(string username);
+        bool Delete(int id);
+        bool Block(string username);
+        bool Unblock(string username);
+        User GetUserById(int id);
         User GetUserByUsername(string username);
         User GetUserByEmail(string email);
         User GetUserByFirstName(string firstName);
-        IList<User> GetUsers();
-        IList<BaseUser> GetBaseUsers();
-        IList<Admin> GetAdmins();
-        //IList<Post> GetPosts();
+        User GetUserByLastName(string lastName);
         User Update(int id, User user);
-        bool Delete(int id);
-        IQueryable<User> FilterBy(UserQueryParameters searchParameters);
-        IList<User> SortBy(IQueryable<User> users, string sortBy);
+        IList<User> GetUsers();
+        IList<User> FilterBy(UserQueryParameters searchParameters);
         bool UserExists(string username);
-        bool Block(string username);
-        bool Unblock(string username);
+
     }
 }

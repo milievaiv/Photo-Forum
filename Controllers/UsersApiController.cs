@@ -54,7 +54,7 @@ namespace PhotoForum.Controllers
                 var username = User.FindFirst(ClaimTypes.Name)?.Value;
                 var user = usersService.GetUserByUsername(username);
 
-                ValidationHelper.Blocked(user);
+                if (user.IsBlocked == true) throw new InvalidOperationException("You've been suspended from doing this.");
 
                 Post post = modelMapper.Map(user, dto);
 
@@ -64,10 +64,13 @@ namespace PhotoForum.Controllers
 
                 return StatusCode(StatusCodes.Status201Created, createdPostDto);
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException ex)
             {
-
-                return Conflict("This operation is forbidden");
+                return Conflict(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 
@@ -99,10 +102,9 @@ namespace PhotoForum.Controllers
             var username = User.FindFirst(ClaimTypes.Name)?.Value; // Get the username from the JWT token
             var user = usersService.GetUserByUsername(username);
 
-            ValidationHelper.Blocked(user);
-
             try
             {
+                if (user.IsBlocked == true) throw new InvalidOperationException("You've been suspended from doing this.");
                 if (postService.GetById(id) == null)
                 {
                     return NotFound($"Post with id: {id} not found.");
@@ -117,9 +119,9 @@ namespace PhotoForum.Controllers
             {
                 return NotFound($"Post with id: {id} not found.");
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException ex)
             {
-                return Conflict("This operation is forbidden");
+                return Conflict(ex.Message);
             }
         }
 

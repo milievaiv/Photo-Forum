@@ -7,12 +7,12 @@ namespace PhotoForum.Services.Contracts
     public interface IUsersService
     {
         IList<User> GetUsers();
-        IQueryable<User> FilterBy(UserQueryParameters filterParameters);
-        IList<User> SortBy(IQueryable<User> users, string sortBy);
+        IList<User> FilterBy(UserQueryParameters filterParameters);
         User Register(RegisterModel registerModel);
-        User GetById(int id);
+        User GetUserById(int id);
         User GetUserByUsername(string username);
         User GetUserByFirstName(string firstName);
+        User GetUserByLastName(string firstName);
         User GetUserByEmail(string email);
         User Update(int id, User user);
     }

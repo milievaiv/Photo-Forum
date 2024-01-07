@@ -10,17 +10,19 @@ namespace PhotoForum.Services
 {
     public class VerificationService : IVerificationService
     {
-        public readonly IUsersRepository _usersRepository;
+        public readonly IUsersRepository usersRepository;
+        public readonly IAdminsRepository adminsRepository;
 
-        public VerificationService(IUsersRepository usersRepository)
+        public VerificationService(IUsersRepository usersRepository, IAdminsRepository adminsRepository)
         {
-            this._usersRepository = usersRepository;
+            this.usersRepository = usersRepository;
+            this.adminsRepository = adminsRepository;
         }
         public BaseUser AuthenticateUser(LoginModel loginModel)
         {
-            var admin = _usersRepository.GetAdminByUsername(loginModel.Username);
+            var admin = adminsRepository.GetAdminByUsername(loginModel.Username);
             if (admin != null) return admin;
-            var user = _usersRepository.GetUserByUsername(loginModel.Username);
+            var user = usersRepository.GetUserByUsername(loginModel.Username);
             if (user == null)
             {
                 throw new UnauthorizedOperationException("Invalid username!");

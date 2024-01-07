@@ -13,11 +13,13 @@ namespace PhotoForum.Services
     {
         private readonly IRegistrationService registrationService;
         private readonly IUsersRepository usersRepository;
+        private readonly IAdminsRepository adminsRepository;
 
-        public AdminsService(IUsersRepository usersRepository, IRegistrationService registrationService)
+        public AdminsService(IUsersRepository usersRepository, IAdminsRepository adminsRepository, IRegistrationService registrationService)
         {
             this.usersRepository = usersRepository;
             this.registrationService = registrationService;
+            this.adminsRepository = adminsRepository;
         }
 
         public Admin Register(RegisterAdminModel registerAdminModel)
@@ -27,7 +29,7 @@ namespace PhotoForum.Services
             var admin = new Admin();
             admin.MapFrom(registerAdminModel, dto);
 
-            usersRepository.CreateAdmin(admin);
+            adminsRepository.CreateAdmin(admin);
 
             return admin;
         }
@@ -49,7 +51,7 @@ namespace PhotoForum.Services
 
         public Admin GetAdminByUsername(string username)
         {
-            return this.usersRepository.GetAdminByUsername(username);
+            return this.adminsRepository.GetAdminByUsername(username);
         }
     }
 

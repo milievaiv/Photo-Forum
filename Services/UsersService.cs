@@ -33,37 +33,35 @@ namespace PhotoForum.Services
 
             return user;
         }      
+
         public IList<User> GetUsers()
         {
            return this.usersRepository.GetUsers();
         }
-        public User GetById(int id)
+        public User GetUserById(int id)
         {
-            return this.usersRepository.GetById(id);
+            return this.usersRepository.GetUserById(id);
         }
         public User GetUserByUsername(string username)
         {
             return this.usersRepository.GetUserByUsername(username);
-        }        
-        
+        }                
         public User GetUserByFirstName(string firstName)
         {
             return this.usersRepository.GetUserByFirstName(firstName);
         }   
-        
+        public User GetUserByLastName(string lastName)
+        {
+            return this.usersRepository.GetUserByLastName(lastName);
+        }           
         public User GetUserByEmail(string firstName)
         {
             return this.usersRepository.GetUserByEmail(firstName);
         }
 
-        public IQueryable<User> FilterBy(UserQueryParameters filterParameters)
+        public IList<User> FilterBy(UserQueryParameters filterParameters)
         {
             return this.usersRepository.FilterBy(filterParameters);
-        }
-
-        public IList<User> SortBy(IQueryable<User> users, string sortBy)
-        {
-            return this.usersRepository.SortBy(users, sortBy);
         }
 
         public User Update(int id, User user)
@@ -79,8 +77,6 @@ namespace PhotoForum.Services
             {
                 throw new DuplicateEntityException("This email is already taken.");
             }
-        }
-
-        
+        }     
     }
 }

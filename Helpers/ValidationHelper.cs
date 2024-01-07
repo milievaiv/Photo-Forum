@@ -5,26 +5,42 @@ namespace PhotoForum.Helpers
 {
     public static class ValidationHelper
     {
-        public static void Exists(User user)
-        {
-            if (user == null || user.IsDeleted)
-            {
-                throw new EntityNotFoundException("User not found.");
-            }
-        }        
-        public static void Blocked(User user)
-        {
-            if (user.IsBlocked == true)
-            {
-                throw new InvalidOperationException("You've been suspended from doing this.");
-            }
-        }
-        public static void Compare(User user1, User user2)
-        {
-            if (user1.Id == user2.Id)
-            {
-                throw new InvalidOperationException("You can't do this!");
-            }
-        }
+        //public static void Exists(User user)
+        //{
+        //    if (user == null || user.IsDeleted)
+        //    {
+        //        throw new EntityNotFoundException("User not found.");
+        //    }
+        //}
+
+        //public static void Exists(Admin admin)
+        //{
+        //    if (admin == null)
+        //    {
+        //        throw new EntityNotFoundException("Admin not found.");
+        //    }
+        //}
+
+        //public static void Exists(BaseUser user)
+        //{
+        //    if (user == null)
+        //    {
+        //        throw new EntityNotFoundException("Base user not found.");
+        //    }
+        //}
+        //public static void Blocked(User user)
+        //{
+        //    if (user.IsBlocked == true)
+        //    {
+        //        throw new InvalidOperationException("You've been suspended from doing this.");
+        //    }
+        //}
+        //public static void Compare(User user1, User user2)
+        //{
+        //    if (user1.Id == user2.Id)
+        //    {
+        //        throw new InvalidOperationException("You can't do this!");
+        //    }
+        //}
     }
 }

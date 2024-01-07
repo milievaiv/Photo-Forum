@@ -55,13 +55,21 @@ namespace PhotoForum.Controllers
                 return Ok(user);
 
             }
-            catch
+            catch (Exception ex)
             {
-                return NotFound();
+                if (ex is InvalidOperationException)
+                {
+                    return BadRequest(ex.Message);
+                }
+                if (ex is EntityNotFoundException)
+                {
+                    return NotFound(ex.Message);
+                }
+                return BadRequest(ex.Message);
             }
 
         }
-
+        
         [HttpGet("user/email")]
         public ActionResult<User> GetUserByEmail([FromQuery(Name = "value")] string email)
         {
@@ -75,13 +83,21 @@ namespace PhotoForum.Controllers
                 User user = _usersService.GetUserByEmail(email);
                 return Ok(user);
             }
-            catch
+            catch (Exception ex)
             {
-                return NotFound();
+                if (ex is InvalidOperationException)
+                {
+                    return BadRequest(ex.Message);
+                }
+                if (ex is EntityNotFoundException)
+                {
+                    return NotFound(ex.Message);
+                }
+                return BadRequest(ex.Message);
             }
 
         }
-
+        
         [HttpGet("user/firstname")]
         public ActionResult<User> GetUserByFirstName([FromQuery(Name = "value")] string firstName)
         {
@@ -95,14 +111,50 @@ namespace PhotoForum.Controllers
                 User user = _usersService.GetUserByFirstName(firstName);
                 return Ok(user);
             }
-            catch
+            catch (Exception ex)
             {
-                return NotFound();
+                if (ex is InvalidOperationException)
+                {
+                    return BadRequest(ex.Message);
+                }
+                if (ex is EntityNotFoundException)
+                {
+                    return NotFound(ex.Message);
+                }
+                return BadRequest(ex.Message);
+            }
+
+        }                
+        
+        [HttpGet("user/lastname")]
+        public ActionResult<User> GetUserByLastName([FromQuery(Name = "value")] string lastName)
+        {
+            if (string.IsNullOrEmpty(lastName))
+            {
+                return BadRequest("Last name cannot be empty");
+            }
+
+            try
+            {
+                User user = _usersService.GetUserByLastName(lastName);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                if (ex is InvalidOperationException)
+                {
+                    return BadRequest(ex.Message);
+                }
+                if (ex is EntityNotFoundException)
+                {
+                    return NotFound(ex.Message);
+                }
+                return BadRequest(ex.Message);
             }
 
         }
 
-        [HttpPut("block")]
+        [HttpPut("delete")]
         public ActionResult<User> DeleteUser([FromQuery(Name = "value")] string username)
         {
             if (string.IsNullOrEmpty(username))
@@ -116,9 +168,17 @@ namespace PhotoForum.Controllers
                 _adminService.Delete(user.Id);
                 return Ok($"User {username} successfully deleted.");
             }
-            catch
+            catch (Exception ex)
             {
-                return NotFound();
+                if (ex is InvalidOperationException)
+                {
+                    return BadRequest(ex.Message);
+                }
+                if (ex is EntityNotFoundException)
+                {
+                    return NotFound(ex.Message);
+                }
+                return BadRequest(ex.Message);
             }
         }
 
@@ -135,11 +195,18 @@ namespace PhotoForum.Controllers
                 _adminService.Block(username);
                 return Ok($"User {username} successfully suspended.");
             }
-            catch
+            catch (Exception ex)
             {
-                return NotFound();
+                if (ex is InvalidOperationException)
+                {
+                    return BadRequest(ex.Message);
+                }
+                if (ex is EntityNotFoundException)
+                {
+                    return NotFound(ex.Message);
+                }
+                return BadRequest(ex.Message);
             }
-
         }
 
         [HttpPut("unblock")]
@@ -155,30 +222,32 @@ namespace PhotoForum.Controllers
                 _adminService.Unblock(username);
                 return Ok($"User {username} successfully unsuspended.");
             }
-            catch
+            catch (Exception ex)
             {
-                return NotFound();
+                if (ex is InvalidOperationException)
+                {
+                    return BadRequest(ex.Message);
+                }
+                if (ex is EntityNotFoundException)
+                {
+                    return NotFound(ex.Message);
+                }
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpGet("users")]
-        public ActionResult<IEnumerable<User>> FilterUsers([FromQuery] UserQueryParameters filterParameters,
-            [FromQuery(Name = "sortBy")] string sortBy)
+        public ActionResult<IEnumerable<User>> FilterUsers([FromQuery] UserQueryParameters filterParameters)
         {
             try
             {
-                // Call your service method with the provided filters
-
-                IQueryable<User> users = _usersService.FilterBy(filterParameters);
-
-                IList<User> result = new List<User>();
-
-                if (!string.IsNullOrEmpty(sortBy))
+                if (AreAllUQPNullOrEmpty(filterParameters))
                 {
-                    result = _usersService.SortBy(users, sortBy);
+                    throw new InvalidOperationException("Please provide at least one valid filter parameter.");
                 }
 
-                // Check if any users match the criteria
+                IList<User> result = _usersService.FilterBy(filterParameters);
+
                 if (result.Any())
                 {
                     return Ok(result);
@@ -190,42 +259,20 @@ namespace PhotoForum.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception for debugging purposes
                 Console.WriteLine(ex);
 
-                // Return a meaningful error response to the client
-                return BadRequest("Invalid query parameters. Please provide at least one valid filter parameter.");
+                if (ex is InvalidOperationException) return BadRequest(ex.Message);
+                else return BadRequest(ex.Message);
             }
         }
-
-        //[HttpGet("users/sort")]
-        //public ActionResult<IEnumerable<User>> SortUsers([FromQuery] UserQueryParameters filterParameters)
-        //{
-        //    try
-        //    {
-        //        // Call your service method with the provided filters
-
-        //        IEnumerable<User> users = _usersService.SortBy(filterParameters);
-
-        //        // Check if any users match the criteria
-        //        if (users.Any())
-        //        {
-        //            return Ok(users);
-        //        }
-        //        else
-        //        {
-        //            return NotFound("No users found with the specified criteria");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Log the exception for debugging purposes
-        //        Console.WriteLine(ex);
-
-        //        // Return a meaningful error response to the client
-        //        return BadRequest("Invalid query parameters. Please provide at least one valid filter parameter.");
-        //    }
-        //}
+        private bool AreAllUQPNullOrEmpty(UserQueryParameters parameters)
+        {
+            return string.IsNullOrEmpty(parameters.Username)
+                && string.IsNullOrEmpty(parameters.FirstName)
+                && string.IsNullOrEmpty(parameters.LastName)
+                && string.IsNullOrEmpty(parameters.Email)
+                && string.IsNullOrEmpty(parameters.SortBy);
+        }
 
     }
 }
