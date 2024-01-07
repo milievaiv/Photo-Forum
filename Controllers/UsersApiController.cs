@@ -152,7 +152,7 @@ namespace PhotoForum.Controllers
         }
 
         //GET: api/users?filterParameter=filter
-        [HttpGet]
+        [HttpGet("posts")]
         public IActionResult FilterPosts([FromQuery] PostQueryParameters filterParameters)
         {
             var username = User.FindFirst(ClaimTypes.Name)?.Value; // Get the username from the JWT token
