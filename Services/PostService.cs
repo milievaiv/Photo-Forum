@@ -42,6 +42,10 @@ public class PostService : IPostService
     {
         return postRepository.GetById(id);
     }
+    public IList<Post> FilterBy(PostQueryParameters filterParameters)
+    {
+        return postRepository.FilterBy(filterParameters);
+    }
 
     public IList<Post> GetUsersPost(User user)
     {

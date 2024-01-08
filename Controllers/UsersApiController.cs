@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PhotoForum.Exceptions;
 using PhotoForum.Helpers;
@@ -35,14 +36,14 @@ namespace PhotoForum.Controllers
                 var username = User.FindFirst(ClaimTypes.Name)?.Value;
                 var user = usersService.GetUserByUsername(username);
                 var post = postService.GetById(id);
-                PostResponseDto postResponseDto = modelMapper.Map(user,post);
+                PostResponseDto postResponseDto = modelMapper.Map(user, post);
 
                 return Ok(postResponseDto);
             }
             catch (EntityNotFoundException)
             {
                 return NotFound($"Post with id: {id} not found.");
-            }            
+            }
         }
 
         // POST: api/users/posts
@@ -84,7 +85,7 @@ namespace PhotoForum.Controllers
                 var user = usersService.GetUserByUsername(username);
 
                 Post post = modelMapper.Map(user, dto);
-                
+
                 Post updatedPost = postService.EditPost(user, id, post);
                 PostResponseDto postResponseDto = modelMapper.Map(user, updatedPost);
                 return Ok(postResponseDto);
@@ -108,7 +109,7 @@ namespace PhotoForum.Controllers
                 if (postService.GetById(id) == null)
                 {
                     return NotFound($"Post with id: {id} not found.");
-                }           
+                }
                 Comment comment = modelMapper.Map(dto);
                 Comment createdComment = postService.Comment(user, id, comment);
                 CommentResponseDTO createdCommentDto = modelMapper.Map(createdComment, user);
@@ -134,7 +135,7 @@ namespace PhotoForum.Controllers
                 var username = User.FindFirst(ClaimTypes.Name)?.Value; // Get the username from the JWT token
                 var user = usersService.GetUserByUsername(username);
                 var post = postService.GetById(postId);
-                
+
                 if (post.UserId != user.Id)
                 {
                     return Conflict("You can only delete your own posts.");
@@ -148,6 +149,55 @@ namespace PhotoForum.Controllers
             catch (EntityNotFoundException)
             {
                 return NotFound($"Post with id: {postId} not found.");
+            }
+        }
+
+        //GET: api/users?filterParameter=filter
+        [HttpGet("posts")]
+        public IActionResult FilterPosts([FromQuery] PostQueryParameters filterParameters)
+        {
+            var username = User.FindFirst(ClaimTypes.Name)?.Value; // Get the username from the JWT token
+            var user = usersService.GetUserByUsername(username);
+
+            List<PostResponseDto> posts = postService
+                .FilterBy(filterParameters)
+                .Select(post => modelMapper.Map(user, post))
+                .ToList();
+            if (posts.Count == 0)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return Ok(posts);
+            }
+        }
+
+        // PUT: api/users/userId/update
+        [HttpPut("{userId}/update")]
+        public IActionResult UpdateProfile([FromRoute]int userId, [FromBody] UserProfileUpdateModel model)
+        {
+            try
+            {
+                var username = User.FindFirst(ClaimTypes.Name)?.Value; // Get the username from the JWT token
+                var user = usersService.GetUserByUsername(username);
+
+                if (user.Id == userId)
+                {
+                    var userWithUpdateInfo = modelMapper.Map(model);
+                    var updatedUser = usersService.Update(user.Id, userWithUpdateInfo);
+                    var userResponseDto = modelMapper.Map(updatedUser);
+
+                    return Ok(userResponseDto);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status405MethodNotAllowed);
+                }
+            }
+            catch (DuplicateEntityException ex)
+            {
+                return Conflict(ex.Message);
             }
         }
     }

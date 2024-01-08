@@ -61,7 +61,7 @@ namespace PhotoForum.Repositories
         public BaseUser GetBaseUserByUsername(string username)
         {
             var baseuser = GetBaseUsers().FirstOrDefault(u => u.Username == username);
-            if (baseuser == null) throw new EntityNotFoundException($"Base user with username {username} could not be found.");
+            //if (baseuser == null) throw new EntityNotFoundException($"Base user with username {username} could not be found.");
             
             return baseuser;
         }
@@ -69,35 +69,35 @@ namespace PhotoForum.Repositories
         public User GetUserById(int id)
         {
             var user = GetUsers().FirstOrDefault(u => u.Id == id);
-            if (user == null) throw new EntityNotFoundException($"User with id {id} could not be found.");
+            //if (user == null) throw new EntityNotFoundException($"User with id {id} could not be found.");
 
             return user;
         }
         public User GetUserByUsername(string username)
         {
             var user = GetUsers().FirstOrDefault(u => u.Username == username);
-            if (user == null) throw new EntityNotFoundException($"User with username {username} could not be found.");
+            //if (user == null) throw new EntityNotFoundException($"User with username {username} could not be found.");
             
             return user;
         }
         public User GetUserByEmail(string email)
         {
             var user = GetUsers().FirstOrDefault(u => u.Email == email);
-            if (user == null) throw new EntityNotFoundException($"User with email {email} could not be found.");
+            //if (user == null) throw new EntityNotFoundException($"User with email {email} could not be found.");
 
             return user;
         }
         public User GetUserByFirstName(string firstName)
         {
             var user = GetUsers().FirstOrDefault(u => u.FirstName == firstName);
-            if (user == null) throw new EntityNotFoundException($"User with first name {firstName} could not be found.");
+            //if (user == null) throw new EntityNotFoundException($"User with first name {firstName} could not be found.");
 
             return user;
         }
         public User GetUserByLastName(string lastName)
         {
             var user = GetUsers().FirstOrDefault(u => u.LastName == lastName);
-            if (user == null) throw new EntityNotFoundException($"User with last name {lastName} could not be found.");
+            //if (user == null) throw new EntityNotFoundException($"User with last name {lastName} could not be found.");
 
             return user;
         }
@@ -106,9 +106,10 @@ namespace PhotoForum.Repositories
         {
             var userToUpdate = GetUserById(id);
 
+            userToUpdate.Email = user.Email;
             userToUpdate.FirstName = user.FirstName;
             userToUpdate.LastName = user.LastName;
-            userToUpdate.Email = user.Email;
+           
 
             context.Update(userToUpdate);
             context.SaveChanges();
@@ -118,7 +119,9 @@ namespace PhotoForum.Repositories
 
         private IQueryable<User> IQ_GetUsers()
         {
-            return context.RegularUsers;
+            return context.RegularUsers
+                .Include(x => x.Posts)
+                .Include(x => x.Comments);
         }
         public IList<User> GetUsers()
         {

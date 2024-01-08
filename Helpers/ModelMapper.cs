@@ -7,6 +7,26 @@ namespace PhotoForum.Helpers
 {
     public class ModelMapper : IModelMapper
     {
+        public User Map(UserProfileUpdateModel model)
+        {
+            return new User
+            {
+                Email = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName
+            };
+        }
+        public UserResponseDto Map(User user)
+        {
+            return new UserResponseDto
+            { 
+                Username = user.Username,
+                Email = user.Email,
+                FirstName = user.FirstName, 
+                LastName = user.LastName
+            };
+        }
+
         public Post Map(User user, PostDTO dto)
         {
             return new Post
@@ -16,6 +36,7 @@ namespace PhotoForum.Helpers
                 Creator = user                
             };
         }
+
         public PostResponseDto Map(User user, Post postModel)
         {
             return new PostResponseDto()

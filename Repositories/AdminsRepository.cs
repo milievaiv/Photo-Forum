@@ -24,7 +24,7 @@ namespace PhotoForum.Repositories
         public Admin GetAdminByUsername(string username)
         {
             var admin = GetAdmins().FirstOrDefault(u => u.Username == username);
-            if (admin == null) throw new EntityNotFoundException($"Admin with username {username} could not be found.");
+            //if (admin == null) throw new EntityNotFoundException($"Admin with username {username} could not be found.");
 
             return admin;
         }

@@ -73,7 +73,8 @@ namespace PhotoForum.Services
 
         private void EnsureUserUniqueEmail(User user)
         {
-            if (usersRepository.GetUserByEmail(user.Email) != null) 
+            var users = usersRepository.GetUsers();
+            if (users.Any(u => u.Email == user.Email))
             {
                 throw new DuplicateEntityException("This email is already taken.");
             }

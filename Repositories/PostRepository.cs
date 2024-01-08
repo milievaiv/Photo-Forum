@@ -3,6 +3,7 @@ using PhotoForum.Exceptions;
 using PhotoForum.Models;
 using PhotoForum.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 public class PostRepository : IPostRepository
 {
@@ -39,6 +40,71 @@ public class PostRepository : IPostRepository
         var post = GetPosts().FirstOrDefault(p => p.Id == id);
 
         return post ?? throw new EntityNotFoundException($"Post with id {id} not found.");
+    }
+    
+    public IList<Post> FilterBy(PostQueryParameters filterParameters)
+    {
+        IQueryable<Post> result = GetPosts();
+
+        result = FilterByTitle(result, filterParameters.Title);
+        result = FilterByContent(result, filterParameters.Content);
+        result = FilterByCreator(result, filterParameters.Creator);
+        result = SortBy(result, filterParameters.SortBy);
+
+        return result.ToList();
+    }
+
+    private static IQueryable<Post> FilterByTitle(IQueryable<Post> posts, string title)
+    {
+        if (!string.IsNullOrEmpty(title))
+        {
+            return posts.Where(post => post.Title.Contains(title));
+        }
+        else
+        {
+            return posts;
+        }
+    }
+
+    private static IQueryable<Post> FilterByContent(IQueryable<Post> posts, string content)
+    {
+        if (!string.IsNullOrEmpty(content))
+        {
+            return posts.Where(post => post.Content.Contains(content));
+        }
+        else
+        {
+            return posts;
+        }
+    }
+
+    private static IQueryable<Post> FilterByCreator(IQueryable<Post> posts, string creator)
+    {
+        if (!string.IsNullOrEmpty(creator))
+        {
+            return posts.Where(post => post.Creator.Username == creator);
+        }
+        else
+        {
+            return posts;
+        }
+    }
+
+    private static IQueryable<Post> SortBy(IQueryable<Post> posts, string sortCriteria)
+    {
+        switch (sortCriteria)
+        {
+            case "likes":
+                return posts.OrderBy(post => post.Likes);
+            case "date":
+                return posts.OrderBy(post => post.Date);
+            case "title":
+                return posts.OrderBy(post => post.Title);
+            case "creator":
+                return posts.OrderBy(post => post.Creator);
+            default:
+                return posts;
+        }
     }
 
     public bool Delete(int id)
