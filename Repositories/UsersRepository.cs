@@ -138,35 +138,11 @@ namespace PhotoForum.Repositories
         {
             IQueryable<User> result = IQ_GetUsers();
 
-            result = FilterByUsername(result, filterParameters.Username);
-            result = FilterByEmail(result, filterParameters.Email);
             result = FilterByFirstName(result, filterParameters.FirstName);
             result = FilterByLastName(result, filterParameters.LastName);
             result = SortBy(result, filterParameters.SortBy);
 
             return result.ToList();
-        }
-        private static IQueryable<User> FilterByUsername(IQueryable<User> users, string username)
-        {
-            if (!string.IsNullOrEmpty(username))
-            {
-                return users.Where(user => user.Username.Contains(username));
-            }
-            else
-            {
-                return users;
-            }
-        }
-        private static IQueryable<User> FilterByEmail(IQueryable<User> users, string email)
-        {
-            if (!string.IsNullOrEmpty(email))
-            {
-                return users.Where(user => user.Email.Contains(email));
-            }
-            else
-            {
-                return users;
-            }
         }
         private static IQueryable<User> FilterByFirstName(IQueryable<User> users, string firstName)
         {

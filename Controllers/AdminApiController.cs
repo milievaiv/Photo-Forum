@@ -96,63 +96,7 @@ namespace PhotoForum.Controllers
                 return BadRequest(ex.Message);
             }
 
-        }
-        
-        [HttpGet("user/firstname")]
-        public ActionResult<User> GetUserByFirstName([FromQuery(Name = "value")] string firstName)
-        {
-            if (string.IsNullOrEmpty(firstName))
-            {
-                return BadRequest("First name cannot be empty");
-            }
-
-            try
-            {
-                User user = _usersService.GetUserByFirstName(firstName);
-                return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                if (ex is InvalidOperationException)
-                {
-                    return BadRequest(ex.Message);
-                }
-                if (ex is EntityNotFoundException)
-                {
-                    return NotFound(ex.Message);
-                }
-                return BadRequest(ex.Message);
-            }
-
-        }                
-        
-        [HttpGet("user/lastname")]
-        public ActionResult<User> GetUserByLastName([FromQuery(Name = "value")] string lastName)
-        {
-            if (string.IsNullOrEmpty(lastName))
-            {
-                return BadRequest("Last name cannot be empty");
-            }
-
-            try
-            {
-                User user = _usersService.GetUserByLastName(lastName);
-                return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                if (ex is InvalidOperationException)
-                {
-                    return BadRequest(ex.Message);
-                }
-                if (ex is EntityNotFoundException)
-                {
-                    return NotFound(ex.Message);
-                }
-                return BadRequest(ex.Message);
-            }
-
-        }
+        }        
 
         [HttpPut("delete")]
         public ActionResult<User> DeleteUser([FromQuery(Name = "value")] string username)
@@ -267,10 +211,8 @@ namespace PhotoForum.Controllers
         }
         private bool AreAllUQPNullOrEmpty(UserQueryParameters parameters)
         {
-            return string.IsNullOrEmpty(parameters.Username)
-                && string.IsNullOrEmpty(parameters.FirstName)
+            return string.IsNullOrEmpty(parameters.FirstName)
                 && string.IsNullOrEmpty(parameters.LastName)
-                && string.IsNullOrEmpty(parameters.Email)
                 && string.IsNullOrEmpty(parameters.SortBy);
         }
 
