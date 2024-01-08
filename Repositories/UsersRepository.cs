@@ -106,9 +106,10 @@ namespace PhotoForum.Repositories
         {
             var userToUpdate = GetUserById(id);
 
+            userToUpdate.Email = user.Email;
             userToUpdate.FirstName = user.FirstName;
             userToUpdate.LastName = user.LastName;
-            userToUpdate.Email = user.Email;
+           
 
             context.Update(userToUpdate);
             context.SaveChanges();

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PhotoForum.Exceptions;
 using PhotoForum.Helpers;
@@ -169,6 +170,34 @@ namespace PhotoForum.Controllers
             else
             {
                 return Ok(posts);
+            }
+        }
+
+        // PUT: api/users/userId/update
+        [HttpPut("{userId}/update")]
+        public IActionResult UpdateProfile([FromRoute]int userId, [FromBody] UserProfileUpdateModel model)
+        {
+            try
+            {
+                var username = User.FindFirst(ClaimTypes.Name)?.Value; // Get the username from the JWT token
+                var user = usersService.GetUserByUsername(username);
+
+                if (user.Id == userId)
+                {
+                    var userWithUpdateInfo = modelMapper.Map(model);
+                    var updatedUser = usersService.Update(user.Id, userWithUpdateInfo);
+                    var userResponseDto = modelMapper.Map(updatedUser);
+
+                    return Ok(userResponseDto);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status405MethodNotAllowed);
+                }
+            }
+            catch (DuplicateEntityException ex)
+            {
+                return Conflict(ex.Message);
             }
         }
     }

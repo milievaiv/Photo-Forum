@@ -6,6 +6,8 @@ namespace PhotoForum.Helpers.Contracts
 {
     public interface IModelMapper
     {
+        User Map(UserProfileUpdateModel model);
+        UserResponseDto Map(User user);
         Post Map(User user, PostDTO dto);
         PostResponseDto Map(User user,Post postModel);
         Comment Map(CommentCreationDTO dto);
