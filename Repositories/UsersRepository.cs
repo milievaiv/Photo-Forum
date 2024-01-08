@@ -143,9 +143,32 @@ namespace PhotoForum.Repositories
 
             result = FilterByFirstName(result, filterParameters.FirstName);
             result = FilterByLastName(result, filterParameters.LastName);
+            result = FilterByUsername(result, filterParameters.FirstName);
+            result = FilterByEmail(result, filterParameters.LastName);
             result = SortBy(result, filterParameters.SortBy);
-
             return result.ToList();
+        }
+        private static IQueryable<User> FilterByUsername(IQueryable<User> users, string username)
+        {
+            if (!string.IsNullOrEmpty(username))
+            {
+                return users.Where(user => user.FirstName.Contains(username));
+            }
+            else
+            {
+                return users;
+            }
+        }
+        private static IQueryable<User> FilterByEmail(IQueryable<User> users, string email)
+        {
+            if (!string.IsNullOrEmpty(email))
+            {
+                return users.Where(user => user.FirstName.Contains(email));
+            }
+            else
+            {
+                return users;
+            }
         }
         private static IQueryable<User> FilterByFirstName(IQueryable<User> users, string firstName)
         {

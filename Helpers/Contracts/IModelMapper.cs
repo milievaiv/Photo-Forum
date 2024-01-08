@@ -12,7 +12,7 @@ namespace PhotoForum.Helpers.Contracts
         PostResponseDto Map(User user,Post postModel);
         Comment Map(CommentCreationDTO dto);
         CommentResponseDTO Map(Comment commentModel, User user);
-
-        //PostCreationDto MapPCD(Post postModel);
+        UserResponseAndPostDto MapURPD(User user);
+        PostResponseDtoAndId Map(Post postModel);
     }
 }

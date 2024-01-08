@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Authorization;
 using PhotoForum.Services;
 using PhotoForum.Services.Contracts;
 using PhotoForum.Exceptions;
+using PhotoForum.Helpers;
+using System.Security.Claims;
+using PhotoForum.Helpers.Contracts;
 
 namespace PhotoForum.Controllers
 {
@@ -17,13 +20,16 @@ namespace PhotoForum.Controllers
     [ApiController]
     public class AdminApiController : ControllerBase
     {
-        private readonly IUsersService _usersService;
-        private readonly IAdminsService _adminService;
-
-        public AdminApiController(IUsersService usersService, IAdminsService adminService)
+        private readonly IUsersService usersService;
+        private readonly IAdminsService adminService;
+        private readonly IPostService postService;
+        private readonly IModelMapper modelMapper;
+        public AdminApiController(IUsersService usersService, IAdminsService adminService, IModelMapper modelMapper, IPostService postService)
         {
-            _usersService = usersService;
-            _adminService = adminService;
+            this.usersService = usersService;
+            this.adminService = adminService;
+            this.modelMapper = modelMapper;
+            this.postService = postService;
         }
 
         [HttpPost("register")]
@@ -31,7 +37,7 @@ namespace PhotoForum.Controllers
         {
             try
             {
-                var user = _adminService.Register(registerModel);
+                var user = adminService.Register(registerModel);
                 return Ok(user);
             }
             catch (DuplicateEntityException)
@@ -51,7 +57,7 @@ namespace PhotoForum.Controllers
 
             try
             {
-                User user = _usersService.GetUserByUsername(username);
+                UserResponseAndPostDto user = modelMapper.MapURPD(usersService.GetUserByUsername(username));
                 return Ok(user);
 
             }
@@ -80,7 +86,7 @@ namespace PhotoForum.Controllers
 
             try
             {
-                User user = _usersService.GetUserByEmail(email);
+                UserResponseAndPostDto user = modelMapper.MapURPD(usersService.GetUserByEmail(email));
                 return Ok(user);
             }
             catch (Exception ex)
@@ -108,8 +114,8 @@ namespace PhotoForum.Controllers
 
             try
             {
-                User user = _usersService.GetUserByUsername(username);
-                _adminService.Delete(user.Id);
+                User user = usersService.GetUserByUsername(username);
+                adminService.Delete(user.Id);
                 return Ok($"User {username} successfully deleted.");
             }
             catch (Exception ex)
@@ -136,7 +142,7 @@ namespace PhotoForum.Controllers
 
             try
             {
-                _adminService.Block(username);
+                adminService.Block(username);
                 return Ok($"User {username} successfully suspended.");
             }
             catch (Exception ex)
@@ -163,7 +169,7 @@ namespace PhotoForum.Controllers
 
             try
             {
-                _adminService.Unblock(username);
+                adminService.Unblock(username);
                 return Ok($"User {username} successfully unsuspended.");
             }
             catch (Exception ex)
@@ -185,12 +191,11 @@ namespace PhotoForum.Controllers
         {
             try
             {
-                if (AreAllUQPNullOrEmpty(filterParameters))
-                {
-                    throw new InvalidOperationException("Please provide at least one valid filter parameter.");
-                }
 
-                IList<User> result = _usersService.FilterBy(filterParameters);
+                IList<UserResponseAndPostDto> result = usersService
+                    .FilterBy(filterParameters)                  
+                    .Select(user => modelMapper.MapURPD(user))
+                    .ToList();
 
                 if (result.Any())
                 {
@@ -198,7 +203,7 @@ namespace PhotoForum.Controllers
                 }
                 else
                 {
-                    return NotFound("No users found with the specified criteria");
+                    return NotFound("No users found with the specified criteria.");
                 }
             }
             catch (Exception ex)
@@ -209,11 +214,35 @@ namespace PhotoForum.Controllers
                 else return BadRequest(ex.Message);
             }
         }
-        private bool AreAllUQPNullOrEmpty(UserQueryParameters parameters)
+        
+        [HttpGet("posts")]
+        public IActionResult FilterPosts([FromQuery] PostQueryParameters filterParameters)
         {
-            return string.IsNullOrEmpty(parameters.FirstName)
-                && string.IsNullOrEmpty(parameters.LastName)
-                && string.IsNullOrEmpty(parameters.SortBy);
+            IList<PostResponseDtoAndId> posts = postService.FilterBy(filterParameters).Select(post => modelMapper.Map(post)).ToList();
+            if (posts.Count == 0)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return Ok(posts);
+            }
+        }
+
+        [HttpGet("post")]
+        public IActionResult GetPostById([FromQuery(Name = "id")] int id)
+        {
+            try
+            {
+                Post post = postService.GetById(id);
+                return Ok(post);
+            }
+            catch (Exception ex)
+            {
+                if (ex is EntityNotFoundException) return NotFound(ex.Message);
+                else return BadRequest(ex.Message);
+            }
+            
         }
 
     }

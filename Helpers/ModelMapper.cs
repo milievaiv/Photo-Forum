@@ -16,6 +16,21 @@ namespace PhotoForum.Helpers
                 LastName = model.LastName
             };
         }
+        public UserResponseAndPostDto MapURPD(User user)
+        {
+            return new UserResponseAndPostDto
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                IsBlocked = user.IsBlocked,
+                IsDeleted = user.IsDeleted,
+                Posts = user.Posts
+            };
+        }
+
         public UserResponseDto Map(User user)
         {
             return new UserResponseDto
@@ -44,6 +59,24 @@ namespace PhotoForum.Helpers
                 Title = postModel.Title,
                 Content = postModel.Content,
                 Creator = user.Username,
+                Likes = postModel.Likes,
+                Comments = postModel.Comments?
+                    .GroupBy(comment => comment.User.Username)
+                    .ToDictionary(
+                        group => group.Key,
+                        group => group.Select(comment => comment.Content).ToList()
+                    ) ?? new Dictionary<string, List<string>>()
+            };
+        }
+
+        public PostResponseDtoAndId Map(Post postModel)
+        {
+            return new PostResponseDtoAndId()
+            {
+                Id = postModel.Id,
+                Title = postModel.Title,
+                Content = postModel.Content,
+                Creator = postModel.Creator.Username,
                 Likes = postModel.Likes,
                 Comments = postModel.Comments?
                     .GroupBy(comment => comment.User.Username)
