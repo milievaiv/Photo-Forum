@@ -1,8 +1,8 @@
 ﻿@model PhotoForum.Models.DTOs.LoginModel
-@addTagHelper *, Microsoft.PhotoForum.Mvc.TagHelpers
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 <!DOCTYPE html>
-<html lang="en" coupert-item="9AF8D9A4E502F3784AD24272D81F0381">
+<html>
 <head>
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/cyborg.css">
     <meta charset="UTF-8">
@@ -22,50 +22,26 @@
             }
     </style>
 </head>
-<body>
-    <div class="row" style="
-    margin-top: 20vh;
-">
-        <div class="col-lg-12" style="
-">
-            <div class="page-header" style="
-    padding-top: 5vh;
-    text-align: center;
-">
-                <h3 id="forms">Log in</h3>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-lg-6" style="
-    max-width: 400px; margin: auto
-">
+<body style="margin-top:20vh">
+    <div class="row" style="margin:auto">
+        <div class="col-lg-6" style="max-width: 400px; margin: auto">
             <div class="bs-component">
-                <form action="/Home/Login" style="
-    /* max-width: 300px; */
-" method="post">
+                <form action="/Home/Login" method="post">
                     <fieldset>
-
-                        <div class="form-group row">
-
-                            <div class="col-sm-10">
-                            </div>
-                        </div>
                         <div class="form-group">
                             <label asp-for="Username" class="form-label mt-4">Username</label>
                             <input type="text" asp-for="Username" class="form-control" id="exampleInputUsername1" placeholder="Enter username">
 
                         </div>
-                        <div class="form-group" style="
-">
+                        <div class="form-group">
                             <label asp-for="Password" class="form-label mt-4">Password</label>
-                            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" autocomplete="off">
+                            <input type="password" asp-for="Password" class="form-control" id="exampleInputPassword1" placeholder="Password" autocomplete="off">
                         </div>
-                        <button type="submit" class="btn btn-primary" style="margin-top: 2vh">Login</button>
+                        <div class="form-group text-center" style="margin-top: 3vh; display: flex; flex-direction: column; align-items: center;">
+                            <button type="submit" style="width:15vh; height:5vh" class="btn btn-primary">Log in</button>
+                        </div>
                     </fieldset>
                 </form>
-
             </div>
         </div>
 
