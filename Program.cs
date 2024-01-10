@@ -26,11 +26,17 @@ namespace PhotoForum
 
             // Add services to the container.
 
-            builder.Services.AddControllers()
-                .AddNewtonsoftJson(options =>
-                {
-                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                });
+            //builder.Services.AddControllers()
+            //    .AddNewtonsoftJson(options =>
+            //    {
+            //        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            //    });
+
+            builder.Services.AddControllersWithViews()
+            .AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
 
             builder.Services.AddAuthentication(options =>
             {
@@ -46,8 +52,6 @@ namespace PhotoForum
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    //ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                    //ValidAudience = builder.Configuration["Jwt:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtConfig:Secret"]))
                 };
             });
@@ -88,22 +92,38 @@ namespace PhotoForum
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(options =>
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "AspNetCoreDemo API V1");
+                options.RoutePrefix = "api/swagger";
+            });
 
             app.UseHttpsRedirection();
 
+            // Enable authentication and authorization.
             app.UseAuthentication();
+
+            app.UseStaticFiles();
+
+            app.UseRouting();
+
             app.UseAuthorization();
 
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapDefaultControllerRoute();
+            });
 
-            app.MapControllers();
+            app.UseDeveloperExceptionPage();
+
+            app.UseMiddleware<HeaderInspectionMiddleware>();
 
             app.Run();
+
         }
     }
 }

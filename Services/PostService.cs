@@ -56,6 +56,12 @@ public class PostService : IPostService
     {
         return postRepository.Like(user, postId);
     }
+
+    public Post Disike(User user, int postId)
+    {
+        return postRepository.Dislike(user, postId);
+    }
+
     public IList<Post> GetTopPosts()
     {
         return postRepository.GetTopPosts();

@@ -77,7 +77,7 @@ namespace PhotoForum.Repositories
         {
             var user = GetUsers().FirstOrDefault(u => u.Username == username);
             //if (user == null) throw new EntityNotFoundException($"User with username {username} could not be found.");
-            
+
             return user;
         }
         public User GetUserByEmail(string email)
@@ -121,7 +121,8 @@ namespace PhotoForum.Repositories
         {
             return context.RegularUsers
                 .Include(x => x.Posts)
-                .Include(x => x.Comments);
+                .Include(x => x.Comments)
+                .Where(x => x.IsDeleted != true);
         }
         public IList<User> GetUsers()
         {

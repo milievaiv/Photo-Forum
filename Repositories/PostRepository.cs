@@ -20,6 +20,7 @@ public class PostRepository : IPostRepository
             .OrderByDescending(x => x.Id)
             .Take(count);
     }
+
     public Post Create(User user, Post post)
     {
         post.Creator = user;
@@ -66,11 +67,11 @@ public class PostRepository : IPostRepository
         }
     }
 
-    private static IQueryable<Post> FilterByContent(IQueryable<Post> posts, string content)
+    private static IQueryable<Post> FilterByContent(IQueryable<Post> posts, string Content)
     {
-        if (!string.IsNullOrEmpty(content))
+        if (!string.IsNullOrEmpty(Content))
         {
-            return posts.Where(post => post.Content.Contains(content));
+            return posts.Where(post => post.Content.Contains(Content));
         }
         else
         {

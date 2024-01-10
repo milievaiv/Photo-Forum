@@ -105,7 +105,7 @@ namespace PhotoForum.Controllers
         }        
 
         [HttpPut("delete")]
-        public ActionResult<User> DeleteUser([FromQuery(Name = "value")] string username)
+        public ActionResult<User> DeleteUser([FromQuery(Name = "username")] string username)
         {
             if (string.IsNullOrEmpty(username))
             {
@@ -133,7 +133,7 @@ namespace PhotoForum.Controllers
         }
 
         [HttpPut("block")]
-        public ActionResult<User> BlockUser([FromQuery(Name = "value")] string username)
+        public ActionResult<User> BlockUser([FromQuery(Name = "username")] string username)
         {
             if (string.IsNullOrEmpty(username))
             {
@@ -160,7 +160,7 @@ namespace PhotoForum.Controllers
         }
 
         [HttpPut("unblock")]
-        public ActionResult<User> UnblockUser([FromQuery(Name = "value")] string username)
+        public ActionResult<User> UnblockUser([FromQuery(Name = "username")] string username)
         {
             if (string.IsNullOrEmpty(username))
             {
