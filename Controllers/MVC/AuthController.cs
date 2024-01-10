@@ -7,13 +7,13 @@ using PhotoForum.Services.Contracts;
 
 namespace PhotoForum.Controllers.MVC
 {
-    public class HomeController : Controller
+    public class AuthController : Controller
     {
         private readonly IUsersService usersService;
         private readonly ITokenService tokenService;
         private readonly IVerificationService verificationService;
 
-        public HomeController(ITokenService tokenService, IUsersService usersService, IVerificationService verificationService)
+        public AuthController(ITokenService tokenService, IUsersService usersService, IVerificationService verificationService)
         {
             this.tokenService = tokenService;
             this.usersService = usersService;
@@ -21,11 +21,11 @@ namespace PhotoForum.Controllers.MVC
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Login()
         {
             LoginModel model = new LoginModel();
 
-            return View("Index", model);
+            return View("Login", model);
         }
 
         [HttpPost]
