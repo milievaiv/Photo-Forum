@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@{
+    bool isLogged = string.IsNullOrEmpty(Context.Request.Cookies["Authorization"]);
+
+    Console.WriteLine();
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">

@@ -49,6 +49,7 @@ namespace PhotoForum.Helpers
                 Title = dto.Title,
                 Content = dto.Content,
                 Creator = user,
+                PhotoUrl = dto.PhotoUrl,
                 Tags = dto.Tags.Select(tagName => new Tag { Name = tagName }).ToList()
             };
         }

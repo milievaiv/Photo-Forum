@@ -211,9 +211,18 @@ public class PostRepository : IPostRepository
             .Select(p => new Post { Id = p.Id, Title = p.Title, Comments = p.Comments, Date = p.Date })
             .ToList();
     }
+    private IQueryable<Tag> IQ_GetTags()
+    {
+        return context.Tags;
+    }
+
+    private IList<Tag> GetTags()
+    {
+        return IQ_GetTags().ToList();
+    }
+
     public void CreateTag(Post post)
     {
-
         foreach (var tag in post.Tags)
         {
             // Check for duplicates and correct formatting
@@ -229,14 +238,24 @@ public class PostRepository : IPostRepository
                 throw new Exception($"Invalid format for tag: {tag.Name}");
             }
 
+            var _tag = GetTagByName(tag.Name);
             // Check if the tag exists in the database
-            if (!context.Tags.Contains(tag))
+            if (_tag == null)
             {
                 context.Tags.Add(tag);
+                context.SaveChanges();
+                _tag = GetTagByName(tag.Name);
             }
-            post.Tags.Add(tag);
-            tag.Posts.Add(post);
+            tag.Id = _tag.Id;
+            _tag.Posts.Add(post);
             context.SaveChanges();
         }
+    }
+
+    public Tag GetTagByName(string name)
+    {
+        var tag = IQ_GetTags().AsNoTracking().FirstOrDefault(u => u.Name == name);
+        //if (user == null) throw new EntityNotFoundException($"User with username {username} could not be found.");
+        return tag;
     }
 }

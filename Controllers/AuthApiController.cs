@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 
 namespace PhotoForum.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthApiController : ControllerBase
     {

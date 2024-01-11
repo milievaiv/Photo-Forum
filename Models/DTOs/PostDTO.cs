@@ -14,5 +14,7 @@ namespace PhotoForum.Models.DTOs
         [MinLength(32, ErrorMessage = "The {0} field must be at least {1} character.")]
         public string Content { get; set; }
         public List<string> Tags { get; set; } = new List<string>();
+        public string PhotoUrl { get; set; }
+
     }
 }
