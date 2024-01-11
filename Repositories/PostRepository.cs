@@ -30,7 +30,7 @@ public class PostRepository : IPostRepository
         post.Creator.Posts.Add(post);
         context.SaveChanges();
         //IMPORTANT USE LIST 
-        //List<Tag> tags = new List<Tag>() { new Tag { Name = "one"}, new Tag { Name = "two" }, new Tag { Name = "three" } };
+        List<Tag> tags = new List<Tag>() { new Tag { Name = "one"}, new Tag { Name = "two" }, new Tag { Name = "three" } };
         CreateTag(post, tags);
         context.SaveChanges();
 
