@@ -1,0 +1,63 @@
+﻿@{
+    ViewData["AuthorizeRoles"] = Context.Request.Cookies["Authorization"];
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>PhotoForum - @ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/cyborg.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">PhotoForum</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor04" aria-controls="navbarColor04" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarColor04">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">
+                                Home
+                                <span class="visually-hidden">(current)</span>
+                            </a>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">About</a>
+                        </li>
+                        
+                    </ul>
+                    <form class="d-flex">
+                        <input class="form-control me-sm-2" type="search" placeholder="Search">
+                        <button class="btn btn-secondary my-2 my-sm-0" type="submit" fdprocessedid="kscsnt">Search</button>
+                    </form>
+                    
+                    <li class="nav-item">
+                        @if (!(bool)ViewData["AuthorizeRoles"])
+                        {
+                            <a asp-controller="Users" asp-action="Login" class="btn btn-light" fdprocessedid="y0tqgk">Login</a>
+                            <a asp-controller="Users" asp-action="Register" class="btn btn-outline-dark" fdprocessedid="6zd0ds">Sign Up</a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Users" asp-action="Logout" class="btn btn-dark" fdprocessedid="w1tr1j">Logout</a>
+                        }
+                    </li>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="body-content">
+        @RenderBody()
+    </div>
+
+    <footer>
+        <small>© Copyright @DateTime.Now.Year, PhotoForum</small>
+    </footer>
+    <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
+</body>
+</html>

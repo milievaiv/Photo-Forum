@@ -62,11 +62,24 @@ namespace PhotoForum
              
             builder.Services.AddDbContext<PhotoForumContext>(options =>
             {
-                string connectionString = @"Data Source=127.0.0.1,1433;Initial Catalog=PhotoForum;User Id=sqlserver;Password=D?3F&>#(}HAmCOi%;";
+                string connectionString = @"Data Source=127.0.0.1,1435;Initial Catalog=PhotoForum;User Id=sqlserver;Password=D?3F&>#(}HAmCOi%;";
                 //string connectionString = "Server=localhost;Database=Demo;Trusted_Connection=True;";
                 options.UseSqlServer(connectionString, b => b.MigrationsAssembly(typeof(PhotoForum.Data.PhotoForumContext).Assembly.FullName));
                 options.EnableSensitiveDataLogging();
             });
+
+            // Http Session
+            builder.Services.AddSession(options =>
+            {
+                // With IdleTimeout you can change the number of seconds after which the session expires.
+                // The seconds reset every time you access the session.
+                // This only applies to the session, not the cookie.
+                options.IdleTimeout = TimeSpan.FromSeconds(60);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
+            builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddScoped<IUsersRepository, UsersRepository>();
             builder.Services.AddScoped<IPostRepository, PostRepository>();
@@ -93,6 +106,7 @@ namespace PhotoForum
             var app = builder.Build();
 
             app.UseSwagger();
+            app.UseSession();
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
