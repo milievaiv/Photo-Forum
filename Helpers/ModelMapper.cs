@@ -34,10 +34,10 @@ namespace PhotoForum.Helpers
         public UserResponseDto Map(User user)
         {
             return new UserResponseDto
-            { 
+            {
                 Username = user.Username,
                 Email = user.Email,
-                FirstName = user.FirstName, 
+                FirstName = user.FirstName,
                 LastName = user.LastName
             };
         }
@@ -48,7 +48,8 @@ namespace PhotoForum.Helpers
             {
                 Title = dto.Title,
                 Content = dto.Content,
-                Creator = user                
+                Creator = user,
+                Tags = dto.Tags.Select(tagName => new Tag { Name = tagName }).ToList()
             };
         }
 
@@ -65,7 +66,11 @@ namespace PhotoForum.Helpers
                     .ToDictionary(
                         group => group.Key,
                         group => group.Select(comment => comment.Content).ToList()
-                    ) ?? new Dictionary<string, List<string>>()
+                    ) ?? new Dictionary<string, List<string>>(),
+                Tags = postModel.Tags?
+                    .Select(tag => tag.Name)
+                    .ToList() ?? new List<string>()
+
             };
         }
 

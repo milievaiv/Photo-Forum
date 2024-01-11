@@ -4,6 +4,7 @@ using PhotoForum.Models;
 using PhotoForum.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Microsoft.VisualBasic;
 
 public class PostRepository : IPostRepository
 {
@@ -24,10 +25,11 @@ public class PostRepository : IPostRepository
     {
         post.Creator = user;
         post.Date = DateTime.Now;
+        CreateTag(post);
         context.Posts.Add(post);
         post.Creator.Posts.Add(post);
         context.SaveChanges();
-        
+
         return post;
     }
 
@@ -41,7 +43,7 @@ public class PostRepository : IPostRepository
 
         return post ?? throw new EntityNotFoundException($"Post with id {id} not found.");
     }
-    
+
     public IList<Post> FilterBy(PostQueryParameters filterParameters)
     {
         IQueryable<Post> result = GetPosts();
@@ -49,6 +51,7 @@ public class PostRepository : IPostRepository
         result = FilterByTitle(result, filterParameters.Title);
         result = FilterByContent(result, filterParameters.Content);
         result = FilterByCreator(result, filterParameters.Creator);
+        result = FilterByTag(result, filterParameters.Tags);
         result = SortBy(result, filterParameters.SortBy);
 
         return result.ToList();
@@ -89,6 +92,17 @@ public class PostRepository : IPostRepository
             return posts;
         }
     }
+    private static IQueryable<Post> FilterByTag(IQueryable<Post> posts, string tag)
+    {
+        if (!string.IsNullOrEmpty(tag))
+        {
+            return posts.Where(post => post.Tags.Any(postTag => postTag.Name == tag));
+        }
+        else
+        {
+            return posts;
+        }
+    }
 
     private static IQueryable<Post> SortBy(IQueryable<Post> posts, string sortCriteria)
     {
@@ -102,6 +116,8 @@ public class PostRepository : IPostRepository
                 return posts.OrderBy(post => post.Title);
             case "creator":
                 return posts.OrderBy(post => post.Creator);
+            case "tag":
+                return posts.OrderBy(post => post.Tags);
             default:
                 return posts;
         }
@@ -130,6 +146,7 @@ public class PostRepository : IPostRepository
 
         postToEdit.Title = editedPost.Title;
         postToEdit.Content = editedPost.Content;
+        postToEdit.Tags = editedPost.Tags;
 
         context.Update(postToEdit);
         context.SaveChanges();
@@ -154,8 +171,8 @@ public class PostRepository : IPostRepository
         ++post.Likes;
 
         return post;
-    }   
-    
+    }
+
     public Post Dislike(User user, int postId)
     {
         var post = FindPostFromUser(user, postId);
@@ -168,7 +185,7 @@ public class PostRepository : IPostRepository
     {
         return context.Posts
             .Include(p => p.Comments)
-            .ThenInclude(c => c.User);   
+            .ThenInclude(c => c.User);
     }
 
     private Post FindPostFromUser(User user, int postId)
@@ -190,7 +207,35 @@ public class PostRepository : IPostRepository
         return context.Posts
             .OrderByDescending(p => p.Date)
             .Take(10)
-            .Select(p => new Post { Id = p.Id, Title = p.Title, Comments = p.Comments, Date = p.Date})
+            .Select(p => new Post { Id = p.Id, Title = p.Title, Comments = p.Comments, Date = p.Date })
             .ToList();
+    }
+    public void CreateTag(Post post)
+    {
+
+        foreach (var tag in post.Tags)
+        {
+            // Check for duplicates and correct formatting
+            if (post.Tags.Any(existingTag => existingTag != tag && string.Equals(existingTag.Name, tag.Name)))
+            {
+                // Handle duplicate or incorrectly formatted tag
+                throw new DuplicateEntityException($"Duplicate tag: {tag.Name}");
+            }
+
+            if (tag.Name.Any(char.IsUpper) || tag.Name.Any(ch => !char.IsLetterOrDigit(ch)))
+            {
+                // Handle tags with uppercase letters or special symbols
+                throw new Exception($"Invalid format for tag: {tag.Name}");
+            }
+
+            // Check if the tag exists in the database
+            if (!context.Tags.Contains(tag))
+            {
+                context.Tags.Add(tag);
+            }
+            post.Tags.Add(tag);
+            tag.Posts.Add(post);
+            context.SaveChanges();
+        }
     }
 }
