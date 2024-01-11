@@ -26,9 +26,12 @@ public class PostRepository : IPostRepository
     {
         post.Creator = user;
         post.Date = DateTime.Now;
-        CreateTag(post);
         context.Posts.Add(post);
         post.Creator.Posts.Add(post);
+        context.SaveChanges();
+        //IMPORTANT USE LIST 
+        //List<Tag> tags = new List<Tag>() { new Tag { Name = "one"}, new Tag { Name = "two" }, new Tag { Name = "three" } };
+        CreateTag(post, tags);
         context.SaveChanges();
 
         return post;
@@ -221,12 +224,12 @@ public class PostRepository : IPostRepository
         return IQ_GetTags().ToList();
     }
 
-    public void CreateTag(Post post)
+    public void CreateTag(Post post, List<Tag> tags)
     {
-        foreach (var tag in post.Tags)
+        foreach (var tag in tags)
         {
             // Check for duplicates and correct formatting
-            if (post.Tags.Any(existingTag => existingTag != tag && string.Equals(existingTag.Name, tag.Name)))
+            if (tags.Any(existingTag => existingTag != tag && string.Equals(existingTag.Name, tag.Name)))
             {
                 // Handle duplicate or incorrectly formatted tag
                 throw new DuplicateEntityException($"Duplicate tag: {tag.Name}");
@@ -246,16 +249,16 @@ public class PostRepository : IPostRepository
                 context.SaveChanges();
                 _tag = GetTagByName(tag.Name);
             }
-            tag.Id = _tag.Id;
             _tag.Posts.Add(post);
+            post.Tags.Add(_tag);
             context.SaveChanges();
         }
     }
 
     public Tag GetTagByName(string name)
     {
-        var tag = IQ_GetTags().AsNoTracking().FirstOrDefault(u => u.Name == name);
-        //if (user == null) throw new EntityNotFoundException($"User with username {username} could not be found.");
+        var tag = IQ_GetTags().FirstOrDefault(u => u.Name == name);
+        context.SaveChanges();
         return tag;
     }
 }
