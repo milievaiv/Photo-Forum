@@ -1,0 +1,53 @@
+﻿@model PhotoForum.Models.DTOs.LoginModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/cyborg.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login</title>
+    <style id="inert-style">
+        [inert] {
+            pointer-events: none;
+            cursor: default;
+        }
+
+            [inert], [inert] * {
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+    </style>
+</head>
+<body style="margin-top:20vh">
+    <div class="row" style="margin:auto">
+        <div class="col-lg-6" style="max-width: 400px; margin: auto">
+            <div class="bs-component">
+                <form action="/Auth/Login" method="post">
+                    <fieldset>
+                        <div class="form-group">
+                            <label asp-for="Username" class="form-label mt-4">Username</label>
+                            <input type="text" asp-for="Username" class="form-control" id="exampleInputUsername1" placeholder="Enter username">
+
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Password" class="form-label mt-4">Password</label>
+                            <input type="password" asp-for="Password" class="form-control" id="exampleInputPassword1" placeholder="Password" autocomplete="off">
+                        </div>
+                        <div class="form-group text-center" style="margin-top: 3vh; display: flex; flex-direction: column; align-items: center;">
+                            <button type="submit" style="width:15vh; height:5vh" class="btn btn-primary">Log in</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
+</body>
+</html>
+
+
