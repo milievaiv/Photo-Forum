@@ -19,6 +19,6 @@ namespace PhotoForum.Models
         public IList<Comment> Comments { get; set; } = new List<Comment>();
         public int Likes { get; set; }
         public DateTime Date { get; set; }
-
+        public IList<Tag> Tags { get; set; } = new List<Tag>();
     }
 }
