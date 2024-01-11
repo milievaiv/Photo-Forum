@@ -22,7 +22,7 @@ public class PostRepository : IPostRepository
             .Take(count);
     }
 
-    public Post Create(User user, Post post)
+    public Post Create(User user, Post post, List<Tag> tags)
     {
         post.Creator = user;
         post.Date = DateTime.Now;
@@ -30,7 +30,7 @@ public class PostRepository : IPostRepository
         post.Creator.Posts.Add(post);
         context.SaveChanges();
         //IMPORTANT USE LIST 
-        List<Tag> tags = new List<Tag>() { new Tag { Name = "one"}, new Tag { Name = "two" }, new Tag { Name = "three" } };
+        //List<Tag> tags = new List<Tag>() { new Tag { Name = "one"}, new Tag { Name = "two" }, new Tag { Name = "three" } };
         CreateTag(post, tags);
         context.SaveChanges();
 

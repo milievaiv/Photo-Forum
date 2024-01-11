@@ -5,7 +5,7 @@ namespace PhotoForum.Services.Contracts
 {
     public interface IPostService
     {
-        Post Create(User user, Post post);
+        Post Create(User user, Post post, List<Tag> tags);
         IList<Post> GetAll();
         Post GetById(int id);
         IList<Post> FilterBy(PostQueryParameters filterParameters);
