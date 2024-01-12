@@ -28,24 +28,25 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#">About</a>
                         </li>
-                        
+
                     </ul>
                     <form class="d-flex">
                         <input class="form-control me-sm-2" type="search" placeholder="Search">
                         <button class="btn btn-secondary my-2 my-sm-0" type="submit" fdprocessedid="kscsnt">Search</button>
                     </form>
-                    
-                    <li class="nav-item">
-                        @if (isLogged)
-                        {
-                            <a asp-controller="Users" asp-action="Login" class="btn btn-light" fdprocessedid="y0tqgk">Login</a>
-                            <a asp-controller="Users" asp-action="Register" class="btn btn-outline-dark" fdprocessedid="6zd0ds">Sign Up</a>
-                        }
-                        else
-                        {
-                            <a asp-controller="Users" asp-action="Logout" class="btn btn-dark" fdprocessedid="w1tr1j">Logout</a>
-                        }
-                    </li>
+
+                    @if (isLogged)
+                    {
+                        <div style="margin-left:1vh">
+                        <a asp-controller="Users" asp-action="Login" class="btn btn-light" fdprocessedid="y0tqgk">Login</a>
+                        <a asp-controller="Users" asp-action="Register" class="btn btn-outline-dark" fdprocessedid="6zd0ds">Sign Up</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <a asp-controller="Users" asp-action="Logout" class="btn btn-dark" style = "margin-left:1vh" fdprocessedid="w1tr1j">Logout</a>
+                    }
+
                 </div>
             </div>
         </nav>
