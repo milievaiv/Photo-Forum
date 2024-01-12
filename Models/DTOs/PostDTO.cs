@@ -15,5 +15,6 @@ namespace PhotoForum.Models.DTOs
         public string Content { get; set; }
         public List<string> Tags { get; set; } = new List<string>();
         public string PhotoUrl { get; set; }
+
     }
 }

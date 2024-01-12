@@ -21,14 +21,18 @@ public class PostRepository : IPostRepository
             .Take(count);
     }
 
-    public Post Create(User user, Post post)
+    public Post Create(User user, Post post, List<Tag> tags)
     {
         post.Creator = user;
         post.Date = DateTime.Now;
         context.Posts.Add(post);
         post.Creator.Posts.Add(post);
         context.SaveChanges();
-        
+        //IMPORTANT USE LIST 
+        //List<Tag> tags = new List<Tag>() { new Tag { Name = "one"}, new Tag { Name = "two" }, new Tag { Name = "three" } };
+        CreateTag(post, tags);
+        context.SaveChanges();
+
         return post;
     }
 
@@ -193,5 +197,52 @@ public class PostRepository : IPostRepository
             .Take(10)
             .Select(p => new Post { Id = p.Id, Title = p.Title, Comments = p.Comments, Date = p.Date})
             .ToList();
+    }
+    private IQueryable<Tag> IQ_GetTags()
+    {
+        return context.Tags;
+    }
+
+    private IList<Tag> GetTags()
+    {
+        return IQ_GetTags().ToList();
+    }
+
+    public void CreateTag(Post post, List<Tag> tags)
+    {
+        foreach (var tag in tags)
+        {
+            // Check for duplicates and correct formatting
+            if (tags.Any(existingTag => existingTag != tag && string.Equals(existingTag.Name, tag.Name)))
+            {
+                // Handle duplicate or incorrectly formatted tag
+                throw new DuplicateEntityException($"Duplicate tag: {tag.Name}");
+            }
+
+            if (tag.Name.Any(char.IsUpper) || tag.Name.Any(ch => !char.IsLetterOrDigit(ch)))
+            {
+                // Handle tags with uppercase letters or special symbols
+                throw new Exception($"Invalid format for tag: {tag.Name}");
+            }
+
+            var _tag = GetTagByName(tag.Name);
+            // Check if the tag exists in the database
+            if (_tag == null)
+            {
+                context.Tags.Add(tag);
+                context.SaveChanges();
+                _tag = GetTagByName(tag.Name);
+            }
+            _tag.Posts.Add(post);
+            post.Tags.Add(_tag);
+            context.SaveChanges();
+        }
+    }
+
+    public Tag GetTagByName(string name)
+    {
+        var tag = IQ_GetTags().FirstOrDefault(u => u.Name == name);
+        context.SaveChanges();
+        return tag;
     }
 }
