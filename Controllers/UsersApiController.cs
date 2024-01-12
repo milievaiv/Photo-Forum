@@ -56,10 +56,16 @@ namespace PhotoForum.Controllers
                 var user = usersService.GetUserByUsername(username);
 
                 if (user.IsBlocked == true) throw new InvalidOperationException("You've been suspended from doing this.");
+                List<Tag> tags = new List<Tag>();
+
+                foreach (string tag in dto.Tags)
+                {
+                    tags.Add(new Tag { Name = tag });
+                }
 
                 Post post = modelMapper.Map(user, dto);
 
-                Post createdPost = postService.Create(user, post);
+                Post createdPost = postService.Create(user, post, tags);
                 PostResponseDto createdPostDto = modelMapper.Map(user, createdPost);
 
 

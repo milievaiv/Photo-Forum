@@ -14,6 +14,7 @@ namespace PhotoForum.Data
         public DbSet<User> RegularUsers { get; set; }
         public DbSet<Admin> Admins { get; set; }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<Tag> Tags { get; set; }
         public DbSet<Comment> Comments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
