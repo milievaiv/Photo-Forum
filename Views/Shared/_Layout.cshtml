@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["AuthorizeRoles"] = Context.Request.Cookies["Authorization"];
+    bool isLogged = string.IsNullOrEmpty(Context.Request.Cookies["Authorization"]);
 }
 
 <!DOCTYPE html>
@@ -36,7 +36,7 @@
                     </form>
                     
                     <li class="nav-item">
-                        @if (!(bool)ViewData["AuthorizeRoles"])
+                        @if (isLogged)
                         {
                             <a asp-controller="Users" asp-action="Login" class="btn btn-light" fdprocessedid="y0tqgk">Login</a>
                             <a asp-controller="Users" asp-action="Register" class="btn btn-outline-dark" fdprocessedid="6zd0ds">Sign Up</a>

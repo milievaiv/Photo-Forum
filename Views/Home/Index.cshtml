@@ -1,52 +1,40 @@
-﻿@model PhotoForum.Models.DTOs.LoginModel
-
-@*<!DOCTYPE html>
-<html>
+﻿<!DOCTYPE html>
+<html lang="en">
 <head>
-    <link rel="stylesheet" href="/lib/bootstrap/dist/css/cyborg.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Login</title>
-    <style id="inert-style">
-        [inert] {
-            pointer-events: none;
-            cursor: default;
-        }
-
-            [inert], [inert] * {
-                -webkit-user-select: none;
-                -moz-user-select: none;
-                -ms-user-select: none;
-                user-select: none;
-            }
-    </style>
-</head>*@
+    <link rel="stylesheet" href="/css/grid.css">
+    <title>PhotoForum - Home</title>
+</head>
 <body>
-    <div class="row" style="margin:auto">
-        <div class="col-lg-6" style="max-width: 400px; margin: auto">
-            <div class="bs-component">
-                <form action="/Home/Login" method="post">
-                    <fieldset>
-                        <div class="form-group">
-                            <label asp-for="Username" class="form-label mt-4">Username</label>
-                            <input type="text" asp-for="Username" class="form-control" id="exampleInputUsername1" placeholder="Enter username">
-
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Password" class="form-label mt-4">Password</label>
-                            <input type="password" asp-for="Password" class="form-control" id="exampleInputPassword1" placeholder="Password" autocomplete="off">
-                        </div>
-                        <div class="form-group text-center" style="margin-top: 3vh; display: flex; flex-direction: column; align-items: center;">
-                            <button type="submit" style="width:15vh; height:5vh" class="btn btn-primary">Log in</button>
-                        </div>
-                    </fieldset>
-                </form>
-            </div>
+    <div class="masonry">
+        <div class="item">
+            <img src="/images/1.jpg">
         </div>
-
+        <div class="item">
+            <img src="/images/2.jpg">
+        </div>
+        <div class="item">
+            <img src="/images/3.jpg">
+        </div>
+        <div class="item">
+            <img src="/images/4.jpg">
+        </div>
+        <div class="item">
+            <img src="/images/5.jpg">
+        </div>
+        <div class="item">
+            <img src="/images/6.png">
+        </div>
+        <div class="item">
+            <img src="/images/7.png">
+        </div>
+        <div class="item">
+            <img src="/images/8.png">
+        </div>
+        <div class="item">
+            <img src="/images/9.png">
+        </div>
     </div>
-    <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
 </body>
-@*</html*@
-
-
+</html>
