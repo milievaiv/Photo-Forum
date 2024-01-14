@@ -23,73 +23,21 @@ namespace PhotoForum.Controllers.MVC
         [HttpGet]
         public IActionResult Index()
         {
-            LoginModel model = new LoginModel();
-
-            return View("Index", model);
+            return View("Index");
         }
 
-        [HttpPost]
-        public IActionResult Login([FromForm] LoginModel model)
+        //[HttpGet]
+        //public IActionResult LogOut()
+        //{
+
+        //    return View("Index");
+        //}
+
+        [HttpGet]
+        public IActionResult Auth()
         {
-            LoginModel result = new LoginModel();
-            if (ModelState.IsValid)
-            {
+            return RedirectToAction("Login", "Auth");
 
-                result = new LoginModel
-                {
-                    Username = model.Username,
-                    Password = model.Password
-                };
-            }
-            try
-            {
-                var user = verificationService.AuthenticateUser(result);
-                string role = DetermineUserRole(user); // Implement this method to determine the role
-                string token = tokenService.CreateToken(user, role);                
-
-                Response.Cookies.Append("Authorization", token, new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.Strict
-                });
-
-                //Response.Cookies.Append("Role", role, new CookieOptions
-                //{
-                //    HttpOnly = true,
-                //    Secure = true,
-                //    SameSite = SameSiteMode.Strict
-                //});
-
-                if (role == "admin")
-                {
-                    return RedirectToAction("Index", "Admin");
-                }
-                return RedirectToAction("Index", "User");
-            }
-            catch (UnauthorizedOperationException)
-            {
-                return BadRequest("Invalid login attempt!");
-            }
-            catch (EntityNotFoundException)
-            {
-                return BadRequest("Invalid login attempt!");
-            }
-
-        }
-
-        private string DetermineUserRole(BaseUser user)
-        {
-            // Implement logic to determine the role of the user (e.g., "user" or "admin")
-            // You might use user.GetType() or any other criteria depending on your application
-            if (user is Admin)
-            {
-                return "admin";
-            }
-            else
-            {
-                return "user";
-            }
         }
     }
 }
