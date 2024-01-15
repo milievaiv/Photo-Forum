@@ -10,12 +10,13 @@
     <title>PhotoForum - @ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css"/>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/cyborg.css">
+    <link rel="stylesheet" href="/css/fonts.css">
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <header style="overflow: hidden; background-color: #333; position: -webkit-sticky; /* Safari */ position: sticky; top: 0;">
+        <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
             <div class="container-fluid">
-                <a class="navbar-brand">PhotoForum</a>
+                <a class="navbar-brand" style="font-family: 'Montserrat', sans-serif;  font-size: 120%;">PhotoForum</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor04" aria-controls="navbarColor04" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -56,7 +57,7 @@
         @RenderBody()
     </div>
 
-    <footer style="  position: fixed; left: 0; bottom: 0; width: 100%;">
+    <footer style="position: fixed; left: 0; bottom: 0; width: 100%;">
         <small>© Copyright @DateTime.Now.Year, PhotoForum</small>
     </footer>
     <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>

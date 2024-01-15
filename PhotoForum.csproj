@@ -24,8 +24,4 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="wwwroot\logout.js" />
-  </ItemGroup>
-
 </Project>

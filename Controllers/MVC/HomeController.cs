@@ -10,11 +10,13 @@ namespace PhotoForum.Controllers.MVC
     public class HomeController : Controller
     {
         private readonly IUsersService usersService;
+        private readonly IPostService postsService;
         private readonly ITokenService tokenService;
         private readonly IVerificationService verificationService;
 
-        public HomeController(ITokenService tokenService, IUsersService usersService, IVerificationService verificationService)
+        public HomeController(ITokenService tokenService, IUsersService usersService, IPostService postsService, IVerificationService verificationService)
         {
+            this.postsService = postsService;
             this.tokenService = tokenService;
             this.usersService = usersService;
             this.verificationService = verificationService;
@@ -23,7 +25,16 @@ namespace PhotoForum.Controllers.MVC
         [HttpGet]
         public IActionResult Index()
         {
-            return View("Index");
+            int users_count = usersService.GetUsers().Count();
+            int posts_count = postsService.GetAll().Count();
+
+            SiteStatistics siteStatistics = new SiteStatistics
+            {
+                Users_Count = users_count,
+                Posts_Count = posts_count
+            };
+
+            return View("Index", siteStatistics);
         }
 
         //[HttpGet]
