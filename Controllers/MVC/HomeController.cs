@@ -10,11 +10,13 @@ namespace PhotoForum.Controllers.MVC
     public class HomeController : Controller
     {
         private readonly IUsersService usersService;
+        private readonly IPostService postsService;
         private readonly ITokenService tokenService;
         private readonly IVerificationService verificationService;
 
-        public HomeController(ITokenService tokenService, IUsersService usersService, IVerificationService verificationService)
+        public HomeController(ITokenService tokenService, IUsersService usersService, IPostService postsService, IVerificationService verificationService)
         {
+            this.postsService = postsService;
             this.tokenService = tokenService;
             this.usersService = usersService;
             this.verificationService = verificationService;
@@ -23,73 +25,30 @@ namespace PhotoForum.Controllers.MVC
         [HttpGet]
         public IActionResult Index()
         {
-            LoginModel model = new LoginModel();
+            int users_count = usersService.GetUsers().Count();
+            int posts_count = postsService.GetAll().Count();
 
-            return View("Index", model);
+            SiteStatistics siteStatistics = new SiteStatistics
+            {
+                Users_Count = users_count,
+                Posts_Count = posts_count
+            };
+
+            return View("Index", siteStatistics);
         }
 
-        [HttpPost]
-        public IActionResult Login([FromForm] LoginModel model)
+        //[HttpGet]
+        //public IActionResult LogOut()
+        //{
+
+        //    return View("Index");
+        //}
+
+        [HttpGet]
+        public IActionResult Auth()
         {
-            LoginModel result = new LoginModel();
-            if (ModelState.IsValid)
-            {
+            return RedirectToAction("Login", "Auth");
 
-                result = new LoginModel
-                {
-                    Username = model.Username,
-                    Password = model.Password
-                };
-            }
-            try
-            {
-                var user = verificationService.AuthenticateUser(result);
-                string role = DetermineUserRole(user); // Implement this method to determine the role
-                string token = tokenService.CreateToken(user, role);                
-
-                Response.Cookies.Append("Authorization", token, new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.Strict
-                });
-
-                //Response.Cookies.Append("Role", role, new CookieOptions
-                //{
-                //    HttpOnly = true,
-                //    Secure = true,
-                //    SameSite = SameSiteMode.Strict
-                //});
-
-                if (role == "admin")
-                {
-                    return RedirectToAction("Index", "Admin");
-                }
-                return RedirectToAction("Index", "User");
-            }
-            catch (UnauthorizedOperationException)
-            {
-                return BadRequest("Invalid login attempt!");
-            }
-            catch (EntityNotFoundException)
-            {
-                return BadRequest("Invalid login attempt!");
-            }
-
-        }
-
-        private string DetermineUserRole(BaseUser user)
-        {
-            // Implement logic to determine the role of the user (e.g., "user" or "admin")
-            // You might use user.GetType() or any other criteria depending on your application
-            if (user is Admin)
-            {
-                return "admin";
-            }
-            else
-            {
-                return "user";
-            }
         }
     }
 }

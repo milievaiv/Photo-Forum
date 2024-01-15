@@ -25,6 +25,16 @@ namespace PhotoForum.Controllers.MVC
         }
 
         [HttpGet]
+        public IActionResult Logout()
+        {
+            if (Request.Cookies["Authorization"] != null)
+            {
+                Response.Cookies.Delete("Authorization");
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
         public IActionResult Login()
         {
             LoginModel model = new LoginModel();
@@ -48,7 +58,7 @@ namespace PhotoForum.Controllers.MVC
             try
             {
                 var user = verificationService.AuthenticateUser(result);
-                string role = DetermineUserRole(user); // Implement this method to determine the role
+                string role = DetermineUserRole(user);
                 string token = tokenService.CreateToken(user, role);                
 
                 Response.Cookies.Append("Authorization", token, new CookieOptions
@@ -57,13 +67,6 @@ namespace PhotoForum.Controllers.MVC
                     Secure = true,
                     SameSite = SameSiteMode.Strict
                 });
-
-                //Response.Cookies.Append("Role", role, new CookieOptions
-                //{
-                //    HttpOnly = true,
-                //    Secure = true,
-                //    SameSite = SameSiteMode.Strict
-                //});
 
                 if (role == "admin")
                 {
@@ -79,7 +82,6 @@ namespace PhotoForum.Controllers.MVC
             {
                 return BadRequest("Invalid login attempt!");
             }
-
         }
 
         [HttpGet]
@@ -135,8 +137,6 @@ namespace PhotoForum.Controllers.MVC
 
         private string DetermineUserRole(BaseUser user)
         {
-            // Implement logic to determine the role of the user (e.g., "user" or "admin")
-            // You might use user.GetType() or any other criteria depending on your application
             if (user is Admin)
             {
                 return "admin";
