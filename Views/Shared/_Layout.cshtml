@@ -9,6 +9,7 @@
     <title>PhotoForum - @ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/cyborg.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/scss/_register.scss">
 </head>
 <body>
     <header>
@@ -38,20 +39,21 @@
                     @if (isLogged)
                     {
                         <div style="margin-left:1vh">
-                        <a asp-controller="Users" asp-action="Login" class="btn btn-light" fdprocessedid="y0tqgk">Login</a>
-                        <a asp-controller="Users" asp-action="Register" class="btn btn-outline-dark" fdprocessedid="6zd0ds">Sign Up</a>
+                        <a asp-controller="Auth" asp-action="Login" class="btn btn-light" fdprocessedid="y0tqgk">Login</a>
+                        <a asp-controller="Auth" asp-action="Register" class="btn btn-outline-dark" fdprocessedid="6zd0ds">Sign Up</a>
                         </div>
                     }
                     else
                     {
-                        <a asp-controller="Users" asp-action="Logout" class="btn btn-dark" style = "margin-left:1vh" fdprocessedid="w1tr1j">Logout</a>
+                        <a asp-controller="Auth" asp-action="Logout" class="btn btn-dark" style="margin-left:1vh" fdprocessedid="w1tr1j">Logout</a>
+                        <div >
+                            <a class="nav-link" href="#"><img src="~/images/avatar_9347591.png" alt="Avatar" style="margin-left:1vh" width="42px" height="42px"></a>
+                        </div>
                     }
-
                 </div>
             </div>
         </nav>
     </header>
-
     <div class="body-content">
         @RenderBody()
     </div>

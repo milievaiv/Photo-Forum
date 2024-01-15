@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
+using PhotoForum.Controllers.Data.Exceptions;
 using PhotoForum.Exceptions;
 using PhotoForum.Models;
 using PhotoForum.Models.DTOs;
+using PhotoForum.Models.ViewModel;
 using PhotoForum.Services;
 using PhotoForum.Services.Contracts;
 
@@ -76,6 +80,57 @@ namespace PhotoForum.Controllers.MVC
                 return BadRequest("Invalid login attempt!");
             }
 
+        }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            var viewModel = new RegisterViewModel();
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult Register(RegisterViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            try
+            {
+                if (viewModel.Password != viewModel.ConfirmPassword)
+                {
+                    ModelState.AddModelError("ConfirmPassword", "The password and confirmation password do not match.");
+
+                    return View(viewModel);
+                }
+
+                RegisterModel model = new RegisterModel()
+                {
+                    Username = viewModel.Username,
+                    Password = viewModel.Password,
+                    Email = viewModel.Email,
+                    FirstName = viewModel.FirstName,
+                    LastName = viewModel.LastName
+                };
+                _ = usersService.Register(model);
+
+                return RedirectToAction("Login", "Auth");
+            }
+            catch (DuplicateEntityException)
+            {
+                ModelState.AddModelError("Username", "This username is already taken.");
+
+                return View(viewModel);
+            }
+            catch (DuplicateEmailException)
+            {
+				ModelState.AddModelError("Email", "This email is already taken.");
+
+				return View(viewModel);
+			}
         }
 
         private string DetermineUserRole(BaseUser user)
