@@ -34,6 +34,7 @@ public class PostRepository : IPostRepository
         context.SaveChanges();
 
         return post;
+
     }
 
     public IList<Post> GetAll()

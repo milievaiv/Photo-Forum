@@ -21,18 +21,34 @@ namespace PhotoForum.Services
         public BaseUser AuthenticateUser(LoginModel loginModel)
         {
             var admin = adminsRepository.GetAdminByUsername(loginModel.Username);
-            if (admin != null) return admin;
-            var user = usersRepository.GetUserByUsername(loginModel.Username);
-            if (user == null)
+            if (admin != null)
             {
-                throw new UnauthorizedOperationException("Invalid username!");
+                AuthenticateAdmin(loginModel.Password, admin);
+                return admin;
             }
-            if (!VerifyPasswordHash(loginModel.Password, user.PasswordHash, user.PasswordSalt))
+            var user = usersRepository.GetUserByUsername(loginModel.Username);
+            if (user != null)
+            {
+                AuthenticateUser(loginModel.Password, user);
+                return user;
+            }
+            throw new UnauthorizedOperationException("Invalid username!");
+        }
+
+        public void AuthenticateAdmin(string password, Admin admin)
+        {
+            if (!VerifyPasswordHash(password, admin.PasswordHash, admin.PasswordSalt))
             {
                 throw new UnauthorizedOperationException("Invalid password!");
             }
+        }
 
-            return user; // Authentication successful
+        public void AuthenticateUser(string password, User user)
+        {
+            if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+            {
+                throw new UnauthorizedOperationException("Invalid password!");
+            }
         }
 
         public bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)

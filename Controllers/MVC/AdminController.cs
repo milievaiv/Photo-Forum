@@ -14,5 +14,6 @@ namespace PhotoForum.Controllers.MVC
         {
             return View();
         }
+
     }
 }
