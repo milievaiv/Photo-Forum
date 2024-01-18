@@ -5,6 +5,7 @@ using PhotoForum.Models.Contracts;
 using PhotoForum.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 using PhotoForum.Helpers;
+using Microsoft.Data.SqlClient;
 
 namespace PhotoForum.Repositories
 {
@@ -149,11 +150,47 @@ namespace PhotoForum.Repositories
             result = SortBy(result, filterParameters.SortBy);
             return result.ToList();
         }
+        public IList<BaseUser> SearchBy(string filter)
+        {
+            var users = new List<BaseUser>();
+            var conn = context.Database.GetDbConnection();
+            try
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    string query = "SELECT * FROM BaseUsers WHERE Username LIKE @filter OR Firstname LIKE @filter OR Lastname LIKE @filter";
+                    command.CommandText = query;
+                    command.Parameters.Add(new SqlParameter("@filter", $"%{filter}%"));
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var user = new User
+                            {
+                                Username = reader["Username"].ToString(),
+                                FirstName = reader["Firstname"].ToString(),
+                                LastName = reader["Lastname"].ToString(),
+                                Email = reader["Email"].ToString()
+                            };
+                            users.Add(user);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                conn.Close();
+            }
+
+            return users;
+        }
         private static IQueryable<User> FilterByUsername(IQueryable<User> users, string username)
         {
             if (!string.IsNullOrEmpty(username))
             {
-                return users.Where(user => user.FirstName.Contains(username));
+                return users.Where(user => user.Username.Contains(username));
             }
             else
             {
@@ -164,7 +201,7 @@ namespace PhotoForum.Repositories
         {
             if (!string.IsNullOrEmpty(email))
             {
-                return users.Where(user => user.FirstName.Contains(email));
+                return users.Where(user => user.Email.Contains(email));
             }
             else
             {
@@ -186,7 +223,7 @@ namespace PhotoForum.Repositories
         {
             if (!string.IsNullOrEmpty(lastName))
             {
-                return users.Where(user => user.FirstName.Contains(lastName));
+                return users.Where(user => user.LastName.Contains(lastName));
             }
             else
             {

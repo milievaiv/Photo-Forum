@@ -64,7 +64,10 @@ namespace PhotoForum.Services
         {
             return this.usersRepository.FilterBy(filterParameters);
         }
-
+        public IList<BaseUser> SearchBy(string filter)
+        {
+            return this.usersRepository.SearchBy(filter);
+        }
         public User Update(int id, User user)
         {
             EnsureUserUniqueEmail(user);

@@ -2,6 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using PhotoForum.Attributes;
+using Microsoft.EntityFrameworkCore;
+using PhotoForum.Services.Contracts;
+using PhotoForum.Services;
+using PhotoForum.Models;
+using PhotoForum.Models.ViewModel;
 
 namespace PhotoForum.Controllers.MVC
 {

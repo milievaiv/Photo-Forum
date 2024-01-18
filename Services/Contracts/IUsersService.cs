@@ -8,6 +8,7 @@ namespace PhotoForum.Services.Contracts
     {
         IList<User> GetUsers();
         IList<User> FilterBy(UserQueryParameters filterParameters);
+        IList<BaseUser> SearchBy(string filter);
         User Register(RegisterModel registerModel);
         User GetUserById(int id);
         User GetUserByUsername(string username);
