@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using PhotoForum.Controllers.Data.Exceptions;
 using PhotoForum.Exceptions;
 using PhotoForum.Models;
 using PhotoForum.Models.DTOs;
@@ -39,6 +40,11 @@ namespace PhotoForum.Controllers
 
                 return Conflict("That username is taken.Try another.");
             }
+            catch (DuplicateEmailException ex)
+            {
+                return Conflict(ex.Message);
+            }
+
         }
 
         [HttpPost("login")]

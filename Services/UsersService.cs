@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using PhotoForum.Exceptions;
 using PhotoForum.Helpers;
+using PhotoForum.Controllers.Data.Exceptions;
 using PhotoForum.Models;
 using PhotoForum.Models.Contracts;
 using PhotoForum.Models.DTOs;
@@ -63,7 +64,10 @@ namespace PhotoForum.Services
         {
             return this.usersRepository.FilterBy(filterParameters);
         }
-
+        public IList<BaseUser> SearchBy(string filter)
+        {
+            return this.usersRepository.SearchBy(filter);
+        }
         public User Update(int id, User user)
         {
             EnsureUserUniqueEmail(user);
@@ -76,7 +80,7 @@ namespace PhotoForum.Services
             var users = usersRepository.GetUsers();
             if (users.Any(u => u.Email == user.Email))
             {
-                throw new DuplicateEntityException("This email is already taken.");
+                throw new DuplicateEmailException("This email is already taken.");
             }
         }     
     }
