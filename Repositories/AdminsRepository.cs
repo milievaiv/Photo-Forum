@@ -1,4 +1,6 @@
-﻿using PhotoForum.Data;
+﻿using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Logging.Abstractions;
+using PhotoForum.Data;
 using PhotoForum.Exceptions;
 using PhotoForum.Models;
 using PhotoForum.Repositories.Contracts;
@@ -38,5 +40,16 @@ namespace PhotoForum.Repositories
             return IQ_GetAdmins().ToList();
         }
 
+        public Log AddLog(string message)
+        {
+            Log logEntry = new Log
+            {
+                Event = message
+            };
+            context.Logs.Add(logEntry);
+            context.SaveChanges();
+
+            return logEntry;
+        }
     }
 }

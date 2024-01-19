@@ -145,7 +145,7 @@ namespace PhotoForum.Controllers
                 var user = usersService.GetUserByUsername(username);
                 var post = postService.GetById(postId);
 
-                if (post.UserId != user.Id)
+                if (post.Creator.Id != user.Id)
                 {
                     return Conflict("You can only delete your own posts.");
                 }

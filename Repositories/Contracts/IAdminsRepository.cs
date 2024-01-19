@@ -8,5 +8,7 @@ namespace PhotoForum.Repositories.Contracts
         Admin CreateAdmin(Admin admin);
         Admin GetAdminByUsername(string username);
         IList<Admin> GetAdmins();
+        Log AddLog(string message);
+
     }
 }

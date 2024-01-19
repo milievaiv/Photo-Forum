@@ -10,6 +10,8 @@ namespace PhotoForum.Services.Contracts
         bool Block(string username);
         bool Unblock(string username);
         Admin GetAdminByUsername(string username);
+        Log AddLog(string message);
+
 
     }
 }

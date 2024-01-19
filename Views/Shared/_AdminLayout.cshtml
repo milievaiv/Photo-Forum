@@ -1,63 +1,56 @@
 ﻿@{
     bool isLogged = string.IsNullOrEmpty(Context.Request.Cookies["Authorization"]);
 }
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <title>PhotoForum - @ViewData["Title"]</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/cyborg.css">
     <link rel="stylesheet" href="/css/fonts.css">
+
+    <!-- Use the Bootstrap bundle (includes Popper.js) -->
 </head>
 <body>
     <header style="overflow: hidden; background-color: #333; position: -webkit-sticky; /* Safari */ position: sticky; top: 0;">
         <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
             <div class="container-fluid">
-                <a class="navbar-brand" style="font-family: 'Montserrat', sans-serif;  font-size: 120%;">PhotoForum</a>
+                <a class="navbar-brand" style="font-family: 'Montserrat', sans-serif;  font-size: 120%;">PhotoForum <span style="color: red;">Admin</span></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor04" aria-controls="navbarColor04" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarColor04">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a asp-controller="Home" asp-action="Index" class="nav-link active">
+                            <a asp-controller="Admin" asp-action="Index" class="nav-link active">
                                 Home
                                 <span class="visually-hidden">(current)</span>
                             </a>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">About</a>
+                            <a asp-controller="Admin" asp-action="Users" class="nav-link">Users</a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="Admin" asp-action="Posts" class="nav-link">Posts</a>
                         </li>
                     </ul>
-                    <form class="d-flex">
-                        <input class="form-control me-sm-2" type="search" placeholder="Search">
-                        <button class="btn btn-secondary my-2 my-sm-0" type="submit" fdprocessedid="kscsnt">Search</button>
-                    </form>
 
-                    @if (isLogged)
-                    {
-                        <div style="margin-left:1vh">
-                        <a asp-controller="Auth" asp-action="Login" class="btn btn-light" fdprocessedid="y0tqgk">Login</a>
-                        <a asp-controller="Auth" asp-action="Register" class="btn btn-outline-dark" fdprocessedid="6zd0ds">Sign Up</a>
-                        </div>
-                    }
-                    else
-                    {
-                        <a asp-controller="Auth" asp-action="Logout" class="btn btn-dark" style="margin-left:1vh" fdprocessedid="w1tr1j">Logout</a>
-                    }
+                    <a asp-controller="Auth" asp-action="Logout" class="btn btn-dark" style="margin-left:1vh" fdprocessedid="w1tr1j">Logout</a>
 
                 </div>
             </div>
         </nav>
     </header>
 
-    <div class="body-content" style="height: 90%; display:flex">
+    <div class="body-content" style="height: 90%; display:relative">
         @RenderBody()
     </div>
-
+@*
     <footer style="position: fixed; left: 0; bottom: 0; width: 100%;">
         <small>© Copyright @DateTime.Now.Year, PhotoForum</small>
-    </footer>
-    <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
-</body>
+    </footer>*@
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+ </body>
 </html>

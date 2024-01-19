@@ -60,7 +60,7 @@ namespace PhotoForum.Helpers
                 Title = postModel.Title,
                 Content = postModel.Content,
                 Creator = user.Username,
-                Likes = postModel.Likes,
+                Likes = postModel.LikesCount,
                 Comments = postModel.Comments?
                     .GroupBy(comment => comment.User.Username)
                     .ToDictionary(
@@ -82,7 +82,7 @@ namespace PhotoForum.Helpers
                 Title = postModel.Title,
                 Content = postModel.Content,
                 Creator = postModel.Creator.Username,
-                Likes = postModel.Likes,
+                Likes = postModel.LikesCount,
                 Comments = postModel.Comments?
                     .GroupBy(comment => comment.User.Username)
                     .ToDictionary(

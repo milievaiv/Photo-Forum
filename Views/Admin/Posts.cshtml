@@ -1,0 +1,123 @@
+﻿@model PostViewModel
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!-- ... (rest of the view) ... -->
+<style>
+    td {
+        text-indent: 2vh;
+    }
+
+    th {
+        text-indent: 2vh;
+    }
+</style>
+
+<body>
+    <br />
+    <div style="display:flex">
+        <div style="display: flex">
+            <form asp-controller="Admin" asp-action="SearchPosts" method="post" style="width:50vh" class="d-flex">
+                <select asp-for="SearchModel.Property" class="form-control" style="margin-left:2vh;">
+                    <option value="Title">Title</option>
+                    <option value="Creator">Creator</option>
+                </select>
+                <input asp-for="SearchModel.Value" class="form-control me-sm-2" style="margin-left:1vh;" placeholder="Search">
+                <button type="submit" class="btn btn-secondary my-2 my-sm-0">Search</button>
+            </form>
+        </div>
+        <div style="display:flex; margin-left: 2vh">
+            <form asp-controller="Admin" asp-action="Posts" method="get">
+                <button type="submit" class="btn btn-primary">Clear</button>
+            </form>
+        </div>
+    </div>
+    <br />
+
+    <div>
+        <div>
+            <table class="table table-hover" style="padding-left:2vh">
+                <thead>
+                    <tr>
+                        <th><a asp-action="Posts" asp-route-page="@Model.CurrentPage" asp-route-sortBy="Id" asp-route-sortOrder="@(Model.SortBy == "Id" && Model.SortOrder == "asc" ? "desc" : "asc")">Id</a></th>
+                        <th><a asp-action="Posts" asp-route-page="@Model.CurrentPage" asp-route-sortBy="Creator" asp-route-sortOrder="@(Model.SortBy == "Creator" && Model.SortOrder == "asc" ? "desc" : "asc")">Creator</a></th>
+                        <th><a asp-action="Posts" asp-route-page="@Model.CurrentPage" asp-route-sortBy="Title" asp-route-sortOrder="@(Model.SortBy == "Title" && Model.SortOrder == "asc" ? "desc" : "asc")">Title</a></th>
+                        <!-- Add links for other columns as needed -->
+                        <th><a asp-action="Posts" asp-route-page="@Model.CurrentPage" asp-route-sortBy="Comments" asp-route-sortOrder="@(Model.SortBy == "Comments" && Model.SortOrder == "asc" ? "desc" : "asc")">Comments</a></th>
+                        <th><a asp-action="Posts" asp-route-page="@Model.CurrentPage" asp-route-sortBy="Likes" asp-route-sortOrder="@(Model.SortBy == "Likes" && Model.SortOrder == "asc" ? "desc" : "asc")">Likes</a></th>
+                        <th><a asp-action="Posts" asp-route-page="@Model.CurrentPage" asp-route-sortBy="Date" asp-route-sortOrder="@(Model.SortBy == "Date" && Model.SortOrder == "asc" ? "desc" : "asc")">Date</a></th>
+                        <th> </th>
+                        <th> </th>
+                        <!-- Add other user properties as needed -->
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var post in Model.Posts)
+                    {
+                        <tr>
+                            <td>@post.Id</td>
+                            @if (post.Creator != null)
+                            {
+                                <td>@post.Creator.Username</td>
+                            }
+                            else
+                            {
+                                <td>Unknown</td>
+                            }
+                            <td>@post.Title</td>
+                            <td>@post.Comments.Count</td>
+                            <td>@post.Likes</td>
+                            <td>@post.Date</td>
+                            <td>
+                                <form asp-controller="Admin" asp-action="Post" asp-route-page=@Model.CurrentPage asp-route-Property="@Model.SearchModel.Property" asp-route-Value="@Model.SearchModel.Value" method="get">
+                                    <input type="hidden" name="username" value="@post.Id" />
+                                    <button type="submit" class="btn btn-primary">Details</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form asp-controller="Admin" asp-action="DeletePost" asp-route-page=@Model.CurrentPage asp-route-SortBy="@Model.SortBy" asp-route-SortOrder="@Model.SortOrder" asp-route-Property="@Model.SearchModel.Property" asp-route-Value="@Model.SearchModel.Value" method="post">
+                                    <input type="hidden" name="post_id" value="@post.Id" />
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                            <!-- Add other user properties as needed -->
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-left: 1vh">
+            <ul class="pagination">
+                @if (Model.CurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Posts" asp-route-page="1" asp-route-SortBy="@Model.SortBy" asp-route-SortOrder="@Model.SortOrder" asp-route-Property="@Model.SearchModel.Property" asp-route-Value="@Model.SearchModel.Value">
+                            &laquo;
+                        </a>
+                    </li>
+                }
+
+                @for (int i = Math.Max(1, Model.CurrentPage - 1); i <= Math.Min(Model.TotalPages, Model.CurrentPage + 3); i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-action="Posts" asp-route-page="@i" asp-route-SortBy="@Model.SortBy" asp-route-SortOrder="@Model.SortOrder" asp-route-Property="@Model.SearchModel.Property" asp-route-Value="@Model.SearchModel.Value">
+                            @i
+                        </a>
+                    </li>
+                }
+
+                @if (Model.CurrentPage < Model.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Posts" asp-route-page="@Model.TotalPages" asp-route-SortBy="@Model.SortBy" asp-route-SortOrder="@Model.SortOrder" asp-route-Property="@Model.SearchModel.Property" asp-route-Value="@Model.SearchModel.Value">
+                            &raquo;
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</body>

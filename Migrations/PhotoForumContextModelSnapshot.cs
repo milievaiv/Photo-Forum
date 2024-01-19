@@ -58,7 +58,7 @@ namespace PhotoForum.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BaseUsers", (string)null);
+                    b.ToTable("BaseUsers");
                 });
 
             modelBuilder.Entity("PhotoForum.Models.Comment", b =>
@@ -76,7 +76,7 @@ namespace PhotoForum.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("PostId")
+                    b.Property<int>("PostId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
@@ -89,6 +89,41 @@ namespace PhotoForum.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("PhotoForum.Models.Like", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "PostId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("Likes");
+                });
+
+            modelBuilder.Entity("PhotoForum.Models.Log", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Event")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Logs");
                 });
 
             modelBuilder.Entity("PhotoForum.Models.Post", b =>
@@ -104,10 +139,13 @@ namespace PhotoForum.Migrations
                         .HasMaxLength(8192)
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("CreatorId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Likes")
+                    b.Property<int>("LikesCount")
                         .HasColumnType("int");
 
                     b.Property<string>("PhotoUrl")
@@ -119,12 +157,9 @@ namespace PhotoForum.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("CreatorId");
 
                     b.ToTable("Posts");
                 });
@@ -158,7 +193,7 @@ namespace PhotoForum.Migrations
 
                     b.HasIndex("TagsId");
 
-                    b.ToTable("PostTag");
+                    b.ToTable("PostTag", (string)null);
                 });
 
             modelBuilder.Entity("PhotoForum.Models.Admin", b =>
@@ -181,20 +216,43 @@ namespace PhotoForum.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.ToTable("RegularUsers", (string)null);
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("PhotoForum.Models.Comment", b =>
                 {
-                    b.HasOne("PhotoForum.Models.Post", null)
+                    b.HasOne("PhotoForum.Models.Post", "Post")
                         .WithMany("Comments")
-                        .HasForeignKey("PostId");
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("PhotoForum.Models.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PhotoForum.Models.Like", b =>
+                {
+                    b.HasOne("PhotoForum.Models.Post", "Post")
+                        .WithMany("Likes")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PhotoForum.Models.User", "User")
+                        .WithMany("LikedPosts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
 
                     b.Navigation("User");
                 });
@@ -203,9 +261,8 @@ namespace PhotoForum.Migrations
                 {
                     b.HasOne("PhotoForum.Models.User", "Creator")
                         .WithMany("Posts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Creator");
                 });
@@ -246,11 +303,15 @@ namespace PhotoForum.Migrations
             modelBuilder.Entity("PhotoForum.Models.Post", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Likes");
                 });
 
             modelBuilder.Entity("PhotoForum.Models.User", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("LikedPosts");
 
                     b.Navigation("Posts");
                 });

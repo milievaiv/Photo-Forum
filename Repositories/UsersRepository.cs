@@ -144,8 +144,8 @@ namespace PhotoForum.Repositories
 
             result = FilterByFirstName(result, filterParameters.FirstName);
             result = FilterByLastName(result, filterParameters.LastName);
-            result = FilterByUsername(result, filterParameters.FirstName);
-            result = FilterByEmail(result, filterParameters.LastName);
+            result = FilterByUsername(result, filterParameters.Username);
+            result = FilterByEmail(result, filterParameters.Email);
             result = SortBy(result, filterParameters.SortBy);
             return result.ToList();
         }
@@ -153,7 +153,7 @@ namespace PhotoForum.Repositories
         {
             if (!string.IsNullOrEmpty(username))
             {
-                return users.Where(user => user.FirstName.Contains(username));
+                return users.Where(user => user.Username.Contains(username));
             }
             else
             {
@@ -164,7 +164,7 @@ namespace PhotoForum.Repositories
         {
             if (!string.IsNullOrEmpty(email))
             {
-                return users.Where(user => user.FirstName.Contains(email));
+                return users.Where(user => user.Email.Contains(email));
             }
             else
             {
@@ -186,7 +186,7 @@ namespace PhotoForum.Repositories
         {
             if (!string.IsNullOrEmpty(lastName))
             {
-                return users.Where(user => user.FirstName.Contains(lastName));
+                return users.Where(user => user.LastName.Contains(lastName));
             }
             else
             {

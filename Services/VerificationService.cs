@@ -5,6 +5,7 @@ using PhotoForum.Repositories;
 using System.Security.Cryptography;
 using PhotoForum.Repositories.Contracts;
 using PhotoForum.Services.Contracts;
+using System.Diagnostics.Eventing.Reader;
 
 namespace PhotoForum.Services
 {
@@ -20,9 +21,11 @@ namespace PhotoForum.Services
         }
         public BaseUser AuthenticateUser(LoginModel loginModel)
         {
-            var admin = adminsRepository.GetAdminByUsername(loginModel.Username);
-            if (admin != null) return admin;
-            var user = usersRepository.GetUserByUsername(loginModel.Username);
+            BaseUser user = adminsRepository.GetAdminByUsername(loginModel.Username);
+            if (user == null)
+            {
+                user = usersRepository.GetUserByUsername(loginModel.Username);
+            }
             if (user == null)
             {
                 throw new UnauthorizedOperationException("Invalid username!");
@@ -31,7 +34,6 @@ namespace PhotoForum.Services
             {
                 throw new UnauthorizedOperationException("Invalid password!");
             }
-
             return user; // Authentication successful
         }
 

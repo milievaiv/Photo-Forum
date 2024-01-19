@@ -13,12 +13,13 @@ namespace PhotoForum.Models
         [StringLength(8192, MinimumLength = 32)]
         public string Content { get; set; }
         public string PhotoUrl { get; set; }
-        public int UserId { get; set; }
         //Nav prop
         public User? Creator { get; set; }
         public IList<Comment> Comments { get; set; } = new List<Comment>();
-        public int Likes { get; set; }
+        public int LikesCount { get; set; }
         public DateTime Date { get; set; }
         public IList<Tag> Tags { get; set; } = new List<Tag>();
+        public ICollection<Like> Likes { get; set; } = new List<Like>();
+
     }
 }

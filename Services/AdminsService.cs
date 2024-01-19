@@ -53,6 +53,12 @@ namespace PhotoForum.Services
         {
             return this.adminsRepository.GetAdminByUsername(username);
         }
+
+        public Log AddLog(string message)
+        {
+            return this.adminsRepository.AddLog(message);
+        }
+
     }
 
 }

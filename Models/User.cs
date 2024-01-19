@@ -12,5 +12,7 @@ namespace PhotoForum.Models
 
         public IList<Post> Posts { get; set; } = new List<Post>();
         public IList<Comment> Comments { get; set; } = new List<Comment>();
+        public ICollection<Like> LikedPosts { get; set; } = new List<Like>();
+
     }
 }

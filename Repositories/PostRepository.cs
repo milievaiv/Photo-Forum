@@ -49,7 +49,7 @@ public class PostRepository : IPostRepository
     
     public IList<Post> FilterBy(PostQueryParameters filterParameters)
     {
-        IQueryable<Post> result = GetPosts();
+        IList<Post> result = GetPosts().ToList();
 
         result = FilterByTitle(result, filterParameters.Title);
         result = FilterByContent(result, filterParameters.Content);
@@ -59,11 +59,11 @@ public class PostRepository : IPostRepository
         return result.ToList();
     }
 
-    private static IQueryable<Post> FilterByTitle(IQueryable<Post> posts, string title)
+    private static IList<Post> FilterByTitle(IList<Post> posts, string title)
     {
         if (!string.IsNullOrEmpty(title))
         {
-            return posts.Where(post => post.Title.Contains(title));
+            return posts.Where(post => post.Title.Contains(title)).ToList();
         }
         else
         {
@@ -71,11 +71,11 @@ public class PostRepository : IPostRepository
         }
     }
 
-    private static IQueryable<Post> FilterByContent(IQueryable<Post> posts, string Content)
+    private static IList<Post> FilterByContent(IList<Post> posts, string Content)
     {
         if (!string.IsNullOrEmpty(Content))
         {
-            return posts.Where(post => post.Content.Contains(Content));
+            return posts.Where(post => post.Content.Contains(Content)).ToList();
         }
         else
         {
@@ -83,11 +83,11 @@ public class PostRepository : IPostRepository
         }
     }
 
-    private static IQueryable<Post> FilterByCreator(IQueryable<Post> posts, string creator)
+    private static IList<Post> FilterByCreator(IList<Post> posts, string creator)
     {
         if (!string.IsNullOrEmpty(creator))
         {
-            return posts.Where(post => post.Creator.Username == creator);
+            return posts.Where(post => post.Creator.Username == creator).ToList();
         }
         else
         {
@@ -95,18 +95,18 @@ public class PostRepository : IPostRepository
         }
     }
 
-    private static IQueryable<Post> SortBy(IQueryable<Post> posts, string sortCriteria)
+    private static IList<Post> SortBy(IList<Post> posts, string sortCriteria)
     {
         switch (sortCriteria)
         {
             case "likes":
-                return posts.OrderBy(post => post.Likes);
+                return posts.OrderBy(post => post.Likes).ToList();
             case "date":
-                return posts.OrderBy(post => post.Date);
+                return posts.OrderBy(post => post.Date).ToList();
             case "title":
-                return posts.OrderBy(post => post.Title);
+                return posts.OrderBy(post => post.Title).ToList();
             case "creator":
-                return posts.OrderBy(post => post.Creator);
+                return posts.OrderBy(post => post.Creator).ToList();
             default:
                 return posts;
         }
@@ -155,16 +155,30 @@ public class PostRepository : IPostRepository
 
     public Post Like(User user, int postId)
     {
+        var like = new Like { UserId = user.Id, PostId = postId };
+        context.Likes.Add(like);
+        context.SaveChanges();
+
         var post = FindPostFromUser(user, postId);
-        ++post.Likes;
+        ++post.LikesCount;
+        context.SaveChanges();
 
         return post;
     }   
     
     public Post Dislike(User user, int postId)
     {
+        var like = context.Likes.Find(user.Id, postId);
+
+        if (like != null)
+        {
+            context.Likes.Remove(like);
+            context.SaveChanges();
+        }
+
         var post = FindPostFromUser(user, postId);
-        --post.Likes;
+        --post.LikesCount;
+        context.SaveChanges();
 
         return post;
     }
