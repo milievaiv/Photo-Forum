@@ -79,13 +79,13 @@ public class PostRepository : IPostRepository
         return posts;
     }
 
-    private IQueryable<Post> FilterByTag(IQueryable<Post> posts, string tag)
+    private IList<Post> FilterByTag(IList<Post> posts, string tag)
     {
         
         if (!string.IsNullOrEmpty(tag))
         {
             var searchedTag = FindTagByName(tag);
-            return posts.Where(post => post.Tags.Contains(searchedTag));
+            return posts.Where(post => post.Tags.Contains(searchedTag)).ToList();
         }
         else
         {
