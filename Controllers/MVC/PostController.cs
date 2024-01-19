@@ -159,11 +159,14 @@ namespace PhotoForum.Controllers
                 var imagesDirectory = new DirectoryInfo(Path.Combine(_webHostEnvironment.WebRootPath, "images"));
                 // Get the last added file
                 var lastAddedFile = GetLastAddedFile(imagesDirectory);
-                string lastFileName = Path.GetFileNameWithoutExtension(lastAddedFile.Name);
+
+                string lastFileName = "0";
+
+                if (lastAddedFile != null) lastFileName = Path.GetFileNameWithoutExtension(lastAddedFile.Name);
 
                 string newFileName = (int.Parse(lastFileName) + 1).ToString();
                 // Get the file extension
-                string fileExtension = Path.GetExtension(lastAddedFile.Name);
+                string fileExtension = Path.GetExtension(ufile.FileName);
 
                 // Combine the edited file name with the original extension
                 string newFilePath = Path.Combine(newFileName + fileExtension);

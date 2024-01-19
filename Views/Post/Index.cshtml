@@ -67,7 +67,8 @@
 </div> *@
 <style>
     .post-container {
-        max-width: 800px;
+        display: flex;
+        max-width: 100%;
         margin: 2% auto;
         background-color: #f4f4f4; /* Light background for the container */
         box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -82,15 +83,15 @@
 
     .post-image {
         width: 100%; /* Uniform width */
-        height: 300px; /* Fixed height */
+        height: 100%; /* Fixed height */
         object-fit: cover; /* Ensure images cover the area */
         border-radius: 8px;
         transition: transform 0.3s ease;
     }
-
+/*
         .post-image:hover {
             transform: scale(1.05); /* Slightly enlarge the image on hover */
-        }
+        }*/
 
     .post-details {
         font-family: 'Arial', sans-serif;
@@ -242,7 +243,7 @@
 
     <div class="content-container">
         <h1 class="post-title">@Model.Title</h1>
-        <p class="creator-info">Created by: @Model.Creator?.Username</p>
+        <p class="creator-info">Created by: @Model.Creator.Username</p>
 
         <form method="post" action="/Post/LikePost">
         <input type="hidden" name="postId" value="@Model.Id" />

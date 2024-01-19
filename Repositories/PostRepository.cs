@@ -220,6 +220,7 @@ public class PostRepository : IPostRepository
     private IQueryable<Post> GetPosts()
     {
         return context.Posts
+            .Include(c => c.Creator)
             .Include(p => p.Comments)
             .ThenInclude(c => c.User);   
     }
