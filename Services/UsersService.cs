@@ -64,12 +64,19 @@ namespace PhotoForum.Services
         {
             return this.usersRepository.FilterBy(filterParameters);
         }
-
+        public IList<BaseUser> SearchBy(string filter)
+        {
+            return this.usersRepository.SearchBy(filter);
+        }
         public User Update(int id, User user)
         {
             EnsureUserUniqueEmail(user);
             var userToUpdate = usersRepository.Update(id,user);
             return userToUpdate;
+        }
+        public User GetUserByUsernameWithPosts(string username)
+        { 
+            return usersRepository.GetUserByUsernameWithPosts(username);
         }
 
         private void EnsureUserUniqueEmail(User user)

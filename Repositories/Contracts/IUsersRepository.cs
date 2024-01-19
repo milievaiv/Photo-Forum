@@ -17,7 +17,9 @@ namespace PhotoForum.Repositories.Contracts
         User Update(int id, User user);
         IList<User> GetUsers();
         IList<User> FilterBy(UserQueryParameters searchParameters);
+        IList<BaseUser> SearchBy(string filter);
         bool UserExists(string username);
+        User GetUserByUsernameWithPosts(string username);
 
     }
 }

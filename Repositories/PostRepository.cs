@@ -4,6 +4,7 @@ using PhotoForum.Models;
 using PhotoForum.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Xml.Linq;
 
 public class PostRepository : IPostRepository
 {
@@ -34,6 +35,7 @@ public class PostRepository : IPostRepository
         context.SaveChanges();
 
         return post;
+
     }
 
     public IList<Post> GetAll()
@@ -54,9 +56,41 @@ public class PostRepository : IPostRepository
         result = FilterByTitle(result, filterParameters.Title);
         result = FilterByContent(result, filterParameters.Content);
         result = FilterByCreator(result, filterParameters.Creator);
+        result = FilterByTag(result, filterParameters.Tags);
         result = SortBy(result, filterParameters.SortBy);
 
-        return result.ToList();
+        return result.ToList();        
+    }
+    public IList<Post> SearchBy(string filter)
+    {
+        //var posts = context.Posts
+        // .FromSqlRaw($"Select * from Posts where Title like '%{filter}%' or Content like '%{filter}%' or Comments like '%{filter}%' or Tags like '%{filter}%'")
+        //.ToList();
+        var posts = context.Posts
+            .Where(p => p.Title.Contains(filter) ||
+                        p.Creator.Username.Contains(filter) ||
+                        p.Content.Contains(filter) ||
+                        p.Comments.Any(c => c.Content.Contains(filter)) ||
+                        p.Tags.Any(t => t.Name.Contains(filter)))
+            .Include(p => p.Comments)
+            .Include(p => p.Tags)
+            .ToList();
+
+        return posts;
+    }
+
+    private IQueryable<Post> FilterByTag(IQueryable<Post> posts, string tag)
+    {
+        
+        if (!string.IsNullOrEmpty(tag))
+        {
+            var searchedTag = FindTagByName(tag);
+            return posts.Where(post => post.Tags.Contains(searchedTag));
+        }
+        else
+        {
+            return posts;
+        }
     }
 
     private static IList<Post> FilterByTitle(IList<Post> posts, string title)
@@ -201,7 +235,7 @@ public class PostRepository : IPostRepository
         return context.Posts
             .OrderByDescending(p => p.Comments.Count)
             .Take(10)
-            .Select(p => new Post { Id = p.Id, Title = p.Title, Comments = p.Comments })
+            .Select(p => new Post { Id = p.Id, Title = p.Title, Comments = p.Comments, PhotoUrl = p.PhotoUrl })
             .ToList();
     }
     public IList<Post> RecentlyCreated()
@@ -209,7 +243,7 @@ public class PostRepository : IPostRepository
         return context.Posts
             .OrderByDescending(p => p.Date)
             .Take(10)
-            .Select(p => new Post { Id = p.Id, Title = p.Title, Comments = p.Comments, Date = p.Date})
+            .Select(p => new Post { Id = p.Id, Title = p.Title, Comments = p.Comments, Date = p.Date, PhotoUrl = p.PhotoUrl})
             .ToList();
     }
     private IQueryable<Tag> IQ_GetTags()
@@ -257,6 +291,11 @@ public class PostRepository : IPostRepository
     {
         var tag = IQ_GetTags().FirstOrDefault(u => u.Name == name);
         context.SaveChanges();
+        return tag;
+    }
+    private Tag FindTagByName(string tagName)
+    { 
+        var tag = GetTags().FirstOrDefault(u => u.Name == tagName);
         return tag;
     }
 }

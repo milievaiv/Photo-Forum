@@ -5,6 +5,7 @@ using PhotoForum.Models.Contracts;
 using PhotoForum.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 using PhotoForum.Helpers;
+using Microsoft.Data.SqlClient;
 
 namespace PhotoForum.Repositories
 {
@@ -116,7 +117,13 @@ namespace PhotoForum.Repositories
 
             return userToUpdate;
         }
-
+        public User GetUserByUsernameWithPosts(string username)
+        {
+            return context.RegularUsers
+                     .Include(u => u.Posts)
+                     .Include(u => u.Comments)// Assuming 'Posts' is a navigation property
+                     .FirstOrDefault(u => u.Username == username);
+        }
         private IQueryable<User> IQ_GetUsers()
         {
             return context.RegularUsers
@@ -148,6 +155,42 @@ namespace PhotoForum.Repositories
             result = FilterByEmail(result, filterParameters.Email);
             result = SortBy(result, filterParameters.SortBy);
             return result.ToList();
+        }
+        public IList<BaseUser> SearchBy(string filter)
+        {
+            var users = new List<BaseUser>();
+            var conn = context.Database.GetDbConnection();
+            try
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    string query = "SELECT * FROM BaseUsers WHERE Username LIKE @filter OR Firstname LIKE @filter OR Lastname LIKE @filter";
+                    command.CommandText = query;
+                    command.Parameters.Add(new SqlParameter("@filter", $"%{filter}%"));
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var user = new User
+                            {
+                                Username = reader["Username"].ToString(),
+                                FirstName = reader["Firstname"].ToString(),
+                                LastName = reader["Lastname"].ToString(),
+                                Email = reader["Email"].ToString()
+                            };
+                            users.Add(user);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                conn.Close();
+            }
+
+            return users;
         }
         private static IQueryable<User> FilterByUsername(IQueryable<User> users, string username)
         {

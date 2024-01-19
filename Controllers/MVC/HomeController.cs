@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PhotoForum.Exceptions;
 using PhotoForum.Models;
 using PhotoForum.Models.DTOs;
+using PhotoForum.Models.ViewModel;
 using PhotoForum.Services;
 using PhotoForum.Services.Contracts;
 
@@ -25,16 +27,21 @@ namespace PhotoForum.Controllers.MVC
         [HttpGet]
         public IActionResult Index()
         {
-            int users_count = usersService.GetUsers().Count();
-            int posts_count = postsService.GetAll().Count();
-
-            SiteStatistics siteStatistics = new SiteStatistics
+            var viewModel = new HomeIndexViewModel
             {
-                Users_Count = users_count,
-                Posts_Count = posts_count
+                RecentPhotos = postsService.RecentlyCreated(),
+                TopPhotos = postsService.GetTopPosts()
             };
 
-            return View("Index", siteStatistics);
+            return View(viewModel);
+
+            //SiteStatistics siteStatistics = new SiteStatistics
+            //{
+            //    Users_Count = users_count,
+            //    Posts_Count = posts_count
+            //};
+
+            //return View("Index", siteStatistics);
         }
 
         //[HttpGet]
