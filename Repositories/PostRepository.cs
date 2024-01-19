@@ -221,7 +221,7 @@ public class PostRepository : IPostRepository
         return context.Posts
             .OrderByDescending(p => p.Comments.Count)
             .Take(10)
-            .Select(p => new Post { Id = p.Id, Title = p.Title, Comments = p.Comments })
+            .Select(p => new Post { Id = p.Id, Title = p.Title, Comments = p.Comments, PhotoUrl = p.PhotoUrl })
             .ToList();
     }
     public IList<Post> RecentlyCreated()
@@ -229,7 +229,7 @@ public class PostRepository : IPostRepository
         return context.Posts
             .OrderByDescending(p => p.Date)
             .Take(10)
-            .Select(p => new Post { Id = p.Id, Title = p.Title, Comments = p.Comments, Date = p.Date})
+            .Select(p => new Post { Id = p.Id, Title = p.Title, Comments = p.Comments, Date = p.Date, PhotoUrl = p.PhotoUrl})
             .ToList();
     }
     private IQueryable<Tag> IQ_GetTags()

@@ -1,0 +1,95 @@
+﻿@model IEnumerable<PhotoForum.Models.Post> 
+
+@{
+    ViewData["Title"] = "User Posts";
+}
+<head>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/cyborg.css">
+
+    <style>
+    .masonry-grid {
+        column-count: 4;
+        column-gap: 1em;
+    }
+
+    .grid-item {
+        break-inside: avoid;
+        margin-bottom: 1em;
+    }
+
+    .grid-item img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+    .grid-item img:hover {
+        transform: scale(1.05);
+    }
+    @@media (max-width: 800px) {
+    .masonry-grid {
+        column-count: 3;
+    }
+   }
+
+     @@media (max-width: 600px) {
+         .masonry-grid {
+             column-count: 2;
+         }
+     }
+     
+     @@media (max-width: 400px) {
+         .masonry-grid {
+             column-count: 1;
+         }
+     }
+     h6 {
+            text-align: center;
+            font-size: 2em; 
+            color: #333; 
+            margin: 20px 0; 
+            padding-top: 20px;
+        }
+
+</style>
+</head>
+
+<h6>Results: @Model.Count() photos</h6>
+<div class="masonry-grid">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var post in Model)
+        {
+            <div class="posts-grid">
+                @if (!string.IsNullOrEmpty(post.PhotoUrl))
+                {
+                    @:<div class="grid-item">
+                    <a href="@Url.Action("Index", "Post", new { id = post.Id })">
+                        <img src="@post.PhotoUrl" alt="Post Image" class="post-image">
+                    </a>
+                    @:</div>
+                }
+               
+            </div>
+        }
+    }
+    else
+    {
+        <p>No posts found.</p>
+    }
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var userCards = document.querySelectorAll('.user-card');
+        userCards.forEach(function (card) {
+            card.addEventListener('click', function () {
+                var userId = card.getAttribute('data-userid');
+                window.location.href = '@Url.Action("UserPosts", "User")' + '?username=' + encodeURIComponent(username);
+                // window.location.href = '@Url.Action("UserPosts", "User")' + '?userId=' + userId;
+            });
+        });
+
+      
+    });
+
+</script>

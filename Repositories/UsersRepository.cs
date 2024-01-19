@@ -117,7 +117,13 @@ namespace PhotoForum.Repositories
 
             return userToUpdate;
         }
-
+        public User GetUserByUsernameWithPosts(string username)
+        {
+            return context.RegularUsers
+                     .Include(u => u.Posts)
+                     .Include(u => u.Comments)// Assuming 'Posts' is a navigation property
+                     .FirstOrDefault(u => u.Username == username);
+        }
         private IQueryable<User> IQ_GetUsers()
         {
             return context.RegularUsers

@@ -1,13 +1,53 @@
-﻿<!DOCTYPE html>
+﻿@model PhotoForum.Models.ViewModel.HomeIndexViewModel
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/grid.css">
     <title>PhotoForum - Home</title>
+    <style>
+        .item img:hover {
+            transform: scale(1.05);
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 2em; /* Increase the font size */
+            color: #333; /* Dark gray color */
+            margin: 20px 0; /* Add some space around the header */
+            padding-top: 20px; /* Space above the header */
+        }
+    </style>
 </head>
 <body>
+    <h2>Recently Created Posts</h2>
     <div class="masonry">
+        @foreach (var post in Model.RecentPhotos)
+        {
+            <div class="item">
+                <a href="/Post/Index/@post.Id">
+                    <img src="@post.PhotoUrl" alt="Image">
+                </a>
+            </div>
+        }
+    </div>
+
+    <h2>Top Posts</h2>
+    <div class="masonry">
+        @foreach (var post in Model.TopPhotos)
+        {
+            <div class="item">
+                <a href="/Post/Index/@post.Id">
+                    <img src="@post.PhotoUrl" alt="Image">
+                </a>
+            </div>
+        }
+    </div>
+</body>
+</html>
+   @*  <div class="masonry">
         <div class="item">
             <a href="/Post/Index/88">
                 <img src="/images/01.jpg">
@@ -58,6 +98,4 @@
                 <img src="/images/10.png">
             </a>
         </div>
-    </div>
-</body>
-</html>
+    </div> *@

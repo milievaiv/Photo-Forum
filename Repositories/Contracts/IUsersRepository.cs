@@ -19,6 +19,7 @@ namespace PhotoForum.Repositories.Contracts
         IList<User> FilterBy(UserQueryParameters searchParameters);
         IList<BaseUser> SearchBy(string filter);
         bool UserExists(string username);
+        User GetUserByUsernameWithPosts(string username);
 
     }
 }

@@ -72,16 +72,17 @@ namespace PhotoForum.Controllers.MVC
                 {
                     return RedirectToAction("Index", "Admin");
                 }
-                return RedirectToAction("Index", "User");
+                return RedirectToAction("Index", "Home");
             }
             catch (UnauthorizedOperationException)
             {
-                return BadRequest("Invalid login attempt!");
+                ModelState.AddModelError(string.Empty, "Invalid login attempt!");
             }
             catch (EntityNotFoundException)
             {
-                return BadRequest("Invalid login attempt!");
+                ModelState.AddModelError("Username", "This username is not registered.");
             }
+            return View(model);
         }
 
         [HttpGet]

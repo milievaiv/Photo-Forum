@@ -90,6 +90,10 @@ namespace PhotoForum.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
                 var jwtFromRequest = Request.Cookies["Authorization"];
 
                 var tokenHandler = new JwtSecurityTokenHandler();
@@ -110,24 +114,28 @@ namespace PhotoForum.Controllers
                     dto.Title = model.Title;
                     dto.Content = model.Content;
                     dto.PhotoUrl = "/images/" + image.Name;
+
+
+                    if (user.IsBlocked == true) throw new InvalidOperationException("You've been suspended from doing this.");
+                    //List<Tag> tags = new List<Tag>() { new Tag { Name = "one"}, new Tag { Name = "two" }, new Tag { Name = "three" } };
+                    List<Tag> tags = new List<Tag>();
+
+                    foreach (string tag in dto.Tags)
+                    {
+                        tags.Add(new Tag { Name = tag });
+                    }
+
+                    Post post = modelMapper.Map(user, dto);
+
+                    Post createdPost = postService.Create(user, post, tags);
+                    PostResponseDto createdPostDto = modelMapper.Map(user, createdPost);
+
+                    return RedirectToAction("Index", new { id = createdPost.Id });
                 }
-
-                if (user.IsBlocked == true) throw new InvalidOperationException("You've been suspended from doing this.");
-                //List<Tag> tags = new List<Tag>() { new Tag { Name = "one"}, new Tag { Name = "two" }, new Tag { Name = "three" } };
-                List<Tag> tags = new List<Tag>();
-
-                foreach (string tag in dto.Tags)
+                else
                 {
-                    tags.Add(new Tag { Name = tag });
+                    return View(model);
                 }
-
-                Post post = modelMapper.Map(user, dto);
-
-                Post createdPost = postService.Create(user, post, tags);
-                PostResponseDto createdPostDto = modelMapper.Map(user, createdPost);
-
-
-                return StatusCode(StatusCodes.Status201Created, createdPostDto);
             }
             catch (InvalidOperationException ex)
             {

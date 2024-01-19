@@ -74,6 +74,10 @@ namespace PhotoForum.Services
             var userToUpdate = usersRepository.Update(id,user);
             return userToUpdate;
         }
+        public User GetUserByUsernameWithPosts(string username)
+        { 
+            return usersRepository.GetUserByUsernameWithPosts(username);
+        }
 
         private void EnsureUserUniqueEmail(User user)
         {
