@@ -230,7 +230,6 @@
     .lightbox.open {
         display: flex;
     }
-
 </style>
 
 
@@ -270,8 +269,8 @@
             }
             <form method="post" action="/Post/AddComment" class="add-comment-form">
                 <input type="hidden" name="postId" value="@Model.Id" />
-                <input type="text" name="commentText" placeholder="Add a Comment" class="comment-input">
-                <button type="submit" class="btn-comment">Post</button>
+                <input type="text" name="commentText" pattern="\S" title="Please enter a non-empty value" placeholder="Add a Comment" class="comment-input" required>
+                <button type="submit" class="btn btn-primary">Post</button>
             </form>
         </div>
     </div>
