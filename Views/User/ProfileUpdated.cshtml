@@ -7,12 +7,14 @@
         <div class="col-md-8 offset-md-2">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-title">Profile Updated Successfully</h2>
+                    <h2 class="card-title text-center">Profile Updated Successfully</h2>
                 </div>
-                <div class="card-body">
+                <div class="card-body text-center">
                     <p>Your profile has been updated successfully.</p>
-                    <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Go to Home</a>
-                    <a href="@Url.Action("Edit", "User")" class="btn btn-secondary">Back to Edit Profile</a>
+                    <div class="d-flex justify-content-center">
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-primary me-2">Go to Home</a>
+                        <a href="@Url.Action("Edit", "User")" class="btn btn-secondary">Back to Edit Profile</a>
+                    </div>
                 </div>
             </div>
         </div>

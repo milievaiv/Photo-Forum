@@ -64,8 +64,14 @@
         flex-grow: 1;
     }
 
+    .h2comment {
+        margin-top: 5px;
+        margin-left: 5px;
+        font-size: 18px;
+    }
+
     .post-content {
-        padding: 20px;
+        padding: 10px;
         font-size: 16px;
     }
 
@@ -104,7 +110,6 @@
         border-radius: 5px;
         cursor: pointer;
         font-size: 16px;
-       
     }
 
     .btn-comment {
@@ -126,23 +131,69 @@
         .btn-comment:hover {
             background-image: linear-gradient(45deg, #0056b3, #e23360);
         }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        padding-top: 100px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.9);
+    }
+
+    .modal-content {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+    }
+
+    .close {
+        position: absolute;
+        top: 15px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
 </style>
 
 <div class="post-container">
-    <div class="image-container">
-        <img src="@Model.Post.PhotoUrl" alt="Photo" class="post-image" onclick="openLightbox();"/>
+    <div class="post-header">
+        <img src="~/content/retro-camera-logo.jpg" alt="Creator Photo" class="creator-photo" />
+        <div class="creator-info">@Model.Post.Creator.Username</div>
     </div>
+    <img src="@Model.Post.PhotoUrl" alt="Photo" class="post-image" onclick="openModal('@Model.Post.PhotoUrl')" />
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="modalImage">
+        <div id="caption"></div>
+    </div>
+    <div class="post-content">@Model.Post.Content</div>
+    <div id="likesSection">
+        @Html.Partial("_IndexPartial", Model)
+    </div>
+    <div class="comments-section">
 
-    <div class="content-container">
-        <h1 class="post-title">@Model.Post.Title</h1>
-        <p class="creator-info">Created by: @Model.Post.Creator.Username</p>
-
-        <div id="likesSection">
-            @Html.Partial("_IndexPartial", Model)
-        </div>
-
-        <div class="comments-section">
-            <h2>Comments (@Model.Post.Comments.Count)</h2>
+        <h2 class="h2comment">
+            Comments (@Model.Post.Comments.Count)</h2c>
+            <form method="post" action="/Post/AddComment" class="add-comment-form">
+                <input type="hidden" name="postId" value="@Model.Post.Id" />
+                <input type="text" name="commentText" placeholder="Add a comment.." class="comment-input">
+                <button type="submit" class="btn-comment">Post</button>
+            </form>
             @foreach (var comment in Model.Post.Comments)
             {
                 <div class="comment">
@@ -150,28 +201,18 @@
                     <p>@comment.Content</p>
                 </div>
             }
-            <form method="post" action="/Post/AddComment" class="add-comment-form">
-                <input type="hidden" name="postId" value="@Model.Post.Id" />
-                <input type="text" name="commentText" placeholder="Add a Comment" class="comment-input">
-                <button type="submit" class="btn-comment">Post</button>
-            </form>
-        </div>
+
     </div>
 </div>
-
-<div id="lightbox-modal" class="lightbox" onclick="closeLightbox();">
-    <img id="lightbox-image" class="lightbox-content">
 </div>
 
-<script src="~/lib/jquery/dist/jquery.js"></script>
-<script src="/js/index.js"></script>
-
-        document.getElementById('lightbox-image').src = imageUrl;
-        document.getElementById('lightbox-modal').classList.add('open');
+<script>
+    function openModal(imageUrl) {
+        document.getElementById('modalImage').src = imageUrl;
+        document.getElementById('imageModal').style.display = 'block';
     }
 
-    function closeLightbox() {
-        document.getElementById('lightbox-modal').classList.remove('open');
+    function closeModal() {
+        document.getElementById('imageModal').style.display = 'none';
     }
 </script>
-

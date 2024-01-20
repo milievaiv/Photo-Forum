@@ -1,19 +1,78 @@
 ﻿@model PhotoForum.Models.ViewModel.UserViewModels.PostViewModel
 
-<li>
-    <i class="fa fa-heart-o fa-lg"></i>
-    <span>@Model.Post.LikesCount</span>
+<div class="like-section">
+    <span>@Model.Post.LikesCount likes</span>
 
     @if (Model.Post.Likes.Any(x => x.UserId == Model.User.Id))
     {
-        <form method="post" asp-action="Dislike" asp-route-userId = "@Model.User.Id" asp-route-postId = "@Model.Post.Id" asp-controller="Post">
-            <button type="submit" >Dislike</button>
+        <form method="post" asp-action="Dislike" asp-route-userId="@Model.User.Id" asp-route-postId="@Model.Post.Id" asp-controller="Post">
+            <button class="heart-button liked" type="submit"></button>
         </form>
     }
     else
-    {   
-        <form method="post" asp-action="Like" asp-route-userId = "@Model.User.Id" asp-route-postId = "@Model.Post.Id" asp-controller="Post">
-            <button type="submit">Like</button>
+    {
+        <form method="post" asp-action="Like" asp-route-userId="@Model.User.Id" asp-route-postId="@Model.Post.Id" asp-controller="Post">
+            <button class="heart-button not-liked" type="submit"></button>
         </form>
     }
-</li>
+</div>
+
+
+<style>
+    .like-section {
+        display: flex;
+        align-items: center;
+        /* justify-content: space-between; */ /* Adjusts space distribution */
+        margin-bottom: 0px;
+        margin-top: 0px;
+    }
+
+        .like-section span {
+            margin-left: 10px;
+        }
+
+        .like-section form {
+            margin-left: 10px; /* Adjust spacing to the left of the form */
+            margin-bottom: 20px;
+        }
+
+    .heart-button {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        width: 40px; /* Adjusted width of the heart */
+        height: 40px; /* Adjusted height of the heart */
+        position: relative;
+        outline: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+        .heart-button:before, .heart-button:after {
+            content: "";
+            position: absolute;
+            width: 20px; /* Adjusted half width of the heart */
+            height: 30px; /* Adjusted height of each half */
+            background: #ccc; /* Non-liked heart color */
+            border-radius: 20px 20px 0 0; /* Rounded top */
+            transform: rotate(-45deg); /* Rotate for heart shape */
+            transform-origin: bottom right; /* Pivot point for rotation */
+        }
+
+        .heart-button:after {
+            left: 3px; /* Adjusted position of the right part */
+            transform: rotate(45deg); /* Rotate for heart shape */
+            transform-origin: bottom left; /* Pivot point for rotation */
+        }
+
+        .heart-button.liked:before, .heart-button.liked:after {
+            background: red; /* Liked heart color */
+        }
+
+        /* Optional: Change appearance on hover */
+        .heart-button:hover:before, .heart-button:hover:after {
+            background: pink; /* Change as needed */
+        }
+
+</style>
