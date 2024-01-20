@@ -7,6 +7,7 @@ using PhotoForum.Services.Contracts;
 using System.Security.Claims;
 using PhotoForum.Exceptions;
 using Microsoft.AspNetCore.Authorization;
+using PhotoForum.Models.QueryParameters;
 
 namespace PhotoForum.Controllers
 {

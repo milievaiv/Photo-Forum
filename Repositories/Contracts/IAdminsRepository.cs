@@ -1,5 +1,6 @@
 ﻿using PhotoForum.Models;
 using PhotoForum.Models.Contracts;
+using PhotoForum.Models.QueryParameters;
 
 namespace PhotoForum.Repositories.Contracts
 {
@@ -9,6 +10,8 @@ namespace PhotoForum.Repositories.Contracts
         Admin GetAdminByUsername(string username);
         IList<Admin> GetAdmins();
         Log AddLog(string message);
+        IList<Log> GetLastAddedLogs();
+        IList<Admin> FilterBy(AdminQueryParameters filterParameters);
 
     }
 }

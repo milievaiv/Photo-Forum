@@ -6,7 +6,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Linq;
 using PhotoForum.Attributes;
+using PhotoForum.Controllers.Data.Exceptions;
+using PhotoForum.Exceptions;
 using PhotoForum.Models;
+using PhotoForum.Models.DTOs;
+using PhotoForum.Models.QueryParameters;
+using PhotoForum.Models.Search;
 using PhotoForum.Models.ViewModel.AdminViewModels;
 using PhotoForum.Services.Contracts;
 using System;
@@ -31,31 +36,94 @@ namespace PhotoForum.Controllers.MVC
             this.postsService = postsService;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(DashboardViewModel viewModel)
         {
-            return View();
+            var jwtFromRequest = Request.Cookies["Authorization"];
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadToken(jwtFromRequest) as JwtSecurityToken;
+            var username = jwtToken.Payload[ClaimTypes.Name] as string;
+
+            var totalPosts = postsService.GetAll().Count();
+            var totalUsers = usersService.GetUsers().Count();
+            var topUser = usersService.GetUsers().OrderByDescending(user => user.Posts.Count).FirstOrDefault();
+            var logs = adminsService.GetLastAddedLogs().ToList();
+            var mostRecentPosts = postsService.GetAll().TakeLast(5).ToList();
+            var admin = adminsService.GetAdminByUsername(username);
+
+            viewModel = new DashboardViewModel
+            {
+                TotalPosts = totalPosts,
+                TotalUsers = totalUsers,
+                TopUser = topUser,
+                Logs = logs,
+                MostRecentPosts = mostRecentPosts,
+                Admin = admin
+            };
+
+            return View("Index", viewModel);
         }
 
-        public IActionResult RegisterAdmin()
+        [HttpGet]
+        public IActionResult Register()
         {
-            return View();
+            RegisterViewModel viewModel = new RegisterViewModel();
+
+            return View(viewModel);
         }
 
+        [HttpPost]
+        public IActionResult Register(RegisterViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            try
+            {
+                if (viewModel.Password != viewModel.ConfirmPassword)
+                {
+                    ModelState.AddModelError("ConfirmPassword", "The password and confirmation password do not match.");
+
+                    return View(viewModel);
+                }
+
+                RegisterAdminModel model = new RegisterAdminModel()
+                {
+                    Username = viewModel.Username,
+                    Password = viewModel.Password,
+                    Email = viewModel.Email,
+                    FirstName = viewModel.FirstName,
+                    LastName = viewModel.LastName,
+                    PhoneNumber = viewModel.PhoneNumber
+                };
+
+                _ = adminsService.Register(model);
+
+
+				var routeValues = new { Property = "Username", Value = model.Username };
+
+
+				return RedirectToAction("Admins", routeValues);
+            }
+            catch (DuplicateEntityException)
+            {
+                ModelState.AddModelError("Username", "This username is already taken.");
+
+                return View(viewModel);
+            }
+            catch (DuplicateEmailException)
+            {
+                ModelState.AddModelError("Email", "This email is already taken.");
+
+                return View(viewModel);
+            }
+        }
         //Posts
 
         public IActionResult SearchPosts(PhotoForum.Models.ViewModel.AdminViewModels.PostViewModel viewModel)
         {
-            //SearchUser searchUser = new SearchUser
-            //{
-            //    Property = viewModel.SearchModel.Property,
-            //    Value = viewModel.SearchModel.Value
-            //};
-            //UserViewModel viewModel = new UserViewModel
-            //{
-            //    CurrentPage = page,
-            //    PageSize = pageSize,
-            //    SearchModel = searchUser
-            //};
             viewModel = GeneratePostView(viewModel);
 
             return View("Posts", viewModel);
@@ -112,7 +180,7 @@ namespace PhotoForum.Controllers.MVC
                     filteredPosts = sortOrder == "asc" ? filteredPosts.OrderBy(p => p.Comments.Count).ToList() : filteredPosts.OrderByDescending(p => p.Comments.Count).ToList();
                     break;
                 case "Likes":
-                    filteredPosts = sortOrder == "asc" ? filteredPosts.OrderBy(p => p.Likes).ToList() : filteredPosts.OrderByDescending(p => p.Likes).ToList();
+                    filteredPosts = sortOrder == "asc" ? filteredPosts.OrderBy(p => p.LikesCount).ToList() : filteredPosts.OrderByDescending(p => p.LikesCount).ToList();
                     break;
                 case "Date":
                     filteredPosts = sortOrder == "asc" ? filteredPosts.OrderBy(p => p.Date).ToList() : filteredPosts.OrderByDescending(p => p.Date).ToList();
@@ -169,6 +237,75 @@ namespace PhotoForum.Controllers.MVC
             viewModel = GeneratePostView(viewModel, page, pageSize);
 
             return View("Posts", viewModel);
+        }
+
+        //Admins
+
+        [HttpPost]
+        public IActionResult SearchAdmins(AdminViewModel viewModel)
+        {
+            //SearchUser searchUser = new SearchUser
+            //{
+            //    Property = viewModel.SearchModel.Property,
+            //    Value = viewModel.SearchModel.Value
+            //};
+            //UserViewModel viewModel = new UserViewModel
+            //{
+            //    CurrentPage = page,
+            //    PageSize = pageSize,
+            //    SearchModel = searchUser
+            //};
+            viewModel = GenerateAdminView(viewModel);
+
+            return View("Admins", viewModel);
+        }
+
+        public IActionResult Admins(AdminViewModel viewModel, int page = 1, int pageSize = 5, string Property = null, string Value = null)
+        {
+            // Update the SearchModel based on the provided parameters
+            if (viewModel.SearchModel == null)
+            {
+                viewModel.SearchModel = new SearchUser { Property = Property, Value = Value };
+            }
+
+            viewModel = GenerateAdminView(viewModel, page, pageSize);
+
+            return View(viewModel);
+        }
+
+        public AdminViewModel GenerateAdminView(AdminViewModel viewModel, int page = 1, int pageSize = 5)
+        {
+            AdminQueryParameters userQueryParameters = new AdminQueryParameters();
+
+            switch (viewModel.SearchModel.Property)
+            {
+                case "Username":
+                    userQueryParameters.Username = viewModel.SearchModel.Value;
+                    break;
+                case "Email":
+                    userQueryParameters.Email = viewModel.SearchModel.Value;
+                    break;
+                case "FirstName":
+                    userQueryParameters.FirstName = viewModel.SearchModel.Value;
+                    break;                
+                case "PhoneNumber":
+                    userQueryParameters.FirstName = viewModel.SearchModel.Value;
+                    break;
+            }
+
+            var filteredAdmins = adminsService.FilterBy(userQueryParameters).ToList();
+
+            viewModel.Admins = filteredAdmins
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            // Update pagination information
+            viewModel.CurrentPage = page;
+            viewModel.PageSize = pageSize;
+            viewModel.TotalPages = (int)Math.Ceiling(filteredAdmins.Count / (double)pageSize);
+
+            return viewModel;
         }
 
 

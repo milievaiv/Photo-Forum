@@ -1,6 +1,7 @@
 ﻿using PhotoForum.Models;
 using PhotoForum.Models.Contracts;
 using PhotoForum.Models.DTOs;
+using PhotoForum.Models.QueryParameters;
 
 namespace PhotoForum.Repositories.Contracts
 {

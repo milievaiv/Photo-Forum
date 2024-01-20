@@ -1,5 +1,90 @@
-﻿@{
+﻿@model PhotoForum.Models.ViewModel.AdminViewModels.DashboardViewModel
+@{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<p>Hello admin</p>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <!-- Add your CSS styles here -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .dashboard-section {
+            margin-bottom: 20px;
+        }
+
+            .dashboard-section h2 {
+                color: #333;
+            }
+
+            .dashboard-section ul {
+                list-style-type: none;
+                padding: 0;
+            }
+
+            .dashboard-section li {
+                margin-bottom: 5px;
+            }
+
+            .dashboard-section .user-info {
+                font-weight: bold;
+            }
+    </style>
+</head>
+<body style="margin: 0px">
+    <div style="display: flex;">
+        <div class="dashboard-section" style="margin: 2vh; padding: 2vh; background-color: #272727;width: 65%;">
+            <h4 style="font-family: 'Roboto';">Logs</h4>
+            <ul style="margin-top: 2vh;">
+            <!-- Displaying the last 10 logs -->
+                @foreach (var log in Model.Logs)
+                {
+                    <li>@log.Timestamp - @log.Event</li>
+                }
+            </ul>
+        </div>
+        <div class="dashboard-section" style="margin: 2vh; padding: 2vh; background-color: #272727; width: 35%;">
+            <h4>Admin Information</h4>
+            <ul style="margin-top: 2vh;">
+                <li><span style="font-weight:bold">Username:</span> @Model.Admin.Username</li>
+                <li><span style="font-weight:bold">First name:</span> @Model.Admin.FirstName</li>
+                <li><span style="font-weight:bold">Last name:</span> @Model.Admin.LastName</li>
+                <li>
+                    <span style="font-weight:bold">Phone:</span> @Model.Admin.PhoneNumber
+                </li>
+                <li><span style="font-weight:bold">Email:</span> @Model.Admin.Email</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="dashboard-section" style="background-color: #575757; padding: 2vh; margin: 2vh;">
+        <h4>Most Recent Posts</h4>
+        <br />
+        <ul>
+            @foreach (var post in Model.MostRecentPosts)
+            {
+                <li><span style="font-weight:bold; font-size:120%; font-family: Roboto">@post.Title</span> by <span style="font-weight:bold">@post.Creator.Username</span> | Date: @post.Date.ToString("dd/MM/yyyy HH:mm")</li>
+                <hr />
+            }
+        </ul>
+        <br />
+        <a href="Admin/Posts/" style="color: lightblue; text-decoration: underline;">To get more detailed view, visit the posts tab</a>
+    </div>
+
+    <div style=" display: flex;">
+        <div class="dashboard-section" style="font-family: Roboto; margin: 2vh;">
+            <h3 style="color:white">Total Posts: <span style="color: red;">@Model.TotalPosts</span></h3><hr />
+        </div>
+        <div class="dashboard-section" style="margin: 2vh; font-family: Roboto;">
+            <h3 style="color:white">Total Users: <span style="color: red;"> @Model.TotalUsers</span></h3><hr />
+        </div>
+        <div class="dashboard-section" style="margin:2vh; font-family: Roboto;">
+            <h3 style="color:white">Top User: <span style="color:red">@Model.TopUser.Username</span> with <span style="color: red;">@Model.TopUser.Posts.Count</span> posts in total.</h3><hr />
+        </div>
+    </div>
+</body>

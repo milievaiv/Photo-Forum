@@ -68,14 +68,8 @@
                             }
                             <td>@post.Title</td>
                             <td>@post.Comments.Count</td>
-                            <td>@post.Likes</td>
+                            <td>@post.LikesCount</td>
                             <td>@post.Date</td>
-                            <td>
-                                <form asp-controller="Admin" asp-action="Post" asp-route-page=@Model.CurrentPage asp-route-Property="@Model.SearchModel.Property" asp-route-Value="@Model.SearchModel.Value" method="get">
-                                    <input type="hidden" name="username" value="@post.Id" />
-                                    <button type="submit" class="btn btn-primary">Details</button>
-                                </form>
-                            </td>
                             <td>
                                 <form asp-controller="Admin" asp-action="DeletePost" asp-route-page=@Model.CurrentPage asp-route-SortBy="@Model.SortBy" asp-route-SortOrder="@Model.SortOrder" asp-route-Property="@Model.SearchModel.Property" asp-route-Value="@Model.SearchModel.Value" method="post">
                                     <input type="hidden" name="post_id" value="@post.Id" />

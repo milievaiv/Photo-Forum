@@ -1,5 +1,6 @@
 ﻿using PhotoForum.Models;
 using PhotoForum.Models.DTOs;
+using PhotoForum.Models.QueryParameters;
 
 namespace PhotoForum.Services.Contracts
 {

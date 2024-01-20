@@ -1,4 +1,6 @@
-﻿namespace PhotoForum.Models.ViewModel.AdminViewModels
+﻿using PhotoForum.Models.Search;
+
+namespace PhotoForum.Models.ViewModel.AdminViewModels
 {
     public class PostViewModel
     {

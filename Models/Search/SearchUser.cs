@@ -1,4 +1,4 @@
-﻿namespace PhotoForum.Models
+﻿namespace PhotoForum.Models.Search
 {
     public class SearchUser
     {

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using PhotoForum.Data;
 using PhotoForum.Exceptions;
 using PhotoForum.Models;
+using PhotoForum.Models.QueryParameters;
 using PhotoForum.Repositories.Contracts;
 
 namespace PhotoForum.Repositories
@@ -39,6 +40,18 @@ namespace PhotoForum.Repositories
         {
             return IQ_GetAdmins().ToList();
         }
+        private IQueryable<Log> IQ_GetLogs()
+        {
+            return context.Logs;
+        }
+        public IList<Log> GetLogs()
+        {
+            return IQ_GetLogs().ToList();
+        }
+        public IList<Log> GetLastAddedLogs()
+        {
+            return GetLogs().TakeLast(10).ToList();
+        }
 
         public Log AddLog(string message)
         {
@@ -50,6 +63,74 @@ namespace PhotoForum.Repositories
             context.SaveChanges();
 
             return logEntry;
+        }
+
+        public IList<Admin> FilterBy(AdminQueryParameters filterParameters)
+        {
+            IQueryable<Admin> result = IQ_GetAdmins();
+
+            result = FilterByFirstName(result, filterParameters.FirstName);
+            result = FilterByLastName(result, filterParameters.LastName);
+            result = FilterByUsername(result, filterParameters.Username);
+            result = FilterByEmail(result, filterParameters.Email);
+            return result.ToList();
+        }
+
+        private static IQueryable<Admin> FilterByUsername(IQueryable<Admin> admins, string username)
+        {
+            if (!string.IsNullOrEmpty(username))
+            {
+                return admins.Where(admin => admin.Username.Contains(username));
+            }
+            else
+            {
+                return admins;
+            }
+        }
+        private static IQueryable<Admin> FilterByEmail(IQueryable<Admin> admins, string email)
+        {
+            if (!string.IsNullOrEmpty(email))
+            {
+                return admins.Where(admin => admin.Email.Contains(email));
+            }
+            else
+            {
+                return admins;
+            }
+        }
+        private static IQueryable<Admin> FilterByFirstName(IQueryable<Admin> admins, string firstName)
+        {
+            if (!string.IsNullOrEmpty(firstName))
+            {
+                return admins.Where(admin => admin.FirstName.Contains(firstName));
+            }
+            else
+            {
+                return admins;
+            }
+        }
+        private static IQueryable<Admin> FilterByLastName(IQueryable<Admin> admins, string lastName)
+        {
+            if (!string.IsNullOrEmpty(lastName))
+            {
+                return admins.Where(admin => admin.LastName.Contains(lastName));
+            }
+            else
+            {
+                return admins;
+            }
+        }
+
+        private static IQueryable<Admin> FilterByPhoneNumber(IQueryable<Admin> admins, string phoneNumber)
+        {
+            if (!string.IsNullOrEmpty(phoneNumber))
+            {
+                return admins.Where(admin => admin.PhoneNumber.Contains(phoneNumber));
+            }
+            else
+            {
+                return admins;
+            }
         }
     }
 }

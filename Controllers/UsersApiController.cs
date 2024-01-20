@@ -6,6 +6,7 @@ using PhotoForum.Helpers;
 using PhotoForum.Helpers.Contracts;
 using PhotoForum.Models;
 using PhotoForum.Models.DTOs;
+using PhotoForum.Models.QueryParameters;
 using PhotoForum.Services;
 using PhotoForum.Services.Contracts;
 using System.Security.Claims;

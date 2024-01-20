@@ -5,7 +5,7 @@ using PhotoForum.Controllers.Data.Exceptions;
 using PhotoForum.Exceptions;
 using PhotoForum.Models;
 using PhotoForum.Models.DTOs;
-using PhotoForum.Models.ViewModel;
+using PhotoForum.Models.ViewModel.UserViewModels;
 using PhotoForum.Services;
 using PhotoForum.Services.Contracts;
 

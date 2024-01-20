@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using PhotoForum.Helpers;
 using Microsoft.Data.SqlClient;
 using PhotoForum.Models.DTOs;
+using PhotoForum.Models.QueryParameters;
 
 namespace PhotoForum.Repositories
 {

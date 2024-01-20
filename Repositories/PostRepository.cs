@@ -5,6 +5,7 @@ using PhotoForum.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Xml.Linq;
+using PhotoForum.Models.QueryParameters;
 
 public class PostRepository : IPostRepository
 {

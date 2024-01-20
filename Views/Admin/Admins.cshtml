@@ -1,0 +1,102 @@
+﻿@model PhotoForum.Models.ViewModel.AdminViewModels.AdminViewModel
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!-- ... (rest of the view) ... -->
+<style>
+    td {
+        text-align: center;
+    }
+
+    th {
+        text-align: center;
+    }
+</style>
+
+<body>
+    <br />
+    <div style="display:flex">
+        <div style="display: flex">
+            <form asp-controller="Admin" asp-action="SearchAdmins" method="post" style="width:50vh" class="d-flex">
+                <select asp-for="SearchModel.Property" class="form-control" style="margin-left:2vh;">
+                    <option value="Username">Username</option>
+                    <option value="Email">Email</option>
+                    <option value="FirstName">First name</option>
+                    <option value="PhoneNumber">Phone number</option>
+                </select>
+                <input asp-for="SearchModel.Value" class="form-control me-sm-2" style="margin-left:1vh;" placeholder="Search">
+                <button type="submit" class="btn btn-secondary my-2 my-sm-0">Search</button>
+            </form>
+        </div>
+        <div style="display:flex; margin-left: 2vh">
+            <form asp-controller="Admin" asp-action="Admins" method="get">
+                <button type="submit" class="btn btn-primary">Clear</button>
+            </form>
+        </div>
+    </div>
+    <br />
+
+    <div>
+        <div>
+            <table class="table table-hover" style="padding-left:2vh">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>First name</th>
+                        <th>Last name</th>
+                        <th>Phone number</th>
+                        <!-- Add other user properties as needed -->
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var admin in Model.Admins)
+                    {
+                        <tr>
+                            <td>@admin.Id</td>
+                            <td>@admin.Username</td>
+                            <td>@admin.Email</td>
+                            <td>@admin.FirstName</td>
+                            <td>@admin.LastName</td>
+                            <td>@admin.PhoneNumber</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-left: 1vh">
+            <ul class="pagination">
+                @if (Model.CurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Admins" asp-route-page="1" asp-route-Property="@Model.SearchModel.Property" asp-route-Value="@Model.SearchModel.Value">
+                            &laquo;
+                        </a>
+                    </li>
+                }
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-action="Admins" asp-route-page="@i" asp-route-Property="@Model.SearchModel.Property" asp-route-Value="@Model.SearchModel.Value">
+                            @i
+                        </a>
+                    </li>
+                }
+
+                @if (Model.CurrentPage < Model.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Admins" asp-route-page="@Model.TotalPages" asp-route-Property="@Model.SearchModel.Property" asp-route-Value="@Model.SearchModel.Value">
+                            &raquo;
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</body>

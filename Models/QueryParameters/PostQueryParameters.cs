@@ -1,4 +1,4 @@
-﻿namespace PhotoForum.Models
+﻿namespace PhotoForum.Models.QueryParameters
 {
     public class PostQueryParameters
     {

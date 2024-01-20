@@ -2,10 +2,10 @@
 
 namespace PhotoForum.Models.ViewModel.AdminViewModels
 {
-    public class UserViewModel
+    public class AdminViewModel
     {
         public SearchUser SearchModel { get; set; }
-        public List<User> Users { get; set; }
+        public List<Admin> Admins { get; set; }
 
         // Pagination properties
         public int CurrentPage { get; set; }

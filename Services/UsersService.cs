@@ -9,6 +9,7 @@ using PhotoForum.Repositories;
 using PhotoForum.Repositories.Contracts;
 using PhotoForum.Services.Contracts;
 using System.Security.Cryptography;
+using PhotoForum.Models.QueryParameters;
 
 namespace PhotoForum.Services
 {

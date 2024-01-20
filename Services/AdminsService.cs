@@ -6,6 +6,7 @@ using PhotoForum.Repositories.Contracts;
 using PhotoForum.Services.Contracts;
 using Microsoft.AspNetCore.Identity;
 using PhotoForum.Helpers;
+using PhotoForum.Models.QueryParameters;
 
 namespace PhotoForum.Services
 {
@@ -59,6 +60,15 @@ namespace PhotoForum.Services
             return this.adminsRepository.AddLog(message);
         }
 
+        public IList<Log> GetLastAddedLogs()
+        {
+            return this.adminsRepository.GetLastAddedLogs();
+        }
+
+        public IList<Admin> FilterBy(AdminQueryParameters filterParameters)
+        {
+            return this.adminsRepository.FilterBy(filterParameters);
+        }
     }
 
 }

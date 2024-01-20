@@ -12,6 +12,7 @@ using PhotoForum.Exceptions;
 using PhotoForum.Helpers;
 using System.Security.Claims;
 using PhotoForum.Helpers.Contracts;
+using PhotoForum.Models.QueryParameters;
 
 namespace PhotoForum.Controllers
 {

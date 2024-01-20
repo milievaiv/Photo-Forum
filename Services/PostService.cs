@@ -1,6 +1,7 @@
 ﻿using PhotoForum.Exceptions;
 using PhotoForum.Models;
 using PhotoForum.Models.DTOs;
+using PhotoForum.Models.QueryParameters;
 using PhotoForum.Repositories;
 using PhotoForum.Repositories.Contracts;
 using PhotoForum.Services.Contracts;
