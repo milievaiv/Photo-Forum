@@ -85,7 +85,7 @@
             card.addEventListener('click', function () {
                 var userId = card.getAttribute('data-userid');
                 window.location.href = '@Url.Action("UserPosts", "User")' + '?username=' + encodeURIComponent(username);
-                // window.location.href = '@Url.Action("UserPosts", "User")' + '?userId=' + userId;
+               
             });
         });
 

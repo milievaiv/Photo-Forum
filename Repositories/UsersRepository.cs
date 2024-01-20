@@ -6,6 +6,7 @@ using PhotoForum.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 using PhotoForum.Helpers;
 using Microsoft.Data.SqlClient;
+using PhotoForum.Models.DTOs;
 
 namespace PhotoForum.Repositories
 {
@@ -192,6 +193,23 @@ namespace PhotoForum.Repositories
 
             return users;
         }
+        public bool UpdateUserProfile(UserProfile model)
+        {
+            var user = context.BaseUsers.FirstOrDefault(u => u.Id == model.Id);
+            if (user == null)
+            {
+                return false;
+            }
+            user.Username = user.Username;            
+            user.Email = model.Email;
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+
+            context.SaveChanges();
+            return true;
+        }
+        
+
         private static IQueryable<User> FilterByUsername(IQueryable<User> users, string username)
         {
             if (!string.IsNullOrEmpty(username))

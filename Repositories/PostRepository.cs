@@ -224,6 +224,7 @@ public class PostRepository : IPostRepository
     {
         return context.Posts
             .Include(c => c.Creator)
+            .Include(x => x.Likes)
             .Include(p => p.Comments)
             .Include(l => l.Likes)
             .ThenInclude(c => c.User);   
@@ -240,7 +241,7 @@ public class PostRepository : IPostRepository
         return context.Posts
             .OrderByDescending(p => p.Comments.Count)
             .Take(10)
-            .Select(p => new Post { Id = p.Id, Title = p.Title, Comments = p.Comments, PhotoUrl = p.PhotoUrl })
+            .Select(p => new Post { Id = p.Id, Title = p.Title, Comments = p.Comments, PhotoUrl = p.PhotoUrl,Likes = p.Likes})
             .ToList();
     }
     public IList<Post> RecentlyCreated()
@@ -248,7 +249,7 @@ public class PostRepository : IPostRepository
         return context.Posts
             .OrderByDescending(p => p.Date)
             .Take(10)
-            .Select(p => new Post { Id = p.Id, Title = p.Title, Comments = p.Comments, Date = p.Date, PhotoUrl = p.PhotoUrl})
+            .Select(p => new Post { Id = p.Id, Title = p.Title, Comments = p.Comments, Date = p.Date, PhotoUrl = p.PhotoUrl, Likes = p.Likes})
             .ToList();
     }
     private IQueryable<Tag> IQ_GetTags()

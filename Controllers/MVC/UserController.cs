@@ -8,6 +8,10 @@ using PhotoForum.Services;
 using PhotoForum.Models;
 using PhotoForum.Models.ViewModel;
 using Microsoft.AspNetCore.Hosting;
+using PhotoForum.Models.DTOs;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using PhotoForum.Helpers.Contracts;
 
 namespace PhotoForum.Controllers.MVC
 {
@@ -16,10 +20,12 @@ namespace PhotoForum.Controllers.MVC
     {
         private readonly IPostService postService;
         private readonly IUsersService usersService;
-        public UserController(IPostService postService, IUsersService usersService)
+        private readonly IModelMapper modelMapper;
+        public UserController(IPostService postService, IUsersService usersService, IModelMapper modelMapper)
         {
             this.postService = postService;
             this.usersService = usersService;
+            this.modelMapper = modelMapper;
         }
         public IActionResult Index()
         {
@@ -31,8 +37,46 @@ namespace PhotoForum.Controllers.MVC
         {
             var user = usersService.GetUserByUsernameWithPosts(username);
             var posts = postService.GetUsersPost(user);
-            //var posts = _dbContext.Posts.Where(p => p.UserId == userId).ToList();
-            return View("UserPosts", posts); // Assuming UserPosts.cshtml is your view
+            
+            return View("UserPosts", posts); 
+        }
+
+        [HttpGet]
+        public ActionResult Edit()
+        {
+            var jwtFromRequest = Request.Cookies["Authorization"];
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadToken(jwtFromRequest) as JwtSecurityToken;
+            var username = jwtToken.Payload[ClaimTypes.Name] as string;
+            var user = usersService.GetUserByUsername(username);
+
+            var model = modelMapper.MapUserProfile(user);
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(UserProfile model)
+        {
+            if (ModelState.IsValid)
+            {
+                bool updateSuccessful = usersService.UpdateUserProfile(model);
+
+                if (updateSuccessful)
+                {
+                    return RedirectToAction("ProfileUpdated");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Profile update failed.");
+                }
+            }
+
+            return View(model);
+        }
+        public ActionResult ProfileUpdated()
+        {
+            return View();
         }
     }
 }

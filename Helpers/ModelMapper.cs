@@ -16,6 +16,17 @@ namespace PhotoForum.Helpers
                 LastName = model.LastName
             };
         }
+        public UserProfile MapUserProfile(User user)
+        {
+            return new UserProfile
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName
+            };
+        }
         public UserResponseAndPostDto MapURPD(User user)
         {
             return new UserResponseAndPostDto

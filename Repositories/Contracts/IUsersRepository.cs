@@ -1,5 +1,6 @@
 ﻿using PhotoForum.Models;
 using PhotoForum.Models.Contracts;
+using PhotoForum.Models.DTOs;
 
 namespace PhotoForum.Repositories.Contracts
 {
@@ -15,6 +16,7 @@ namespace PhotoForum.Repositories.Contracts
         User GetUserByFirstName(string firstName);
         User GetUserByLastName(string lastName);
         User Update(int id, User user);
+        bool UpdateUserProfile(UserProfile model);
         IList<User> GetUsers();
         IList<User> FilterBy(UserQueryParameters searchParameters);
         IList<BaseUser> SearchBy(string filter);
