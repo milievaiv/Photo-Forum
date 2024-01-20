@@ -31,14 +31,19 @@
         display: none;
     }
 
-    .buttons-custom {
+    .mybuttons {
         display: flex;
         flex-wrap: nowrap;
         align-items: center;
-        gap: 10px;
+        gap: 30px;
         padding: 50px 0;
-        margin: 20px 0;
+        margin-top: 20px; 
+        margin-bottom: 50px;
         border-bottom: 2px solid #333;
+    }
+
+    .button-spacing {
+        margin-top: 2px; 
     }
 
     .popup {
@@ -59,7 +64,7 @@
         cursor: pointer;
         position: absolute;
         right: 10px;
-        top: 0;
+        top: 20;
     }
 
     h4 {
@@ -75,36 +80,38 @@
 <div>
     @if (Model.Users.Any() || Model.Posts.Any())
     {
-        <div style="buttons-custom">
-            <input type="radio" class="btn-check hide" name="options" id="option1" value="option1" autocomplete="off" checked>
-            <label class="btn btn-secondary" for="option1">Photographers</label>
+        <div class="button-spacing">
+            <div style="mybuttons">
+                <input type="checkbox" class="btn-check" name="options" id="option1" value="option1" autocomplete="off" checked>
+                <label class="btn" for="option1">Photographers</label>
 
-            <input type="radio" class="btn-check hide" name="options" id="option2" value="option2" autocomplete="off" fdprocessedid="2b69ts">
-            <label class="btn btn-secondary" for="option2">Photos</label>
+                <input type="checkbox" class="btn-check hide" name="options" id="option2" value="option2" autocomplete="off" fdprocessedid="2b69ts">
+                <label class="btn" for="option2">Photos</label>
 
-            <input type="radio" class="btn-check hide" name="options" id="option3" autocomplete="off">
-            <label class="btn btn-secondary" for="option3">All</label>
+                <input type="checkbox" class="btn-check hide" name="options" id="option3" autocomplete="off">
+                <label class="btn" for="option3">All</label>
 
-            <div class="btn-group" style="buttons-custom">
-                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    Sort Users
-                </button>
-                <ul class="dropdown-menu" id="userSortMenu">
-                    <li><a class="dropdown-item" href="#" data-sort="UsernameAsc">Username Ascending</a></li>
-                    <li><a class="dropdown-item" href="#" data-sort="UsernameDesc">Username Descending</a></li>
-                </ul>
+                <div class="btn-group" style="buttons-custom">
+                    <button type="button" class="btn active dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        Sort Users
+                    </button>
+                    <ul class="dropdown-menu" id="userSortMenu">
+                        <li><a class="dropdown-item" href="#" data-sort="UsernameAsc">Username Ascending</a></li>
+                        <li><a class="dropdown-item" href="#" data-sort="UsernameDesc">Username Descending</a></li>
+                    </ul>
+                </div>
+
+                <div class="btn-group" style="buttons-custom">
+                    <button type="button" class="btn active dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        Sort Posts
+                    </button>
+                    <ul class="dropdown-menu" id="postSortMenu">
+                        <li><a class="dropdown-item" href="#" data-sort="Newest">Newest First</a></li>
+                        <li><a class="dropdown-item" href="#" data-sort="Oldest">Oldest First</a></li>
+                    </ul>
+                </div>
             </div>
-
-            <div class="btn-group" style="buttons-custom">
-                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    Sort Posts
-                </button>
-                <ul class="dropdown-menu" id="postSortMenu">
-                    <li><a class="dropdown-item" href="#" data-sort="Newest">Newest First</a></li>
-                    <li><a class="dropdown-item" href="#" data-sort="Oldest">Oldest First</a></li>
-                </ul>
-            </div>
-        </div>
+       </div>
         <div class="content-container">
             <div class="content" id="content1">
                 @if (Model.Users.Any())
