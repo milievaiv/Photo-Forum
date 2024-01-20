@@ -8,21 +8,28 @@
     <link rel="stylesheet" href="/css/grid.css">
     <title>PhotoForum - Home</title>
     <style>
+        .item img
+        {
+            z-index: 1; /* Bring the hovered image to the foreground */
+        }
         .item img:hover {
             transform: scale(1.05);
+            z-index: 1; /* Bring the hovered image to the foreground */
         }
 
         h2 {
             text-align: center;
             font-size: 2em; /* Increase the font size */
-            color: #333; /* Dark gray color */
+            color: white; /* Dark gray color */
             margin: 20px 0; /* Add some space around the header */
             padding-top: 20px; /* Space above the header */
+            font-family: Poppins, sans-serif
         }
     </style>
 </head>
 <body>
     <h2>Recently Created Posts</h2>
+    <br />
     <div class="masonry">
         @foreach (var post in Model.RecentPhotos)
         {
@@ -35,6 +42,7 @@
     </div>
 
     <h2>Top Posts</h2>
+    <br />
     <div class="masonry">
         @foreach (var post in Model.TopPhotos)
         {
