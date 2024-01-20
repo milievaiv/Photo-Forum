@@ -5,7 +5,7 @@
 }
 
 <div class="photo-wrapper">
-    <img src="~/images/retro-camera-logo.jpg" alt="Photo" class="photo">
+    <img src="~/content/retro-camera-logo.jpg" alt="Photo" class="photo">
 </div>
 
 <h2 class="gradient-text">Create Post</h2>
@@ -36,11 +36,13 @@
     .gradient-text {
         font-size: 2em;
         font-family: 'Poppins', sans-serif;
-        background: linear-gradient(45deg, #007bff, #ff2d55);
+       /*  background: linear-gradient(45deg, #007bff, #ff2d55);
         -webkit-background-clip: text;
         background-clip: text;
-        color: transparent;
+        color: transparent; */
         text-align: center;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        transition: transform 0.3s ease, font-size 0.3s ease;
     }
 
     .photo-wrapper {
