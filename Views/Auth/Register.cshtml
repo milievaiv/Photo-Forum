@@ -32,13 +32,13 @@
 	}
 
 	.gradient-text {
-		font-size: 4em; /* Adjust the size as needed */
-		font-family: 'Poppins', sans-serif; /* Consistent font style */
-		background: linear-gradient(45deg, #007bff, #ff2d55);
+		font-size: 2.5em; /* Adjust the size as needed */
+		font-family: 'Poppins', sans-serif; 
+		 background: linear-gradient(45deg, #007bff, #ff2d55);
 		-webkit-background-clip: text;
 		background-clip: text;
-		color: transparent; /* Makes the text take the background color */
-		text-align: center;
+	    color: transparent; 
+		text-align: center; 
 	}
 
 	.centered-form {
@@ -76,16 +76,6 @@
 			color: #fff;
 		}
 
-	/* .form-control {
-		width: 100%;
-		padding: 10px;
-		border-radius: 4px;
-		border: 1px solid #777;
-		background-color: #555;
-		color: #fff;
-		font-family: 'Poppins', sans-serif;
-	} */
-
 		.form-control:focus {
 			border-color: #007bff;
 			box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(0, 123, 255, 0.6);
@@ -121,55 +111,47 @@
 
 	a {
 		color: dodgerblue;
-		text-decoration: none; /* Optional: removes underline */
+		text-decoration: none; 
 	}
-
-		@* a:hover {
-			text-decoration: underline; /* Optional: adds underline on hover */
-		} *@
-
-	@* .signin {
-		margin-top: 20px; /* Space above the sign-in prompt */
-	} *@
 </style>
 <div class="photo-wrapper">
 	<img src="~/content/retro-camera-logo.jpg" alt="Profile Photo" class="photo">
 </div>
 <form asp-controller="Auth" asp-action="Register" method="post" class="centered-form">
 	<div >
-		<h1 class="gradient-text">Register</h1>
-		<p>Please fill in this form to create an account.</p>
+		<h1 class="gradient-text">Create Account</h1>
+		@* <p>Please fill in this form to create an account.</p> *@
 		<hr>
 		<div class="form-group">
-			<label asp-for="Username"></label>
+			<label asp-for="Username">Username*</label>
 			<input type="text" asp-for="Username" class="form-control" />
 			<span asp-validation-for="Username" class="text-danger"></span>
 		</div>
 		<div class="form-group">
-			<label asp-for="Password"></label>
+			<label asp-for="Password">Password*</label>
 			<input type="password" asp-for="Password" class="form-control" />
 			<span asp-validation-for="Password" class="text-danger"></span>
 		</div>
 		<div class="form-group">
-			<label asp-for="ConfirmPassword">Confirm Password</label>
+			<label asp-for="ConfirmPassword">Confirm Password*</label>
 			<input type="password" asp-for="ConfirmPassword" class="form-control" />
 			<span asp-validation-for="ConfirmPassword" class="text-danger"></span>
 		</div>
 		<div class="form-group">
-			<label asp-for="Email"></label>
+			<label asp-for="Email">Email*</label>
 			<input type="text" asp-for="Email" class="form-control" />
 			<span asp-validation-for="Email" class="text-danger"></span>
 		</div>
 		<div class="form-group">
-			<label asp-for="FirstName">First Name</label>
+			<label asp-for="FirstName">First Name*</label>
 			<input type="text" asp-for="FirstName" class="form-control" />
 		</div>
 		<div class="form-group">
-			<label asp-for="LastName">Last Name</label>
+			<label asp-for="LastName">Last Name*</label>
 			<input type="text" asp-for="LastName" class="form-control" />
 		</div>
 		<p>By creating an account you agree to our <a href="#">Terms & Privacy</a>.</p>
-		<button type="submit" class="registerbtn">Register</button>
+		<button type="submit" class="registerbtn">Sign Up</button>
 	</div>
 
 	<div class="container signin">
