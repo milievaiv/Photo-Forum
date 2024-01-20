@@ -190,10 +190,12 @@ public class PostRepository : IPostRepository
     public Post Like(User user, int postId)
     {
         var like = new Like { UserId = user.Id, PostId = postId };
-        context.Likes.Add(like);
+
+        var post = GetById(postId);
+
+        post.Likes.Add(like);
         context.SaveChanges();
 
-        var post = FindPostFromUser(user, postId);
         ++post.LikesCount;
         context.SaveChanges();
 
@@ -204,13 +206,14 @@ public class PostRepository : IPostRepository
     {
         var like = context.Likes.Find(user.Id, postId);
 
+        var post = GetById(postId);
+
         if (like != null)
         {
-            context.Likes.Remove(like);
+            post.Likes.Remove(like);
             context.SaveChanges();
         }
 
-        var post = FindPostFromUser(user, postId);
         --post.LikesCount;
         context.SaveChanges();
 
@@ -222,6 +225,7 @@ public class PostRepository : IPostRepository
         return context.Posts
             .Include(c => c.Creator)
             .Include(p => p.Comments)
+            .Include(l => l.Likes)
             .ThenInclude(c => c.User);   
     }
 

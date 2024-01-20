@@ -103,6 +103,8 @@ namespace PhotoForum
                 // Your other Swagger configurations...
             });
 
+            builder.Services.AddSignalR();
+
             var app = builder.Build();
 
             app.UseSwagger();

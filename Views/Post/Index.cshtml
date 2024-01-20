@@ -1,6 +1,7 @@
-﻿@model PhotoForum.Models.Post
+﻿@model PhotoForum.Models.ViewModel.UserViewModels.PostViewModel
 @{
     ViewData["Title"] = "Post Details";
+    //var baseUrl = Url.Action("Index", "Post"); // Replace "Index" with the default action if needed
 }
 @* <style>
     /* Custom styling for the like button */
@@ -238,31 +239,20 @@
 
 <div class="post-container">
     <div class="image-container">
-        <img src="@Model.PhotoUrl" alt="Photo" class="post-image" onclick="openLightbox();"/>
+        <img src="@Model.Post.PhotoUrl" alt="Photo" class="post-image" onclick="openLightbox();"/>
     </div>
 
     <div class="content-container">
-        <h1 class="post-title">@Model.Title</h1>
-        <p class="creator-info">Created by: @Model.Creator.Username</p>
+        <h1 class="post-title">@Model.Post.Title</h1>
+        <p class="creator-info">Created by: @Model.Post.Creator.Username</p>
 
-        <form method="post" action="/Post/LikePost">
-        <input type="hidden" name="postId" value="@Model.Id" />
-        <input type="checkbox" id="likeCheckbox" class="like-btn">
-        <label for="likeCheckbox"></label>
-        <p>Likes: @Model.Likes</p>
-        </form>
-
-        @* <div class="interaction-bar">
-            <span class="likes">@Model.Likes Likes</span>           
-            <form method="post" action="/Post/LikePost" class="like-form">
-                <input type="hidden" name="postId" value="@Model.Id" />
-                <button type="submit" class="like-btn">🖤 Like</button>
-            </form>
-        </div> *@
+        <div id="likesSection">
+            @Html.Partial("_IndexPartial", Model)
+        </div>
 
         <div class="comments-section">
-            <h2>Comments (@Model.Comments.Count)</h2>
-            @foreach (var comment in Model.Comments)
+            <h2>Comments (@Model.Post.Comments.Count)</h2>
+            @foreach (var comment in Model.Post.Comments)
             {
                 <div class="comment">
                     <strong>@comment.User.Username:</strong>
@@ -270,7 +260,7 @@
                 </div>
             }
             <form method="post" action="/Post/AddComment" class="add-comment-form">
-                <input type="hidden" name="postId" value="@Model.Id" />
+                <input type="hidden" name="postId" value="@Model.Post.Id" />
                 <input type="text" name="commentText" placeholder="Add a Comment" class="comment-input">
                 <button type="submit" class="btn-comment">Post</button>
             </form>
@@ -282,15 +272,6 @@
     <img id="lightbox-image" class="lightbox-content">
 </div>
 
-<script>
-    function openLightbox() {
-        var imageUrl = document.querySelector('.post-image').src;
-        document.getElementById('lightbox-image').src = imageUrl;
-        document.getElementById('lightbox-modal').classList.add('open');
-    }
-
-    function closeLightbox() {
-        document.getElementById('lightbox-modal').classList.remove('open');
-    }
-</script>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="/js/index.js"></script>
 

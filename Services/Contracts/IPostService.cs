@@ -15,7 +15,7 @@ namespace PhotoForum.Services.Contracts
         Post EditPost(User user, int postId, Post editedPost);
         Comment Comment(User user, int postId, Comment comment);
         Post Like(User user, int postId);
-        Post Disike(User user, int postId);
+        Post Dislike(User user, int postId);
         IList<Post> GetTopPosts();
         IList<Post> RecentlyCreated();
     }

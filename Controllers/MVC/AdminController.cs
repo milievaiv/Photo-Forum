@@ -7,7 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Linq;
 using PhotoForum.Attributes;
 using PhotoForum.Models;
-using PhotoForum.Models.ViewModel;
+using PhotoForum.Models.ViewModel.AdminViewModels;
 using PhotoForum.Services.Contracts;
 using System;
 using System.Globalization;
@@ -43,7 +43,7 @@ namespace PhotoForum.Controllers.MVC
 
         //Posts
 
-        public IActionResult SearchPosts(PostViewModel viewModel)
+        public IActionResult SearchPosts(PhotoForum.Models.ViewModel.AdminViewModels.PostViewModel viewModel)
         {
             //SearchUser searchUser = new SearchUser
             //{

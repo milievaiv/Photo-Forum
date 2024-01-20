@@ -60,7 +60,7 @@ public class PostService : IPostService
         return postRepository.Like(user, postId);
     }
 
-    public Post Disike(User user, int postId)
+    public Post Dislike(User user, int postId)
     {
         return postRepository.Dislike(user, postId);
     }

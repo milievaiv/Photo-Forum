@@ -1,4 +1,4 @@
-﻿namespace PhotoForum.Models.ViewModel
+﻿namespace PhotoForum.Models.ViewModel.AdminViewModels
 {
     public class DashboardViewModel
     {

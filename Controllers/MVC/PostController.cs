@@ -8,6 +8,9 @@ using PhotoForum.Helpers;
 using PhotoForum.Helpers.Contracts;
 using PhotoForum.Exceptions;
 using PhotoForum.Attributes;
+using PhotoForum.Models.ViewModel.UserViewModels;
+using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore.Update;
 
 namespace PhotoForum.Controllers
 {
@@ -30,6 +33,13 @@ namespace PhotoForum.Controllers
 
         public IActionResult Index(int id)
         {
+            var jwtFromRequest = Request.Cookies["Authorization"];
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadToken(jwtFromRequest) as JwtSecurityToken;
+            var username = jwtToken.Payload[ClaimTypes.Name] as string;
+            var user = usersService.GetUserByUsername(username);
+
             var post = this.postService.GetById(id);
 
             if (post == null)
@@ -37,7 +47,48 @@ namespace PhotoForum.Controllers
                 return NotFound();
             }
 
-            return View(post);
+            PostViewModel viewModel = new PostViewModel
+            {
+                Post = post,
+                User = user
+
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult Like(int userId, int postId)
+        {
+            var user = usersService.GetUserById(userId);
+
+            var post = postService.Like(user, postId);
+
+            PostViewModel viewModel = new PostViewModel
+            {
+                Post = post,
+                User = user
+
+            };
+
+            return View("Index", viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult Dislike(int userId, int postId)
+        {
+            var user = usersService.GetUserById(userId);
+
+            var post = postService.Dislike(user, postId);
+
+            PostViewModel viewModel = new PostViewModel
+            {
+                Post = post,
+                User = user
+
+            };
+
+            return View("Index", viewModel);
         }
 
         [HttpGet]
@@ -63,13 +114,19 @@ namespace PhotoForum.Controllers
                 Content = commentText,
                 User = user
             };
-            //???SaveChanges()???
 
             postService.Comment(user, postId, comment);
 
             var updatedPost = postService.GetById(postId);
 
-            return View("Index", updatedPost);
+            PostViewModel viewModel = new PostViewModel
+            {
+                Post = updatedPost,
+                User = user
+
+            };
+
+            return View("Index", viewModel);
         }
 
 
@@ -83,6 +140,9 @@ namespace PhotoForum.Controllers
         //    var username = jwtToken.Payload[ClaimTypes.Name] as string;
         //    var user = usersService.GetUserByUsername(username);
 
+        //    var updatedPost = postService.GetById(postId);
+
+        //    return View("Index", updatedPost);
         //}
 
         [HttpPost]

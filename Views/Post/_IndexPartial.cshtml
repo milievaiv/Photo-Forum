@@ -1,0 +1,19 @@
+﻿@model PhotoForum.Models.ViewModel.UserViewModels.PostViewModel
+
+<li>
+    <i class="fa fa-heart-o fa-lg"></i>
+    <span>@Model.Post.LikesCount</span>
+
+    @if (Model.Post.Likes.Any(x => x.UserId == Model.User.Id))
+    {
+        <form method="post" asp-action="Dislike" asp-route-userId = "@Model.User.Id" asp-route-postId = "@Model.Post.Id" asp-controller="Post">
+            <button type="submit" >Dislike</button>
+        </form>
+    }
+    else
+    {   
+        <form method="post" asp-action="Like" asp-route-userId = "@Model.User.Id" asp-route-postId = "@Model.Post.Id" asp-controller="Post">
+            <button type="submit">Like</button>
+        </form>
+    }
+</li>
