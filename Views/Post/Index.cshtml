@@ -2,162 +2,90 @@
 @{
     ViewData["Title"] = "Post Details";
 }
-@* <style>
-    /* Custom styling for the like button */
-    .like-btn {
-        display: inline-block;
-        width: 50px;
-        height: 50px;
-        background-color: transparent;
-        border: none;
-        cursor: pointer;
-        appearance: none; /* Remove default styles */
-    }
 
-        /* Style the like button as an empty heart */
-        .like-btn::before {
-            content: '\2661'; /* Unicode character for an empty heart */
-            font-size: 40px;
-            color: white; /* Set the color for the empty heart */
-        }
-
-        /* When the checkbox is checked, change the content to a filled heart */
-        .like-btn:checked::before {
-            content: '\2665'; /* Unicode character for a filled heart */
-            color: red; /* Set the color for the filled heart */
-        }
-
-        /* Remove extra space around the checkbox */
-        .like-btn:focus {
-            outline: none;
-        }
-</style>
- *@
- @* <div style="display: flex; justify-content: center; margin-right: 20%; margin-top: 2%;">
-    <div style="margin-top: 5%">
-        <form method="post" action="/Post/AddComment" oninput="addCommentBtn.disabled = !commentInput.value.trim()">
-            <input type="hidden" name="postId" value="@Model.Id" />
-            <input type="text" name="commentText" id="commentInput" placeholder="Add a Comment">
-            <button type="submit" class="btn btn-primary" id="addCommentBtn" formnovalidate>Add Comment</button>
-        </form>
-        <p>Comments: @Model.Comments.Count</p>
-
-        @foreach (var comment in Model.Comments)
-        {
-            <div>
-                <p>@comment.User.Username: @comment.Content</p>
-            </div>
-        }
-    </div>
-
-    <div style="max-width: 55%; max-height: 55%; margin-left: 10px;">
-        <img src="@Model.PhotoUrl" alt="Photo" style="width: 100%; height: 100%;" />
-    </div>
-
-    <p style="margin-left: 10px">Creator: @Model.Creator?.Username</p>
-
-    <div style="margin-left: 10px; margin-top: 15%">
-        <form method="post" action="/Post/LikePost">
-            <input type="hidden" name="postId" value="@Model.Id" />
-            <input type="checkbox" id="likeCheckbox" class="like-btn">
-            <label for="likeCheckbox"></label>
-            <p>Likes: @Model.Likes</p>
-        </form>
-    </div>
-</div> *@
 <style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #000; /* Change background color to black */
+        color: #fff; /* Change text color to white */
+        margin: 0;
+        padding: 0;
+    }
+
     .post-container {
+        max-width: 600px;
+        margin: 20px auto;
+        background-color: #333; /* Change background color of the post container to grey */
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .post-header {
         display: flex;
-        max-width: 100%;
-        margin: 2% auto;
-        background-color: #f4f4f4; /* Light background for the container */
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        padding: 20px;
-        border-radius: 8px;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
     }
 
-    .image-container {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-
-    .post-image {
-        width: 100%; /* Uniform width */
-        height: 100%; /* Fixed height */
-        object-fit: cover; /* Ensure images cover the area */
-        border-radius: 8px;
-        transition: transform 0.3s ease;
-    }
-/*
-        .post-image:hover {
-            transform: scale(1.05); /* Slightly enlarge the image on hover */
-        }*/
-
-    .post-details {
-        font-family: 'Arial', sans-serif;
-    }
-
-    .content-container {
-        width: 100%;
-    }
-
-    .post-title {
-        font-size: 24px;
-        color: #333;
-        margin-bottom: 10px;
+    .creator-photo {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 10px;
     }
 
     .creator-info {
-        font-size: 18px;
-        color: #555;
-        margin-bottom: 20px;
+        font-weight: bold;
+        flex-grow: 1;
+    }
+
+    .post-image {
+        width: 100%;
+        max-height: 400px;
+        object-fit: cover;
     }
 
     .interaction-bar {
         display: flex;
         align-items: center;
-        gap: 10px;
-        margin-bottom: 20px;
-    }
-
-    .likes {
-        font-size: 16px;
-        color: #666;
+        padding: 10px;
     }
 
     .like-btn {
-        background-color: transparent;
-        border: none;
+        font-size: 20px;
+        margin-right: 10px;
         cursor: pointer;
+    }
+
+    .likes {
+        font-size: 18px;
+        font-weight: bold;
+        flex-grow: 1;
+    }
+
+    .post-content {
+        padding: 20px;
         font-size: 16px;
     }
 
     .comments-section {
-        width: 100%;
-    }
-
-    h2 {
-        color: #444;
-        margin-bottom: 10px;
+        border-top: 1px solid #ddd;
     }
 
     .comment {
-        background-color: #fff;
         padding: 10px;
-        margin-bottom: 10px;
-        border-radius: 5px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border-bottom: 1px solid #ddd;
     }
 
         .comment strong {
-            color: #333;
-            margin-right: 5px;
+            font-weight: bold;
         }
 
     .add-comment-form {
         display: flex;
-        gap: 10px;
-        margin-top: 20px;
+        align-items: center;
+        padding: 10px;
     }
 
     .comment-input {
@@ -165,132 +93,66 @@
         padding: 10px;
         border: 1px solid #ddd;
         border-radius: 5px;
+        font-size: 16px;
     }
 
     .btn-comment {
-        background-color: #007bff;
+        background-color: #007bff; /* Change button color to Instagram blue */
         color: white;
         border: none;
         padding: 10px 15px;
         border-radius: 5px;
         cursor: pointer;
+        font-size: 16px;
+       
+    }
+
+    .btn-comment {
+        width: 20%; /* Smaller width */
+        padding: 10px 15px; /* Adjusted padding for a smaller button */
+        margin-left: 10px;
+        /* Center the button */
+        display: block; /* Ensure the button respects the width and margin */
+        border: none;
+        border-radius: 4px;
+        background-image: linear-gradient(45deg, #007bff, #ff2d55);
+        color: white;
+        font-size: 16px; /* Adjusted font size */
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-family: 'Poppins', sans-serif;
     }
 
         .btn-comment:hover {
-            background-color: #0056b3;
+            background-image: linear-gradient(45deg, #0056b3, #e23360);
         }
-
-    .like-btn {
-        display: inline-block;
-        width: 50px;
-        height: 50px;
-        background-color: transparent;
-        border: none;
-        cursor: pointer;
-        appearance: none; /* Remove default styles */
-    }
-
-        /* Style the like button as an empty heart */
-        .like-btn::before {
-            content: '\2661'; /* Unicode character for an empty heart */
-            font-size: 40px;
-            color: black; /* Set the color for the empty heart */
-        }
-
-        /* When the checkbox is checked, change the content to a filled heart */
-        .like-btn:checked::before {
-            content: '\2665'; /* Unicode character for a filled heart */
-            color: red; /* Set the color for the filled heart */
-        }
-
-        /* Remove extra space around the checkbox */
-        .like-btn:focus {
-            outline: none;
-        }
-
-    .lightbox {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        align-items: center;
-        justify-content: center;
-    }
-
-    .lightbox-content {
-        max-width: 80%;
-        max-height: 80%;
-        margin: auto;
-    }
-
-    /* Add styles for opening the lightbox */
-    .lightbox.open {
-        display: flex;
-    }
-
 </style>
 
-
-
 <div class="post-container">
-    <div class="image-container">
-        <img src="@Model.PhotoUrl" alt="Photo" class="post-image" onclick="openLightbox();"/>
+    <div class="post-header">
+        <img src="@Model.PhotoUrl" alt="Creator Photo" class="creator-photo" />
+        <div class="creator-info">@Model.Creator.Username</div>
     </div>
-
-    <div class="content-container">
-        <h1 class="post-title">@Model.Title</h1>
-        <p class="creator-info">Created by: @Model.Creator.Username</p>
-
-        <form method="post" action="/Post/LikePost">
-        <input type="hidden" name="postId" value="@Model.Id" />
-        <input type="checkbox" id="likeCheckbox" class="like-btn">
-        <label for="likeCheckbox"></label>
-        <p>Likes: @Model.Likes</p>
+    <img src="@Model.PhotoUrl" alt="Photo" class="post-image" />
+    <div class="interaction-bar">
+        <div class="like-btn">&#x2764;</div>
+        <div class="likes">@Model.LikesCount</div>
+    </div>
+    <div class="post-content">
+        @Model.Content
+    </div>
+    <div class="comments-section">
+        @foreach (var comment in Model.Comments)
+        {
+            <div class="comment">
+                <strong>@comment.User.Username:</strong>
+                @comment.Content
+            </div>
+        }
+        <form method="post" action="/Post/AddComment" class="add-comment-form">
+            <input type="hidden" name="postId" value="@Model.Id" />
+            <input type="text" name="commentText" placeholder="Add a comment..." class="comment-input" />
+            <button type="submit" class="btn-comment">Post</button>
         </form>
-
-        @* <div class="interaction-bar">
-            <span class="likes">@Model.Likes Likes</span>           
-            <form method="post" action="/Post/LikePost" class="like-form">
-                <input type="hidden" name="postId" value="@Model.Id" />
-                <button type="submit" class="like-btn">🖤 Like</button>
-            </form>
-        </div> *@
-
-        <div class="comments-section">
-            <h2>Comments (@Model.Comments.Count)</h2>
-            @foreach (var comment in Model.Comments)
-            {
-                <div class="comment">
-                    <strong>@comment.User.Username:</strong>
-                    <p>@comment.Content</p>
-                </div>
-            }
-            <form method="post" action="/Post/AddComment" class="add-comment-form">
-                <input type="hidden" name="postId" value="@Model.Id" />
-                <input type="text" name="commentText" placeholder="Add a Comment" class="comment-input">
-                <button type="submit" class="btn-comment">Post</button>
-            </form>
-        </div>
     </div>
 </div>
-
-<div id="lightbox-modal" class="lightbox" onclick="closeLightbox();">
-    <img id="lightbox-image" class="lightbox-content">
-</div>
-
-<script>
-    function openLightbox() {
-        var imageUrl = document.querySelector('.post-image').src;
-        document.getElementById('lightbox-image').src = imageUrl;
-        document.getElementById('lightbox-modal').classList.add('open');
-    }
-
-    function closeLightbox() {
-        document.getElementById('lightbox-modal').classList.remove('open');
-    }
-</script>
-

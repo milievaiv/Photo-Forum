@@ -1,33 +1,16 @@
 ﻿@using PhotoForum.Models
 @model PostModel
+@{
+    ViewData["Title"] = "Create Post";
+}
 
-@* <h2>Create Post</h2>
+<div class="photo-wrapper">
+    <img src="~/images/retro-camera-logo.jpg" alt="Photo" class="photo">
+</div>
 
-<form action="/Post/CreatePost" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label asp-for="Title"></label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
-    </div>
+<h2 class="gradient-text">Create Post</h2>
 
-    <div class="form-group">
-        <label asp-for="Content"></label>
-        <textarea asp-for="Content" class="form-control"></textarea>
-        <span asp-validation-for="Content" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Image"></label>
-        <input type="file" asp-for="Image" class="form-control" />
-        <span asp-validation-for="Image" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Create</button>
-</form>
- *@
-<h2>Create Post</h2>
-
-<form asp-controller="Post" asp-action="Create" method="post" enctype="multipart/form-data" class="create-post-form" onsubmit="redirectToPostView()">
+<form asp-controller="Post" asp-action="Create" method="post" enctype="multipart/form-data" class="centered-form" onsubmit="redirectToPostView()">
     <div class="create-post-group">
         <label asp-for="Title">Title</label>
         <input asp-for="Title" class="create-post-input" />
@@ -46,23 +29,62 @@
         <span asp-validation-for="Image" class="create-post-danger"></span>
     </div>
 
-
     <button type="submit" class="create-post-submit">Create</button>
-</form>
+</form> 
 
 <style>
+    .gradient-text {
+        font-size: 2em;
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(45deg, #007bff, #ff2d55);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-align: center;
+    }
+
+    .photo-wrapper {
+        width: 156px;
+        height: 156px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(45deg, #007bff, #ff2d55);
+        padding: 3px;
+        margin: 20px auto;
+    }
+
+    .photo {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .centered-form {
+        max-width: 500px;
+        margin: auto;
+        padding: 20px;
+        background-color: #333;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
     h2 {
         text-align: center;
-        color: #333;
+        color: #fff;
         margin-bottom: 20px;
+        font-family: 'Poppins', sans-serif;
     }
+
     .create-post-form {
         max-width: 500px;
         margin: auto;
         padding: 20px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         border-radius: 8px;
-        background-color: #fff;
+        background-color: #333;
+        color: #fff;
     }
 
     .create-post-group {
@@ -73,15 +95,17 @@
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
-            color: #555;
+            color: #fff;
         }
 
     .create-post-input {
         width: 100%;
         padding: 10px;
         border-radius: 4px;
-        border: 1px solid #ddd;
-        font-size: 16px;
+        border: 1px solid #777;
+        background-color: #555;
+        color: #fff;
+        font-family: 'Poppins', sans-serif;
     }
 
         .create-post-input:focus {
@@ -95,20 +119,21 @@
     }
 
     .create-post-submit {
-        width: 100%;
-        padding: 10px;
+        width: 50%; /* Smaller width */
+        padding: 8px 10px; /* Adjusted padding for a smaller button */
+        margin: 0 auto; /* Center the button */
+        display: block; /* Ensure the button respects the width and margin */
         border: none;
         border-radius: 4px;
-        background-color: darkgreen;
+        background-image: linear-gradient(45deg, #007bff, #ff2d55);
         color: white;
-        font-size: 18px;
+        font-size: 16px; /* Adjusted font size */
         cursor: pointer;
         transition: background-color 0.3s;
+        font-family: 'Poppins', sans-serif;
     }
 
         .create-post-submit:hover {
-            background-color: #0056b3;
+            background-image: linear-gradient(45deg, #0056b3, #e23360);
         }
 </style>
-
-    

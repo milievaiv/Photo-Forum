@@ -1,0 +1,169 @@
+﻿@model PhotoForum.Models.DTOs.UserProfile
+
+@{
+    ViewBag.Title = "Edit Profile";
+}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        background-color: #000; /* Black background */
+        font-family: 'Poppins', sans-serif; /* Poppins font */
+        color: #fff; /* White text color */
+        margin: 0;
+        padding: 0;
+    }
+
+    .profile-container {
+        text-align: center;
+        margin-bottom: 1em; /* Reduced bottom margin */
+    }
+
+    .profile-photo-wrapper3 {
+        width: 156px;
+        height: 156px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(45deg, #007bff, #ff2d55);
+        padding: 3px;
+        margin: 20px auto;
+        border: 3px solid #007bff; /* Add a border around the profile photo */
+    }
+
+    .profile-photo3 {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+   /*  .photo {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+    } */
+
+    .username {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.8em;
+        color: #fff;
+        background: -webkit-linear-gradient(45deg, #007bff, #ff2d55);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: center;
+        margin: 0.5em 0;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        transition: transform 0.3s ease, font-size 0.3s ease;
+    }
+
+        .username:hover {
+            transform: scale(1.05); /* Slight enlargement on hover */
+        }
+
+
+
+    .edit-profile-container {
+        background-color: #333; /* Dark grey for the form container */
+        max-width: 500px;
+        margin: 0 auto 2em auto; /* Centering with top and bottom margin */
+        padding: 2em;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); /* Stronger shadow for dark theme */
+    }
+
+    h2 {
+        text-align: center;
+        color: #fff; /* White color for the heading */
+    }
+
+    .form-group label {
+        color: #fff; /* White color for labels */
+    }
+
+    .form-group {
+        margin-bottom: 1em;
+    }
+
+    .form-control {
+        background-color: #555; /* Lighter grey for input fields */
+        border: 1px solid #777;
+        color: #fff; /* White text for input */
+        border-radius: 4px;
+    }
+
+    .btn-primary {
+        background-image: linear-gradient(45deg, #007bff, #ff2d55); /* Gradient background */
+        border: none; /* Removes the border */
+        color: white; /* White text color */
+        padding: 10px 15px; /* Padding for a better shape */
+        border-radius: 4px; /* Rounded corners */
+        font-size: 1em; /* Font size */
+        transition: transform 0.3s ease, background-color 0.3s ease; /* Smooth transition for hover effects */
+        /* Centering the button */
+        display: block; /* Makes the button a block-level element */
+        margin: 0 auto; /* Centers the button horizontally within its container */
+    }
+        .btn-primary:hover, .btn-primary:focus {
+            background-image: linear-gradient(45deg, #0056b3, #e23360); /* Slightly darker gradient for hover/focus */
+            transform: scale(1.05); /* Slightly enlarges the button */
+            color: #fff; /* Ensures text color remains white */
+            text-decoration: none; /* Removes any underline text effect */
+        }
+
+    .text-danger {
+        color: #dc3545;
+    }
+
+    .form-control, .btn-primary {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .gradient-text {
+        font-size: 3em; /* Adjust the size as needed */
+        font-family: 'Poppins', sans-serif; /* Consistent font style */
+        background: linear-gradient(45deg, #007bff, #ff2d55);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent; /* Makes the text take the background color */
+        text-align: center;
+    }
+</style>
+
+<div class="profile-container">
+    <div class="profile-photo-wrapper3">
+        <img src="~/images/retro-camera-logo.jpg" alt="Profile Photo" class="profile-photo3">
+    </div>
+    <div class="username">@Model.Username</div>
+</div>
+<div class="edit-profile-container">
+    <h2 class="gradient-text">Edit Profile</h2>
+
+    @using (Html.BeginForm("Edit", "User", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.Username)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email)
+            @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            <label for="FirstName">First Name</label>
+            @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            <label for="LastName">Last Name</label>
+            @Html.TextBoxFor(model => model.LastName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    }
+</div>

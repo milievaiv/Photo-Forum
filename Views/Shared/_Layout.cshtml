@@ -6,19 +6,108 @@
 <head>
     <meta charset="utf-8" />
     <title>PhotoForum - @ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="apple-touch-icon" sizes="180x180" href="~/images/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="~/images/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="~/images/favicon/favicon-16x16.png>
+    <link rel="icon" type="image/png" sizes="16x16" href="~/images/favicon/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/cyborg.css">
     <link rel="stylesheet" href="~/css/fonts.css">
+    <style>
+        /* Common button styling */
+       @*  .btn {
+            color: white;
+           /*  padding: 10px 15px; */
+            border-radius: 4px;
+            font-size: 1em;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            border: none;
+        } *@
+
+        /* Gradient for Save Changes button */
+        .btn-primary {
+            background-image: linear-gradient(45deg, #007bff, #6f42c1);
+        }
+
+            .btn-primary:hover, .btn-primary:focus {
+                background-image: linear-gradient(45deg, #0056b3, #5936ac);
+                transform: scale(1.05);
+            }
+
+        /* Gradient for Logout button */
+        .btn-danger {
+            background-image: linear-gradient(45deg, #dc3545, #fd7e14);
+        }
+
+            .btn-danger:hover, .btn-danger:focus {
+                background-image: linear-gradient(45deg, #c82333, #e85908);
+                transform: scale(1.05);
+            }
+
+        /* Gradient for Upload button */
+        /* .btn-success {
+            background-image: linear-gradient(45deg, #28a745, #17a2b8);
+        }
+
+            .btn-success:hover, .btn-success:focus {
+                background-image: linear-gradient(45deg, #218838, #138496);
+                transform: scale(1.05);
+            } */
+
+        /* Logo styling */
+        #photoForumLogo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 130%;
+            background: -webkit-linear-gradient(45deg, #007bff, #ff2d55);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            transition: transform 0.3s ease;
+        }
+
+            #photoForumLogo:hover {
+                transform: scale(1.1);
+                text-decoration: none;
+            }
+
+        /* Profile photo styling */
+        .profile-photo2 {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            display: block;
+            object-fit: cover;
+        }
+
+        .profile-photo-wrapper2 {
+            height: 45px;
+            width: 45px;
+            border-radius: 55%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #007bff, #ff2d55);
+            transition: transform 0.3s ease;
+        }
+
+            .profile-photo-wrapper2:hover {
+                transform: scale(1.1);
+            }
+            /* Reset to original size when not hovered, active, or focused */
+            .profile-photo-wrapper2:not(:hover):not(:active):not(:focus) {
+                transform: scale(1);
+            }
+    </style>
+
 </head>
 <body>
     <header style="overflow: hidden; background-color: #333; position: -webkit-sticky; /* Safari */ position: sticky; top: 0;">
         <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
             <div class="container-fluid">
-                <a class="navbar-brand" style="font-family: 'Montserrat', sans-serif;  font-size: 120%;">PhotoForum</a>
+                <a class="navbar-brand" id="photoForumLogo">PhotoForum</a>
+                @* <a class="navbar-brand" style="font-family: 'Montserrat', sans-serif;  font-size: 120%;">PhotoForum</a> *@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor04" aria-controls="navbarColor04" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -37,18 +126,24 @@
                         <input class="form-control me-sm-2" type="text" name="searchString" placeholder=" Search">
                         <button class="btn btn-secondary my-2 my-sm-0" type="submit" fdprocessedid="kscsnt">Search</button>
                     </form>
-                    
+
                     @if (isLogged)
                     {
                         <div style="margin-left:1vh">
-                        <a asp-controller="Auth" asp-action="Login" class="btn btn-light" fdprocessedid="y0tqgk">Login</a>
-                        <a asp-controller="Auth" asp-action="Register" class="btn btn-outline-dark" fdprocessedid="6zd0ds">Sign Up</a>
+                            <a asp-controller="Auth" asp-action="Login" class="btn btn-light" fdprocessedid="y0tqgk">Login</a>
+                            <a asp-controller="Auth" asp-action="Register" class="btn btn-outline-success" fdprocessedid="6zd0ds">Sign Up</a>
                         </div>
                     }
                     else
                     {
-                        <a asp-controller="Auth" asp-action="Logout" class="btn btn-dark" style="margin-left:1vh" fdprocessedid="w1tr1j">Logout</a>
-                        <a asp-controller="Post" asp-action="Create" class="btn btn-dark" style="margin-left:1vh" fdprocessedid="w1tr1j">Upload</a>
+                        <a asp-controller="Auth" asp-action="Logout" class="btn btn-danger" style="margin-left:1vh" fdprocessedid="w1tr1j">Logout</a>
+                        <a asp-controller="Post" asp-action="Create" class="btn btn-success" style="margin-right: 1vh;margin-left: 1vh;" fdprocessedid="w1tr1j">Upload</a>
+                        <a asp-controller="User" asp-action="Edit" id="profile-link">
+                            @* <img src="~/images/retro-camera-logo.jpg" alt="Profile" id="profile-photo"> *@
+                            <div class="profile-photo-wrapper2">
+                                <img src="~/images/retro-camera-logo.jpg" alt="Profile Photo" class="profile-photo2">
+                            </div>
+                        </a>
                     }
 
                 </div>

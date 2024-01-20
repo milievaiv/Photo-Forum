@@ -5,6 +5,7 @@ using PhotoForum.Services.Contracts;
 using PhotoForum.Services;
 using PhotoForum.Attributes;
 using System.Web;
+using System.Security.Claims;
 
 namespace PhotoForum.Controllers.MVC
 {
@@ -43,8 +44,7 @@ namespace PhotoForum.Controllers.MVC
                         userResults = userResults.OrderByDescending(u => u.Username).ToList();
                         break;
                 }
-
-                // Apply sorting to posts
+                
                 switch (postSortOrder)
                 {
                     case "Newest":
@@ -64,14 +64,6 @@ namespace PhotoForum.Controllers.MVC
 
                 ViewBag.SelectedOption = option;
                 return View(viewModel);
-
-                //var viewModel = new SearchViewModel
-                //{
-                //    Users = userResults,
-                //    Posts = postResults
-                //};
-
-                //return View(viewModel);
             }
             return RedirectToAction("Login", "Auth");
 

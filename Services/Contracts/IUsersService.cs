@@ -16,6 +16,7 @@ namespace PhotoForum.Services.Contracts
         User GetUserByLastName(string firstName);
         User GetUserByEmail(string email);
         User Update(int id, User user);
+        bool UpdateUserProfile(UserProfile model);
         User GetUserByUsernameWithPosts(string username);
     }
 }
