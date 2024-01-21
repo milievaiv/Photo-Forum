@@ -104,7 +104,7 @@
                     </ul>
                     <form asp-controller="Search" asp-action="Index" method="get" class="d-flex">
                         <input class="form-control me-sm-2" type="text" name="searchString" placeholder=" Search">
-                        <button class="btn btn-secondary my-2 my-sm-0" type="submit" fdprocessedid="kscsnt">Search</button>
+                        <button style="width:10vh"class="btn btn-secondary my-2 my-sm-0" type="submit" fdprocessedid="kscsnt">Search</button>
                     </form>
 
                     @if (isLogged)
@@ -118,7 +118,7 @@
                     {
                         <a asp-controller="Auth" asp-action="Logout" class="btn btn-danger" style="margin-left:1vh" fdprocessedid="w1tr1j">Logout</a>
                         <a asp-controller="Post" asp-action="Create" class="btn btn-success" style="margin-right: 1vh;margin-left: 1vh;" fdprocessedid="w1tr1j">Upload</a>
-                        <a asp-controller="User" asp-action="Edit" id="profile-link">
+                        <a asp-controller="User" asp-action="Profile" id="profile-link">
                             @* <img src="~/images/retro-camera-logo.jpg" alt="Profile" id="profile-photo"> *@
                             <div class="profile-photo-wrapper2">
                                 <img src="~/content/retro-camera-logo.jpg" alt="Profile Photo" class="profile-photo2">
@@ -135,7 +135,7 @@
         @RenderBody()
     </div>
 
-    <footer style="position: fixed; left: 0; bottom: 0; width: 100%;">
+    <footer style="font-family: Poppins, sans-serif; position: fixed; left: 0; bottom: 0; width: 100%;">
         <small>© Copyright @DateTime.Now.Year, PhotoForum</small>
     </footer>
     <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>

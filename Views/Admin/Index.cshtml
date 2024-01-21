@@ -10,7 +10,7 @@
     <!-- Add your CSS styles here -->
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: Poppins, sans-serif;
             margin: 20px;
         }
 
@@ -39,7 +39,7 @@
 <body style="margin: 0px">
     <div style="display: flex;">
         <div class="dashboard-section" style="margin: 2vh; padding: 2vh; background-color: #272727;width: 65%;">
-            <h4 style="font-family: 'Roboto';">Logs</h4>
+            <h4 style="">Logs</h4>
             <ul style="margin-top: 2vh;">
             <!-- Displaying the last 10 logs -->
                 @foreach (var log in Model.Logs)
@@ -68,7 +68,7 @@
         <ul>
             @foreach (var post in Model.MostRecentPosts)
             {
-                <li><span style="font-weight:bold; font-size:120%; font-family: Roboto">@post.Title</span> by <span style="font-weight:bold">@post.Creator.Username</span> | Date: @post.Date.ToString("dd/MM/yyyy HH:mm")</li>
+                <li><span style="font-weight:bold; font-size:120%;">@post.Title</span> by <span style="font-weight:bold">@post.Creator.Username</span> | Date: @post.Date.ToString("dd/MM/yyyy HH:mm")</li>
                 <hr />
             }
         </ul>
@@ -77,13 +77,13 @@
     </div>
 
     <div style=" display: flex;">
-        <div class="dashboard-section" style="font-family: Roboto; margin: 2vh;">
+        <div class="dashboard-section" style="margin: 2vh;">
             <h3 style="color:white">Total Posts: <span style="color: red;">@Model.TotalPosts</span></h3><hr />
         </div>
-        <div class="dashboard-section" style="margin: 2vh; font-family: Roboto;">
+        <div class="dashboard-section" style="margin: 2vh;">
             <h3 style="color:white">Total Users: <span style="color: red;"> @Model.TotalUsers</span></h3><hr />
         </div>
-        <div class="dashboard-section" style="margin:2vh; font-family: Roboto;">
+        <div class="dashboard-section" style="margin:2vh;">
             <h3 style="color:white">Top User: <span style="color:red">@Model.TopUser.Username</span> with <span style="color: red;">@Model.TopUser.Posts.Count</span> posts in total.</h3><hr />
         </div>
     </div>
