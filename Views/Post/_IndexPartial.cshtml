@@ -1,7 +1,7 @@
 ﻿@model PhotoForum.Models.ViewModel.UserViewModels.PostViewModel
 
-<div class="like-section">
-    <span>@Model.Post.LikesCount likes</span>
+<div style="padding-left: 10px; padding-bottom: 10px" class="like-section">
+    <span style="margin-top: 10px; margin-left: 10px; font-size: 2vh;">@Model.Post.LikesCount likes</span>
 
     @if (Model.Post.Likes.Any(x => x.UserId == Model.User.Id))
     {

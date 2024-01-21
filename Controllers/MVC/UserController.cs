@@ -27,9 +27,17 @@ namespace PhotoForum.Controllers.MVC
             this.usersService = usersService;
             this.modelMapper = modelMapper;
         }
-        public IActionResult Index()
+        public IActionResult Profile()
         {
-            return View();
+            var jwtFromRequest = Request.Cookies["Authorization"];
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadToken(jwtFromRequest) as JwtSecurityToken;
+            var username = jwtToken.Payload[ClaimTypes.Name] as string;
+            var user = usersService.GetUserByUsername(username);
+
+            return View(user);
+
         }
 
         [HttpGet]

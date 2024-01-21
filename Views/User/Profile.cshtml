@@ -1,10 +1,6 @@
-﻿@model PhotoForum.Models.DTOs.UserProfile
+﻿@model PhotoForum.Models.User
 
-@{
-    ViewBag.Title = "Edit Profile";
-}
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
+<link rel="stylesheet" href="/css/grid.css">
 <style>
     body {
         background-color: #000; /* Black background */
@@ -37,15 +33,15 @@
         height: 150px;
         border-radius: 50%;
         object-fit: cover;
-    } 
+    }
 
     .username {
         /* font-family: 'Montserrat', sans-serif; */
         font-size: 1.8em;
         color: #fff;
         /* background: -webkit-linear-gradient(45deg, #007bff, #ff2d55);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent; */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; */
         text-align: center;
         margin: 0.5em 0;
         text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
@@ -99,6 +95,7 @@
         display: block; /* Makes the button a block-level element */
         margin: 0 auto; /* Centers the button horizontally within its container */
     }
+
         .btn-primary:hover, .btn-primary:focus {
             background-image: linear-gradient(45deg, #0056b3, #e23360); /* Slightly darker gradient for hover/focus */
             transform: scale(1.05); /* Slightly enlarges the button */
@@ -126,38 +123,24 @@
 </style>
 
 <div class="profile-container">
-    <div class="profile-photo-wrapper3">
-        <img src="~/content/retro-camera-logo.jpg" alt="Profile Photo" class="profile-photo3">
-    </div>
+    <a asp-controller="User" asp-action="Edit" id="profile-link">
+        @* <img src="~/images/retro-camera-logo.jpg" alt="Profile" id="profile-photo"> *@
+        <div class="profile-photo-wrapper3">
+            <img src="~/content/retro-camera-logo.jpg" alt="Profile Photo" class="profile-photo3">
+        </div>
+    </a>
     <div class="username">@Model.Username</div>
 </div>
-<div class="edit-profile-container">
-    <h2 class="gradient-text">Edit Profile</h2>
 
-    @using (Html.BeginForm("Edit", "User", FormMethod.Post))
+<br />
+
+<div class="masonry">
+    @foreach (var post in Model.Posts)
     {
-        @Html.AntiForgeryToken()
-        @Html.HiddenFor(model => model.Id)
-        @Html.HiddenFor(model => model.Username)
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Email)
-            @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+        <div class="item">
+            <a href="/Post/Index/@post.Id">
+                <img src="@post.PhotoUrl" alt="Image">
+            </a>
         </div>
-
-        <div class="form-group">
-            <label for="FirstName">First Name</label>
-            @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
-        </div>
-
-        <div class="form-group">
-            <label for="LastName">Last Name</label>
-            @Html.TextBoxFor(model => model.LastName, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
-        </div>
-
-        <button style="margin-top:30px" type="submit" class="btn btn-primary">Save Changes</button>
     }
 </div>

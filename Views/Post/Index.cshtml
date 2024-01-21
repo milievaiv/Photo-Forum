@@ -175,20 +175,21 @@
         <img src="~/content/retro-camera-logo.jpg" alt="Creator Photo" class="creator-photo" />
         <div class="creator-info">@Model.Post.Creator.Username</div>
     </div>
-    <img src="@Model.Post.PhotoUrl" alt="Photo" class="post-image" onclick="openModal('@Model.Post.PhotoUrl')" />
+    <div style="padding:10px; margin-left: 10px; font-size:30px">@Model.Post.Title</div>
+    <img style="border-top: solid" src="@Model.Post.PhotoUrl" alt="Photo" class="post-image" onclick="openModal('@Model.Post.PhotoUrl')" />
     <div id="imageModal" class="modal">
         <span class="close" onclick="closeModal()">&times;</span>
         <img class="modal-content" id="modalImage">
         <div id="caption"></div>
     </div>
-    <div class="post-content">@Model.Post.Content</div>
+    <div style="padding: 20px" class="post-content">@Model.Post.Content</div>
     <div id="likesSection">
         @Html.Partial("_IndexPartial", Model)
     </div>
-    <div class="comments-section">
+    <div style="padding: 20px" class="comments-section">
 
         <h2 class="h2comment">
-            Comments (@Model.Post.Comments.Count)</h2c>
+            Comments (@Model.Post.Comments.Count)</h2>
             <form method="post" action="/Post/AddComment" class="add-comment-form">
                 <input type="hidden" name="postId" value="@Model.Post.Id" />
                 <input type="text" name="commentText" placeholder="Add a comment.." class="comment-input">
@@ -201,9 +202,8 @@
                     <p>@comment.Content</p>
                 </div>
             }
-
+         
     </div>
-</div>
 </div>
 
 <script>

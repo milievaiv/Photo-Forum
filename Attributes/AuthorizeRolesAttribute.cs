@@ -25,7 +25,7 @@ namespace PhotoForum.Attributes
             if (string.IsNullOrEmpty(token))
             {
                 // Redirect to the login page if the token is missing
-                context.Result = new RedirectToRouteResult(new { controller = "Home", action = "Index" });
+                context.Result = new RedirectToRouteResult(new { controller = "Auth", action = "Login" });
                 return;
             }
 
