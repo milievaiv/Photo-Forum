@@ -120,7 +120,7 @@
                     <div class="user-grid">
                         @foreach (var user in Model.Users)
                         {
-                            <div class="card" style="max-height: 55vh; min-width: 35vh; overflow: hidden; display: inline-block; margin: 10px;">
+                            <div class="card" style="max-height: 55vh; min-width: 35vh; overflow: hidden; display: inline-block; margin: 10px;">                               
                                <img src="~/content/avatar2.png" alt="@user.Username" style="width:66%">
                                <h3>
                                     <a href="@Url.Action("UserPosts", "User", new { username = user.Username })" class="user-card">@user.Username</a>
