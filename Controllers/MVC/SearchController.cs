@@ -9,7 +9,6 @@ using System.Security.Claims;
 
 namespace PhotoForum.Controllers.MVC
 {
-    //[AuthorizeRoles("user")]
     public class SearchController : Controller
     {
 

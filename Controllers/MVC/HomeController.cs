@@ -57,5 +57,11 @@ namespace PhotoForum.Controllers.MVC
             return RedirectToAction("Login", "Auth");
 
         }
+
+        [HttpGet]
+        public IActionResult About()
+        {
+            return View();
+        }
     }
 }

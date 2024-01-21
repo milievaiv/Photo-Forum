@@ -15,18 +15,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/cyborg.css">
     <link rel="stylesheet" href="~/css/fonts.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <style>
-        /* Common button styling */
-       @*  .btn {
-            color: white;
-           /*  padding: 10px 15px; */
-            border-radius: 4px;
-            font-size: 1em;
-            transition: transform 0.3s ease, background-color 0.3s ease;
-            border: none;
-        } *@
-
-        /* Gradient for Save Changes button */
+    <style>    
         .btn-primary {
             background-image: linear-gradient(45deg, #007bff, #6f42c1);
         }
@@ -45,16 +34,6 @@
                 background-image: linear-gradient(45deg, #c82333, #e85908);
                 transform: scale(1.05);
             }
-
-        /* Gradient for Upload button */
-        /* .btn-success {
-            background-image: linear-gradient(45deg, #28a745, #17a2b8);
-        }
-
-            .btn-success:hover, .btn-success:focus {
-                background-image: linear-gradient(45deg, #218838, #138496);
-                transform: scale(1.05);
-            } */
 
         /* Logo styling */
         #photoForumLogo {
@@ -120,7 +99,7 @@
                                 <span class="visually-hidden">(current)</span>
                             </a>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">About</a>
+                            <a asp-controller="Home" asp-action="About"class="nav-link">About</a>
                         </li>
                     </ul>
                     <form asp-controller="Search" asp-action="Index" method="get" class="d-flex">

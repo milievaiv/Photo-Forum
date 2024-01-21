@@ -1,0 +1,89 @@
+﻿    @{
+        ViewData["Title"] = "About";
+    }
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            align-items: flex-start;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .text-content, .photo-content {
+            flex: 1;
+            margin: 10px;
+        }
+
+        .text-content {
+            padding: 20px;
+        }
+
+        .text-content h1 {
+            color: white;
+        }
+
+        .text-content ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .text-content li {
+            padding: 5px 0;
+        }
+
+        .photo-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f7f7f7;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .photo-content img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        @@media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .text-content, .photo-content {
+                width: 100%;
+            }
+        }
+    </style>
+<body>
+    <div class="container">
+        <div class="text-content">
+            <h3>About Our Photo Forum</h3>
+            <p>Welcome to our Photo Forum. This platform is a community for photography enthusiasts to share and discuss their passion for photography. Here, you can upload your photos, get feedback, and be inspired by the work of others.</p>
+            
+            <h6>Our Team</h6>
+            <ul>
+                <li>Ivan Kourtev</li>
+                <li>Katerina Kafaldzhieva</li>
+                <li>Maria Ivanova</li>
+                
+            </ul>
+
+            <h6>Contact Information</h6>
+            <p>Email: contact@photoforum.com</p>
+        </div>
+        <div class="photo-content">
+            <img src="~/content/camera-1130731_1280.jpg" alt="About Us" />
+        </div>
+    </div>
+</body>
